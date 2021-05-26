@@ -1,7 +1,7 @@
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
 
-public class Graph extends AbstractGraph {
+public class Graph {
 
 	final Directory d;
 
