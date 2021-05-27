@@ -1,3 +1,5 @@
+package og;
+
 import java.util.stream.Collectors;
 
 import idawi.IdawiExposed;
@@ -9,8 +11,9 @@ public class GraphService extends Service {
 	@IdawiExposed
 	public void listGraphs(MessageQueue q) {
 		var triggerMsg = q.get_blocking();
-		reply(triggerMsg,
-				Graph.baseDirectory.listDirectories().stream().map(d -> d.getName()).collect(Collectors.toSet()));
+		var graphList = Graph.baseDirectory.listDirectories().stream().map(d -> d.getName())
+				.collect(Collectors.toSet());
+		reply(triggerMsg, graphList);
 	}
 
 	@IdawiExposed

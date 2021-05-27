@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.lhogie</groupId>
-	<artifactId>toools</artifactId>
-	<version>0.0.5</version>
-	<name>Toools</name>
-	<description>A suite Java toools useful in the context of the development of scientific applications</description>
+	<artifactId>onlinegraph</artifactId>
+	<version>0.0.1</version>
+	<name>Online Graph</name>
+	<description>A web distributed graph librarie</description>
 	<url>https://github.com/lhogie/toools</url>
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -38,11 +38,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.github.lhogie</groupId>
-			<artifactId>idawi</artifactId>
-			<version>0.0.2</version>
+			<artifactId>toools</artifactId>
+			<version>0.0.5</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -63,8 +62,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>14</source>
+					<target>14</target>
 				</configuration>
 			</plugin>
 		</plugins>
