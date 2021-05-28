@@ -1,0 +1,27 @@
+package og;
+
+import java.io.IOException;
+
+import idawi.Component;
+import idawi.ComponentDescriptor;
+import idawi.net.LMI;
+import idawi.service.ServiceManager;
+import idawi.service.rest.RESTService;
+import toools.thread.Threads;
+
+public class Server {
+	public static void main(String[] args) throws IOException {
+		var descriptor = new ComponentDescriptor();
+		descriptor.friendlyName = "root";
+		Component c = new Component(descriptor);
+		Component d = new Component();
+		LMI.connect(c, d);
+		c.lookupService(ServiceManager.class).ensureStarted(GraphStorageService.class);
+		c.lookupService(ServiceManager.class).ensureStarted(RESTService.class);
+		var rest = c.lookupService(RESTService.class);
+		int port = RESTService.DEFAULT_PORT;
+		rest.startHTTPServer(port);
+		System.out.println("URL: http://localhost:" + port + "/api/" + c.friendlyName);
+		Threads.sleepForever();
+	}
+}

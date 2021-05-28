@@ -1,42 +1,62 @@
 package og;
 
+import java.util.List;
+
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
 
 public class BasicGraph extends AbstractGraph {
-	final Directory d;
+	final Directory d, vertexDirectory, edgeDirectory;
 
-	public static final Directory baseDirectory = new Directory("$HOME/graph-server");
-
-	static {
-		baseDirectory.ensureExists();
+	public BasicGraph(Directory d) {
+		this.d = d;
+		this.vertexDirectory = new Directory(d, "vertices");
+		this.edgeDirectory = new Directory(d, "edges");
+		d.ensureExists();
+		vertexDirectory.ensureExists();
+		edgeDirectory.ensureExists();
 	}
 
-	public Graph(Object id) {
-		d = new Directory(baseDirectory, id.toString());
+	private RegularFile getVertexFile(String u) {
+		return new RegularFile(d, u);
 	}
 
-	@Override
-	void addVertex(String u) {
-		RegularFile vf = new RegularFile(d, u);
-		vf.create();
-	}
-
-	@Override
-	void removeVertex(String u) {
-		RegularFile vf = new RegularFile(d, u);
-		vf.delete();
+	private RegularFile getEdgeFile(String from, String to) {
+		return new RegularFile(d, from + " --- " + to);
 	}
 
 	@Override
-	void addEdge(String from, String to) {
-		RegularFile f = new RegularFile(d, from + " --- " + to);
-		f.create();
+	public long nbVertices() {
+		return vertexDirectory.getNbFiles();
 	}
 
 	@Override
-	void removeEdge(String from, String to) {
-		RegularFile f = new RegularFile(d, from + " --- " + to);
-		f.delete();
+	public long nbEdges() {
+		return edgeDirectory.getNbFiles();
+	}
+
+	@Override
+	public void addVertex(String u) {
+		getVertexFile(u).create();
+	}
+
+	@Override
+	public void removeVertex(String u) {
+		getVertexFile(u).delete();
+	}
+
+	@Override
+	public void addEdge(String from, String to) {
+		getEdgeFile(from, to).create();
+	}
+
+	@Override
+	public void removeEdge(String from, String to) {
+		getEdgeFile(from, to).delete();
+	}
+
+	@Override
+	protected List<String> out(String v) {
+		return null;
 	}
 }
