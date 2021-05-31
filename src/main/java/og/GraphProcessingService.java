@@ -1,17 +1,16 @@
 package og;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import idawi.Component;
 import idawi.IdawiOperation;
-import idawi.MessageQueue;
-import idawi.ProgressRatio;
 import idawi.Service;
+import it.unimi.dsi.fastutil.longs.Long2LongMap;
+import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import toools.progression.LongProcess;
 import toools.thread.Threads;
 
@@ -24,16 +23,9 @@ public class GraphProcessingService extends Service {
 		return component.lookupService(GraphStorageService.class).getGraph(graphID);
 	}
 
-	public static class BFSParms implements Serializable {
-		String graphID;
-		String source;
-		long maxDistance;
-		long maxNbVerticesVisited;
-	}
-
-	public static class BFSResult {
-		List<String> visitOrder;
-		Map<String, Long> distances;
+	public static class BFSResult implements Serializable {
+		LongList visitOrder;
+		Long2LongMap distances;
 		int nbVerticesVisited;
 
 		@Override
@@ -44,42 +36,47 @@ public class GraphProcessingService extends Service {
 	}
 
 	@IdawiOperation
-	public void bfs(MessageQueue in) {
-		var triggerMsg = in.get_blocking();
-		var parms = (BFSParms) triggerMsg.content;
-		var g = getGraph(parms.graphID);
+	public BFSResult bfs(String graphID, long source, long maxDistance, long maxNbVerticesVisited) {
+		var g = getGraph(graphID);
 		long nbVertices = g.nbVertices();
 		BFSResult r = new BFSResult();
 
 		AtomicBoolean completed = new AtomicBoolean(false);
-		
+
 		Threads.newThread_loop_periodic(1000, () -> completed.get(), () -> {
-			reply(triggerMsg, new ProgressRatio(nbVertices, r.nbVerticesVisited));
+			// reply(triggerMsg, new ProgressRatio(nbVertices, r.nbVerticesVisited));
 		});
 
-		LongProcess lp = new LongProcess("BFS (classic)", " vertex", nbVertices);
-		r.distances = new HashMap<>();
-		var q = new ArrayList<String>();
-		q.add(parms.source);
-		r.distances.put(parms.source, 0L);
+		var lp = new LongProcess("BFS (classic)", " vertex", nbVertices);
+		r.distances = new Long2LongOpenHashMap();
+		var q = new LongArrayList();
+		q.add(source);
+		r.distances.put(source, 0L);
 		long nbVerticesVisited = 1;
 
 		while (!q.isEmpty()) {
 			++lp.sensor.progressStatus;
 
-			String v = q.remove(0);
-			r.visitOrder.add(v);
-			long d = r.distances.get(v);
+			var v = q.removeLong(0);
 
-			if (d <= parms.maxDistance) {
-				for (String n : g.out(v)) {
+			if (r.visitOrder != null) {
+				r.visitOrder.add(v);
+			}
+
+			var d = r.distances.get(v);
+
+			if (d <= maxDistance) {
+				for (var e : g.outEdges(v)) {
+					var n = g.destination(e);
+
 					if (!r.distances.containsKey(n)) {
 						r.distances.put(n, d + 1);
 
-						if (nbVerticesVisited++ >= parms.maxNbVerticesVisited)
+						if (nbVerticesVisited++ >= maxNbVerticesVisited)
 							break;
 
 						q.add(n);
+
 					}
 				}
 			}
@@ -87,27 +84,37 @@ public class GraphProcessingService extends Service {
 
 		lp.end();
 		completed.set(true);
-		reply(triggerMsg, r);
+		// reply(triggerMsg, r);
+		return r;
 	}
 
 	@IdawiOperation
-	public void addVertex(String graphID, String u) {
-		getGraph(graphID).addVertex(u);
+	public LongList outNeighbors(String graphID, long v) {
+		return getGraph(graphID).outNeighbors(v);
+	}
+	
+	@IdawiOperation
+	public LongList outEdges(String graphID, long v) {
+		return getGraph(graphID).outEdges(v);
 	}
 
 	@IdawiOperation
-	public void removeVertex(String graphID, String u) {
-		getGraph(graphID).removeVertex(u);
-	}
+	public double clusteringCoefficient(String graphID, long v) {
+		var g = getGraph(graphID);
+		var neighbors = new LongOpenHashSet(g.outNeighbors(v));
 
-	@IdawiOperation
-	public void addEdge(String graphID, String from, String to) {
-		getGraph(graphID).addEdge(from, to);
-	}
+		int count = 0;
 
-	@IdawiOperation
-	public void removeEdge(String graphID, String from, String to) {
-		getGraph(graphID).removeEdge(from, to);
+		for (var n : neighbors) {
+			for (var nn : g.outNeighbors(v)) {
+				if (neighbors.contains(nn)) {
+					++count;
+				}
+			}
+		}
+
+		int degree = neighbors.size();
+		return count / ((double) (degree * (degree - 1)));
 	}
 
 }

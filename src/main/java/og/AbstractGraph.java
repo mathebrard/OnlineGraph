@@ -1,20 +1,18 @@
 package og;
 
-import java.util.List;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 
-public abstract class AbstractGraph {
-	public abstract void addVertex(String u);
+public abstract class AbstractGraph implements GraphPrimitives {
 
-	public abstract void removeVertex(String u);
+	public LongList outNeighbors(long v) {
+		var r = new LongArrayList();
 
-	public abstract void addEdge(String from, String to);
+		for (var e : outEdges(v)) {
+			r.add(destination(e));
+		}
 
-	public abstract void removeEdge(String from, String to);
+		return r;
+	}
 
-	public abstract long nbVertices();
-	
-
-	public abstract long nbEdges();
-
-	protected abstract List<String> out(String v);
 }

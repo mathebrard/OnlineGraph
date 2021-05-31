@@ -12,11 +12,10 @@ import toools.thread.Threads;
 public class Server {
 	public static void main(String[] args) throws IOException {
 		var descriptor = new ComponentDescriptor();
-		descriptor.friendlyName = "root";
+		descriptor.friendlyName = "og";
 		Component c = new Component(descriptor);
-		Component d = new Component();
-		LMI.connect(c, d);
 		c.lookupService(ServiceManager.class).ensureStarted(GraphStorageService.class);
+		c.lookupService(ServiceManager.class).ensureStarted(GraphProcessingService.class);
 		c.lookupService(ServiceManager.class).ensureStarted(RESTService.class);
 		var rest = c.lookupService(RESTService.class);
 		int port = RESTService.DEFAULT_PORT;

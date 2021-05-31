@@ -38,8 +38,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.github.lhogie</groupId>
-			<artifactId>toools</artifactId>
-			<version>0.0.5</version>
+			<artifactId>idawi</artifactId>
+			<version>0.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.paypal.digraph</groupId>
+			<artifactId>digraph-parser</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 	<build>
