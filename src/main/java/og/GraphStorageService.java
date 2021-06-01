@@ -19,6 +19,7 @@ import idawi.IdawiOperation;
 import idawi.Service;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import toools.io.Cout;
 import toools.io.file.Directory;
 
 public class GraphStorageService extends Service {
@@ -180,14 +181,51 @@ public class GraphStorageService extends Service {
 		return g.pickRandomEdge();
 	}
 
+	/*
+	 * Uses https://github.com/paypal/digraph-parser
+	 */
 	@IdawiOperation
 	public String importDot(String gid, String dot) {
+		int n = 0;
+		Cout.debugSuperVisible(n++);
+		String s = null;
+		s.hashCode();
+		
 		var g = getGraph(gid);
+		Cout.debugSuperVisible(n++);
 		g.create();
+		Cout.debugSuperVisible(n++);
 		GraphParser parser = new GraphParser(new ByteArrayInputStream(dot.getBytes()));
+		Cout.debugSuperVisible(n++);
 		Map<String, GraphNode> nodes = parser.getNodes();
+		Cout.debugSuperVisible(n++);
 		Map<String, GraphEdge> edges = parser.getEdges();
+		Cout.debugSuperVisible(n++);
 		return "dot parsed: " + nodes + edges;
 	}
+	
+	/*
+	 * Uses https://github.com/paypal/digraph-parser
+	 */
+	@IdawiOperation
+	public String importEdgeList(String gid, String dot) {
+		int n = 0;
+		Cout.debugSuperVisible(n++);
+		String s = null;
+		s.hashCode();
+		
+		var g = getGraph(gid);
+		Cout.debugSuperVisible(n++);
+		g.create();
+		Cout.debugSuperVisible(n++);
+		GraphParser parser = new GraphParser(new ByteArrayInputStream(dot.getBytes()));
+		Cout.debugSuperVisible(n++);
+		Map<String, GraphNode> nodes = parser.getNodes();
+		Cout.debugSuperVisible(n++);
+		Map<String, GraphEdge> edges = parser.getEdges();
+		Cout.debugSuperVisible(n++);
+		return "dot parsed: " + nodes + edges;
+	}
+
 
 }
