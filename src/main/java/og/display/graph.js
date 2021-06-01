@@ -1,4 +1,4 @@
-$.getJSON("data.json", function (json) {
+$.getJSON("/api/og/og.GraphStorageService/get/demo_graph", function (json) {
     // create an array with nodes
     var nodes = new vis.DataSet(json['value']['vertices']);
 
