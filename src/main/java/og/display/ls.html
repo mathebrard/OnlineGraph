@@ -16,9 +16,17 @@
 </head>
 <body>
 <p>List available graphs</p>
+<ul id="graphList">
+</ul>
 <script>
 
 $.getJSON("/api/og/og.GraphStorageService/listGraphs", function (json) {
+	json['value'].forEach((graph) => {
+		var ul = document.getElementById("graphList");
+		var li = document.createElement("li");
+		 li.appendChild(document.createTextNode(graph));
+		 ul.appendChild(li);
+    });
 })
 
 </script>
