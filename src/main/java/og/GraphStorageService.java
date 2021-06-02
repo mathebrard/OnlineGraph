@@ -188,8 +188,6 @@ public class GraphStorageService extends Service {
 	public String importDot(String gid, String dot) {
 		int n = 0;
 		Cout.debugSuperVisible(n++);
-		String s = null;
-		s.hashCode();
 		
 		var g = getGraph(gid);
 		Cout.debugSuperVisible(n++);

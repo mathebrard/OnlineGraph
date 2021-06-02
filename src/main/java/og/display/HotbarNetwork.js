@@ -192,13 +192,13 @@ class Hotbar {
         let table = $("<table></table>").append(
             $("<tr></tr>")
                 .append($("<th></th>")
-                    .text("Propriété"))
+                    .text("Display property"))
                 .append($("<th></th>")
-                    .text("Champs"))
+                    .text("Graph property"))
                 .append($("<th></th>")
-                    .text("Bornes"))
+                    .text("Boundaries"))
                 .append($("<th></th>")
-                    .text("Fonction"))
+                    .text("f(x)"))
         );
 
         Object.keys(attributes).forEach ((attribut) => {
