@@ -1,4 +1,8 @@
-$.getJSON("/api/og/og.GraphStorageService/get/demo_graph", function (json) {
+const queryString = window.location.search;
+const urlParams = new URLSearchParams (queryString);
+const gid = urlParams.get ('gid')
+
+$.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
     // create an array with nodes
     var nodes = new vis.DataSet(json['value']['vertices']);
 

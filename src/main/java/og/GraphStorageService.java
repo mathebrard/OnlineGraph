@@ -1,7 +1,9 @@
 package og;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -207,10 +209,19 @@ public class GraphStorageService extends Service {
 	 * Uses https://github.com/paypal/digraph-parser
 	 */
 	@IdawiOperation
-	public String importEdgeList(String gid, String edges) {
+	public void importEdgeList(String gid, String edges) {
 		//String gid = "graph-" + ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 		create(gid);
-		return "dot parsed: " + nodes + edges;
+		var g = getGraph(gid);
+		
+		var r = new StringReader(edges);
+		var br = new BufferedReader(r);
+		
+		while (true) {
+			String l = br.readLine();
+			
+			if (l)
+		}
 	}
 
 
