@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import com.paypal.digraph.parser.GraphEdge;
@@ -206,22 +207,9 @@ public class GraphStorageService extends Service {
 	 * Uses https://github.com/paypal/digraph-parser
 	 */
 	@IdawiOperation
-	public String importEdgeList(String gid, String dot) {
-		int n = 0;
-		Cout.debugSuperVisible(n++);
-		String s = null;
-		s.hashCode();
-		
-		var g = getGraph(gid);
-		Cout.debugSuperVisible(n++);
-		g.create();
-		Cout.debugSuperVisible(n++);
-		GraphParser parser = new GraphParser(new ByteArrayInputStream(dot.getBytes()));
-		Cout.debugSuperVisible(n++);
-		Map<String, GraphNode> nodes = parser.getNodes();
-		Cout.debugSuperVisible(n++);
-		Map<String, GraphEdge> edges = parser.getEdges();
-		Cout.debugSuperVisible(n++);
+	public String importEdgeList(String gid, String edges) {
+		//String gid = "graph-" + ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+		create(gid);
 		return "dot parsed: " + nodes + edges;
 	}
 
