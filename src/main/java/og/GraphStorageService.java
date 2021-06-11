@@ -43,8 +43,37 @@ public class GraphStorageService extends Service {
 			g.clear();
 		}
 
+	
 		System.out.println("creating demo graph");
 		gnm(g, 3, 5);
+		
+		{
+			var p = new HashMap<String, Object>();
+			p.put("background color", "dark grey");
+			p.put("default vertex size", "30");
+			p.put("default vertex borderWidth", "5");
+			p.put("default vertex image", "" + 30);
+			p.put("default vertex color.border", "blue");
+			p.put("default vertex background color", "white");
+			p.put("default vertex hidden", "false");
+			p.put("default vertex label", "vertex");
+			p.put("default vertex mass", "4");
+			p.put("default vertex shape", "circle");
+			p.put("default vertex value", 13);
+			p.put("default vertex foo", 1);
+			p.put("default vertex bar", "hello");
+
+			p.put("default edge directed", "yes");
+			p.put("default edge arrow image", "http://img.com/arrow.png");
+			p.put("default edge arrow scale", "1");
+			p.put("default edge arrow type", "round");
+			p.put("default edge color", "black");
+			p.put("default edge dashes", "true");
+			p.put("default edge label", "relation");
+			p.put("default edge width", "5");
+			g.writeProperties(p);
+		}
+
 
 		{
 			var u = g.pickRandomVertex();
@@ -53,7 +82,7 @@ public class GraphStorageService extends Service {
 			p.put("borderWidth", "5");
 			p.put("image", "" + 30);
 			p.put("color.border", "blue");
-			p.put("background coolor", "white");
+			p.put("background color", "white");
 			p.put("hidden", "false");
 			p.put("label", "vertex");
 			p.put("mass", "4");
@@ -72,13 +101,11 @@ public class GraphStorageService extends Service {
 			p.put("arrow scale", "1");
 			p.put("arrow type", "round");
 			p.put("color", "black");
-			p.put("dashes", "1010");
+			p.put("dashes", "true");
 			p.put("label", "relation");
-			p.put("mass", "1");
 			p.put("width", "5");
 			g.writeEdge(e, "properties", p);
 		}
-
 	}
 
 	private void gnm(Graph g, int n, int m) {
@@ -164,6 +191,7 @@ public class GraphStorageService extends Service {
 
 	public static class GraphInfo implements Serializable {
 		public String name;
+		Map<String, String> props;
 		List<VertexInfo> vertices;
 		List<EdgeInfo> edges;
 	}
@@ -201,6 +229,7 @@ public class GraphStorageService extends Service {
 		var gi = new GraphInfo();
 		gi.edges = edges(gid);
 		gi.vertices = vertices(gid);
+		gi.props = g.readProperties();
 		return gi;
 	}
 
@@ -219,6 +248,13 @@ public class GraphStorageService extends Service {
 	@IdawiOperation
 	public long pickRandomEdge(String gid) {
 		var g = getGraph(gid);
+		return g.pickRandomEdge();
+	}
+
+	@IdawiOperation
+	public long changes(String gid, double since) {
+		var g = getGraph(gid);
+		g.getHistory();
 		return g.pickRandomEdge();
 	}
 

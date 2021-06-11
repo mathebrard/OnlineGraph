@@ -1,6 +1,8 @@
 package og;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
@@ -8,6 +10,8 @@ import java.util.function.Supplier;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongConsumer;
 import it.unimi.dsi.fastutil.longs.LongList;
+import og.GraphStorageService.EdgeInfo;
+import og.GraphStorageService.VertexInfo;
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
 
@@ -16,6 +20,7 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 	final DiskStore vertices, edges;
 
 	final LongArrayList emptyList = new LongArrayList();
+	private long nbChange = 0;
 
 	public Graph(Directory d) {
 		this.d = d;
@@ -55,12 +60,16 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 	public long addVertex() {
 		long id = ThreadLocalRandom.current().nextLong();
 		vertices.add(id);
+		var i = new VertexInfo();
+		i.id = id;
+		addChange(new Change.AddVertex(nbChange++, i));
 		return id;
 	}
 
 	@Override
 	public void removeVertex(long u) {
 		vertices.remove(u);
+		addChange(new Change.RemoveVertex(nbChange++, u));
 	}
 
 	@Override
@@ -69,6 +78,11 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 		edges.add(e);
 		edges.set(e, "ends", new long[] { from, to });
 		vertices.alter(from, "outVertices", () -> new LongArrayList(), (LongList outs) -> outs.add(to));
+		var i = new EdgeInfo();
+		i.id = e;
+		i.from = from;
+		i.to = to;
+		addChange(new Change.AddEdge(nbChange++, i));
 		return e;
 	}
 
@@ -76,6 +90,7 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 	public void removeEdge(long e) {
 		vertices.alter(source(e), "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(e)));
 		edges.remove(e);
+		addChange(new Change.RemoveEdge(nbChange++, e));
 	}
 
 	public V readVertex(long u, String name, Supplier<V> defaultValueSupplier) {
@@ -150,6 +165,30 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 
 	public void writeProperties(Map<String, String> m) {
 		new RegularFile(d, "properties.ser").setContentAsJavaObject(m);
+	}
+
+	public synchronized List<Change> getHistory() {
+		var f = new RegularFile(d, "history.ser");
+
+		if (f.exists()) {
+			return (List<Change>) f.getContentAsJavaObject();
+		} else {
+			return new ArrayList<>();
+		}
+	}
+
+	public synchronized void addChange(Change c) {
+		var f = new RegularFile(d, "history.ser");
+		List<Change> l = null;
+
+		if (f.exists()) {
+			l = (List<Change>) f.getContentAsJavaObject();
+		} else {
+			l = new ArrayList<>();
+		}
+
+		l.add(c);
+		f.setContentAsJavaObject(l);
 	}
 
 }
