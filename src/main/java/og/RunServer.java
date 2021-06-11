@@ -8,7 +8,7 @@ import idawi.service.ServiceManager;
 import idawi.service.rest.RESTService;
 import toools.thread.Threads;
 
-public class Server {
+public class RunServer {
 	public static void main(String[] args) throws IOException {
 		var descriptor = new ComponentDescriptor();
 		descriptor.friendlyName = "og";

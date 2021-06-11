@@ -3,7 +3,7 @@ package og;
 import it.unimi.dsi.fastutil.longs.LongConsumer;
 import it.unimi.dsi.fastutil.longs.LongList;
 
-public interface GraphPrimitives {
+public interface GraphPrimitives<V, E> {
 	// creates a new vertex in the graph, automatically assigning an ID to it
 	long addVertex();
 
@@ -30,14 +30,13 @@ public interface GraphPrimitives {
 
 	long pickRandomEdge();
 
-	void traverseEdges(EdgeConsumer e);
+	void traverseEdges(LongConsumer e);
 
 	void traverseVertices(LongConsumer v);
-
-	void traverseVertices(VertexConsumer v);
 
 	void create();
 
 	void clear();
 
+	boolean exists();
 }

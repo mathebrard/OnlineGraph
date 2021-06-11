@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import toools.progression.LongProcess;
 import toools.thread.Threads;
 
@@ -19,7 +18,7 @@ public class GraphProcessingService extends Service {
 		super(component);
 	}
 
-	private AbstractGraph getGraph(String graphID) {
+	private Graph getGraph(String graphID) {
 		return component.lookupService(GraphStorageService.class).getGraph(graphID);
 	}
 
@@ -89,32 +88,22 @@ public class GraphProcessingService extends Service {
 	}
 
 	@IdawiOperation
-	public LongList outNeighbors(String graphID, long v) {
-		return getGraph(graphID).outNeighbors(v);
-	}
-	
-	@IdawiOperation
-	public LongList outEdges(String graphID, long v) {
-		return getGraph(graphID).outEdges(v);
-	}
-
-	@IdawiOperation
 	public double clusteringCoefficient(String graphID, long v) {
 		var g = getGraph(graphID);
-		var neighbors = new LongOpenHashSet(g.outNeighbors(v));
+		var neighbors = (LongList) g.readVertex(v, "outNeighbors", null);
 
 		int count = 0;
 
 		for (var n : neighbors) {
-			for (var nn : g.outNeighbors(v)) {
+			for (var nn : (LongList) g.readVertex(n, "outNeighbors", null)) {
 				if (neighbors.contains(nn)) {
 					++count;
 				}
 			}
 		}
 
-		int degree = neighbors.size();
-		return count / ((double) (degree * (degree - 1)));
+		double degree = neighbors.size();
+		return count / (degree * (degree - 1));
 	}
 
 }
