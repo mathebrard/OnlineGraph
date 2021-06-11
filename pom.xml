@@ -30,9 +30,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:git@github.com:lhogie/toools.git</connection>
-		<developerConnection>scm:git:git@github.com:lhogie/toools.git</developerConnection>
-		<url>https://github.com/lhogie/toools</url>
+		<connection>scm:git:git@github.com:lhogie/OnlineGraph.git</connection>
+		<developerConnection>scm:git:git@github.com:lhogie/OnlineGraph.git</developerConnection>
+		<url>https://github.com/lhogie/OnlineGraph</url>
 		<tag>HEAD</tag>
 	</scm>
 	<dependencies>
