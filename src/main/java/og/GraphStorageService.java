@@ -39,40 +39,46 @@ public class GraphStorageService extends Service {
 
 		var g = new Graph(new Directory(baseDirectory, "demo_graph"));
 
-		if (!g.d.exists()) {
-			System.out.println("creating demo graph");
-			gnm(g, 3, 5);
-
-			{
-				var u = g.pickRandomVertex();
-				var p = new HashMap<String, Object>();
-				p.put("size", "30");
-				p.put("borderWidth", "5");
-				p.put("image", "" + 30);
-				p.put("color.border", "blue");
-				p.put("background coolor", "white");
-				p.put("hidden", "false");
-				p.put("label", "vertex");
-				p.put("mass", "4");
-				p.put("shape", "circle");
-				g.writeVertex(u, "properties", p);
-			}
-
-			{
-				var e = g.pickRandomEdge();
-				var p = new HashMap<String, Object>();
-				p.put("directed", "yes");
-				p.put("arrow image", "http://img.com/arrow.png");
-				p.put("arrow scale", "1");
-				p.put("arrow type", "round");
-				p.put("color", "black");
-				p.put("dashes", "1010");
-				p.put("label", "relation");
-				p.put("mass", "1");
-				p.put("width", "5");
-				g.writeEdge(e, "properties", p);
-			}
+		if (g.d.exists()) {
+			g.clear();
 		}
+
+		System.out.println("creating demo graph");
+		gnm(g, 3, 5);
+
+		{
+			var u = g.pickRandomVertex();
+			var p = new HashMap<String, Object>();
+			p.put("size", "30");
+			p.put("borderWidth", "5");
+			p.put("image", "" + 30);
+			p.put("color.border", "blue");
+			p.put("background coolor", "white");
+			p.put("hidden", "false");
+			p.put("label", "vertex");
+			p.put("mass", "4");
+			p.put("shape", "circle");
+			p.put("value", 13);
+			p.put("foo", 1);
+			p.put("bar", "hello");
+			g.writeVertex(u, "properties", p);
+		}
+
+		{
+			var e = g.pickRandomEdge();
+			var p = new HashMap<String, Object>();
+			p.put("directed", "yes");
+			p.put("arrow image", "http://img.com/arrow.png");
+			p.put("arrow scale", "1");
+			p.put("arrow type", "round");
+			p.put("color", "black");
+			p.put("dashes", "1010");
+			p.put("label", "relation");
+			p.put("mass", "1");
+			p.put("width", "5");
+			g.writeEdge(e, "properties", p);
+		}
+
 	}
 
 	private void gnm(Graph g, int n, int m) {
