@@ -5,7 +5,12 @@ class Hotbar {
             .attr({
                 id: "vis-network-hotbar"
             });
-        this.main = $("<div></div>");
+        this.main = $("<div></div>").css({
+            display: "none",
+        });
+        this.mainChangeGraph = $("<div></div>").css({
+            display: "none",
+        });
 
         this.addPanelDragAndResize();
         // this.addPanelSortedNodes(props);
@@ -13,7 +18,7 @@ class Hotbar {
         this.nbEntries = 0;
     }
 
-    addPanelDragAndResize () {
+    addPanelDragAndResize() {
         let container = $("<div></div>");
 
         // creation du drag
@@ -48,7 +53,7 @@ class Hotbar {
             $(window).mousemove((ev) => {
                 mouse.top = ev.clientY;
                 mouse.left = ev.clientX;
-            }).mouseup ((ev) => {
+            }).mouseup((ev) => {
                 canMove = false;
             });
             this.mainContainer.mousedown((ev) => {
@@ -58,35 +63,94 @@ class Hotbar {
             return dragger
         }
 
+        let resizerC = $("<div id='nav-personaliz'>Personalize your graph</div>");
+        let changerC = $("<div id='nav-personaliz'>Change your graph</div>");
+
         let resizerCreation = () => {
             let isClick = false;
-            let resizer = $("<div></div>").css({
+            resizerC.css({
                 display: "inline-block",
                 padding: "10px",
-                "background-color": "green",
-                width: "20px",
-                height: "20px",
-                float: "right"
-            }).mouseup ((ev) => {
-                if (isClick = !isClick) {
-                    this.main.css({
+                "background-color": "LightGray",
+                width: "fit-content",
+                height: "fit-content",
+                border: "solid",
+                cursor: "pointer"
+            }).mouseup((ev) => {
+                if (isClick == false) {
+
+                    this.mainChangeGraph.css({
                         display: "none"
                     })
-                } else {
                     this.main.css({
                         display: "inherit"
                     })
+                    changerC.css({
+                        "background-color": "LightGray",
+                    })
+                    resizerC.css({
+                        "background-color": "gray",
+                    })
+                    isClick = true;
+
+                } else {
+                    this.main.css({
+                        display: "none"
+                    })
+                    resizerC.css({
+                        "background-color": "LightGray",
+                    })
+                    isClick = false;
                 }
             })
-            return resizer;
+            return resizerC;
         }
-    //    container.append(draggerCreation());
+        let changerCreation = () => {
+            let isClick = false;
+            changerC.css({
+                display: "inline-block",
+                padding: "10px",
+                "background-color": "LightGray",
+                width: "fit-content",
+                height: "fit-content",
+                border: "solid",
+                cursor: "pointer"
+            }).mouseup((ev) => {
+                if (isClick == false) {
+                    this.main.css({
+                        display: "none"
+                    })
+                    this.mainChangeGraph.css({
+                        display: "inherit"
+                    })
+                    changerC.css({
+                        "background-color": "gray",
+                    })
+                    resizerC.css({
+                        "background-color": "LightGray",
+                    })
+                    isClick = true;
+
+                } else {
+                    this.mainChangeGraph.css({
+                        display: "none"
+                    })
+                    changerC.css({
+                        "background-color": "LightGray",
+                    })
+                    isClick = false;
+                }
+            })
+            return changerC;
+        }
+        //    container.append(draggerCreation());
         container.append(resizerCreation());
-        this.mainContainer.append (container);
+        container.append(changerCreation());
+        this.mainContainer.append(container);
     }
 
-    addPanelLinkPropertiesToFunction (attributes, properties) {
-        function applyColorModification (attribut, myselect, inputmin, inputmax, input1, input2) {
+    addPanelLinkPropertiesToFunction(attributes, properties) {
+        function applyColorModification(attribut, myselect, inputmin, inputmax, input1, input2) {
             let min = parseInt(inputmin.val()), max = parseInt(inputmax.val());
             if (!isNaN(min) && !isNaN(max)) {
                 let c1 = hexToRgb(input1.val()), c2 = hexToRgb(input2.val());
@@ -96,7 +160,9 @@ class Hotbar {
                     return {
                         a: (y2 - y1) / (x2 - x1),
                         b: y1 - a * x1,
-                        calc: function (x) { return this.a * x + this.b; }
+                        calc: function (x) {
+                            return this.a * x + this.b;
+                        }
                     }
                 }
 
@@ -113,18 +179,18 @@ class Hotbar {
                         return "#" + this.parse(this.r.calc(x)) + this.parse(this.g.calc(x)) + this.parse(this.b.calc(x))
                     }
                 }
-                attribut.functionApply (myselect.currentValue, colorRegression);
+                attribut.functionApply(myselect.currentValue, colorRegression);
             }
         }
 
-        function createSelect (properties, inputmin, inputmax, inputfx, input1, input2, attribut) {
+        function createSelect(properties, inputmin, inputmax, inputfx, input1, input2, attribut) {
             let myselect = $("<select></select>")
                 .addClass("select-propertie-value")
-                .change (function (ev) {
+                .change(function (ev) {
                     let valeur = this.value;
                     if (myselect.currentValue != undefined) {
-                        $(".select-propertie-value").each ((index, select) => {
-                            $(select.options).each ((index, option) => {
+                        $(".select-propertie-value").each((index, select) => {
+                            $(select.options).each((index, option) => {
                                 if (option.value == myselect.currentValue) {
                                     $(option).css({display: "inherit"});
                                 }
@@ -132,14 +198,14 @@ class Hotbar {
                         });
                     }
 
-                    $(".select-propertie-value").each ((index, select) => {
+                    $(".select-propertie-value").each((index, select) => {
                         if (this.value != "") {
-                            // on supprime l'option pour les autres listes
+                            /*// on supprime l'option pour les autres listes
                             $(select.options).each ((index, option) => {
                                 if (option.value == valeur) {
                                     $(option).css({display: "none"});
                                 }
-                            });
+                            });*/
                         }
                     });
                     myselect.currentValue = valeur;
@@ -152,10 +218,10 @@ class Hotbar {
                         inputmax.val("");
 
                         if (attributes[attribut].type == "function" && valeur == "") {
-                            attributes[attribut].functionApply (myselect.currentValue, new Function(attributes[attribut].dftfunction));
+                            attributes[attribut].functionApply(myselect.currentValue, new Function(attributes[attribut].dftfunction));
                         }
                         if (attributes[attribut].type == "color" && valeur == "") {
-                            attributes[attribut].functionApply (myselect.currentValue);
+                            attributes[attribut].functionApply(myselect.currentValue);
                         }
                     }
                 });
@@ -163,8 +229,8 @@ class Hotbar {
             if (attributes[attribut].type == "color") {
                 inputfx.append($("<button></button>")
                     .text("Appliquer")
-                    .click (() => {
-                        applyColorModification (attributes[attribut], myselect, inputmin, inputmax, input1, input2);
+                    .click(() => {
+                        applyColorModification(attributes[attribut], myselect, inputmin, inputmax, input1, input2);
                     })
                 )
             }
@@ -172,7 +238,7 @@ class Hotbar {
             if (inputfx != undefined) {
                 inputfx.keypress((ev) => {
                     if (ev.keyCode == 13) {
-                        attributes[attribut].functionApply (myselect.currentValue, inputfx.val());
+                        attributes[attribut].functionApply(myselect.currentValue, inputfx.val());
                     }
                 });
             }
@@ -196,22 +262,20 @@ class Hotbar {
                 .append($("<th></th>")
                     .text("Graph property"))
                 .append($("<th></th>")
-                    .text("Boundaries"))
-                .append($("<th></th>")
                     .text("f(x)"))
         );
 
-        Object.keys(attributes).forEach ((attribut) => {
+        Object.keys(attributes).forEach((attribut) => {
             let inputmin = $("<input>").attr({readonly: false, class: "parameters-values-borders"});
             let inputmax = $("<input>").attr({readonly: false, class: "parameters-values-borders"});
 
-            let input1 = $("<input>").attr({type: "color"});
-            let input2 = $("<input>").attr({type: "color"});
+            let input1 = $("<input>").attr({type: "color", class: "form-control-color"});
+            let input2 = $("<input>").attr({type: "color", class: "form-control-color"});
 
             let inputfunction;
             switch (attributes[attribut].type) {
                 case "function" :
-                    inputfunction = $("<input>");
+                    inputfunction = $("<input class='parameters-values-borders'>");
                     break;
                 case "color":
                     let color = "black";
@@ -228,8 +292,8 @@ class Hotbar {
                     input2.attr({value: color});
 
                     inputfunction = $("<div></div>")
-                        .append(input1)
-                        .append(input2);
+                        .append($("<span></span>").text("min : ")).append(inputmin).append(input1)
+                        .append($("<span></span>").text(" max : ")).append(inputmax).append(input2);
                     break;
                 case "label" :
                     inputfunction = $("<input>");
@@ -242,41 +306,72 @@ class Hotbar {
 
             let line = $("<tr></tr>")
                 .append($("<td></td>")
-                .text(attribut))
-                .append($("<td></td>")
+                    .text(attribut))
+                .append($("<td></td>").append($("<div class='select-style'></div>")
                     .append(createSelect(properties, inputmin, inputmax, inputfunction, input1, input2, attribut))
-                )
-                .append($("<td></td>")
+                ))
+                /*.append($("<td></td>")
                     .append($("<table></table>")
                         .append($("<tr></tr>")
                             .append($("<td></td>").text("min"))
-                            .append($("<td></td>").append(inputmin))
+                            .append($("<div class='input-style'></div>").append($("<td></td>").append(inputmin)))
 
                             .append($("<td></td>").text("max"))
-                            .append($("<td></td>").append(inputmax))
+                            .append($("<div class='input-style'></div>").append($("<td></td>").append(inputmax)))
                         )
-                ))
+                ))*/
                 .append($("<td></td>")
                     .append(inputfunction));
 
-            table.append (line);
+            table.append(line);
         });
 
-        this.main.append (table);
+        this.main.append(table);
+        let input = document.getElementsByClassName('parameters-values-borders'); // get the input element
+        console.log("ah")
+        console.log(input)
+        console.log(input.length)
+        console.log(Array.from(input))
+        //TODO size textboxinput
+        Array.from(document.getElementsByClassName('parameters-values-borders')).forEach.call(input, function (el) {
+            // Do stuff here
+            console.log(el)
+            console.log("ah")
+            el.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
+            resizeInput.call(el); // immediately call the function
+        });
+
+
+        function resizeInput() {
+            this.style.width = this.value.length + "ch";
+        }
     }
 
-    addPanelChangeLabel (network, visnetwork, listProperties) {
+    addPanelChangeLabel(network, visnetwork, listProperties) {
+        console.log(listProperties);
         let conteneur = $("<div></div>");
-        let select = $("<select></select>").change ((ev) => {
+        let select = $("<select></select>").change((ev) => {
+            var text = $(ev.target).find("option:selected").text(); //only time the find is required
+            var name = $(ev.target).attr('name');
+            console.log(text)
             network.getListNodes().forEach((node) => {
-               node.setMessageLabel (select.val());
+                if (node.params[text])
+                    node.setLabel(visnetwork, node.params[text]);
+            });
+            network.getListEdges().forEach((node) => {
+                if (node.params[text])
+                    node.setLabel(visnetwork, node.params[text]);
             });
             visnetwork.redraw();
         });
-        listProperties.forEach ((element) => {
+        /*listProperties.forEach ((element) => {
             select.append($("<option></option>").text(element));
+        });*/
+        Object.keys(listProperties).forEach(function (k) {
+            console.log(k + ' - ' + k);
+            select.append($("<option></option>").text(k));
         });
-        select.val("friendlyName");
+        select.val("label");
 
         conteneur.append($("<table></table>")
             .append($("<tr></tr>")
@@ -287,16 +382,139 @@ class Hotbar {
         this.main.append(conteneur);
     }
 
-    addPanelFonctionNodes (properties, toDoFunctionCallback) {
-        function textbox (id, text, value, name) {
+    addPanelLinkChangeGraph(attributes, visnetwork) {
+
+        let table = $("<table></table>").append(
+            $("<tr></tr>")
+                .append($("<th></th>")
+                    .text("Display property"))
+                .append($("<th></th>")
+                    .text("Graph element"))
+        );
+
+        Object.keys(attributes).forEach((attribut) => {
+
+            let inputfunction;
+            switch (attributes[attribut].type) {
+                case "add" :
+                    switch (attribut) {
+                        case "Add node":
+                            let input = $("<input class='parameters-values-borders'>")/*.click(function(){
+                                visnetwork.body.data.nodes.add([
+                                    {
+                                        "id": this.value,
+                                        "props": {}
+                                    }]
+                                )
+                                console.log(visnetwork.body.data.nodes)
+                            });*/
+
+
+
+                            inputfunction = $("<span>").text("id : ").append(input);
+                            break;
+                        case "Add edge":
+                            inputfunction = $("<span>").text("id : ").append($("<input class='parameters-values-borders'>"))
+                                .append($("<span>").text("from : ")).append($("<input class='parameters-values-borders'>"))
+                                .append($("<span>").text("to : ")).append($("<input class='parameters-values-borders'>"))
+                            break;
+                        default:
+                    }
+
+                    break;
+                case "remove":
+                    inputfunction = $("<span>").text("id : ").append($("<input class='parameters-values-borders'>"));
+                    break;
+            }
+
+            let line = $("<tr></tr>")
+                .append($("<td></td>")
+                    .text(attribut))
+                //                .append($("<td></td>").append($("<div class='select-style'></div>")
+                //                    .append(createSelect(properties, inputmin, inputmax, inputfunction, input1, input2, attribut))
+                //                ))
+                /*.append($("<td></td>")
+                    .append($("<table></table>")
+                        .append($("<tr></tr>")
+                            .append($("<td></td>").text("min"))
+                            .append($("<div class='input-style'></div>").append($("<td></td>").append(inputmin)))
+
+                            .append($("<td></td>").text("max"))
+                            .append($("<div class='input-style'></div>").append($("<td></td>").append(inputmax)))
+                        )
+                ))*/
+                .append($("<td></td>")
+                    .append(inputfunction));
+
+            table.append(line);
+        });
+
+        this.mainChangeGraph.append(table);
+        let input = document.getElementsByClassName('parameters-values-borders'); // get the input element
+        console.log("ah")
+        console.log(input)
+        console.log(input.length)
+        console.log(Array.from(input))
+        //TODO size textboxinput
+        Array.from(document.getElementsByClassName('parameters-values-borders')).forEach.call(input, function (el) {
+            // Do stuff here
+            console.log(el)
+            console.log("ah")
+            el.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
+            resizeInput.call(el); // immediately call the function
+        });
+
+
+        function resizeInput() {
+            this.style.width = this.value.length + "ch";
+        }
+    }
+
+    addPanelChangeLabel(network, visnetwork, listProperties) {
+        console.log(listProperties);
+        let conteneur = $("<div></div>");
+        let select = $("<select></select>").change((ev) => {
+            var text = $(ev.target).find("option:selected").text(); //only time the find is required
+            var name = $(ev.target).attr('name');
+            console.log(text)
+            network.getListNodes().forEach((node) => {
+                if (node.params[text])
+                    node.setLabel(visnetwork, node.params[text]);
+            });
+            network.getListEdges().forEach((node) => {
+                if (node.params[text])
+                    node.setLabel(visnetwork, node.params[text]);
+            });
+            visnetwork.redraw();
+        });
+        /*listProperties.forEach ((element) => {
+            select.append($("<option></option>").text(element));
+        });*/
+        Object.keys(listProperties).forEach(function (k) {
+            console.log(k + ' - ' + k);
+            select.append($("<option></option>").text(k));
+        });
+        select.val("label");
+
+        conteneur.append($("<table></table>")
+            .append($("<tr></tr>")
+                .append($("<td></td>").text("Label"))
+                .append($("<td></td>").append(select))
+            )
+        );
+        this.main.append(conteneur);
+    }
+
+    addPanelFonctionNodes(properties, toDoFunctionCallback) {
+        function textbox(id, text, value, name) {
             return $("<div></div>")
                 .append(
                     $("<label></label>")
-                        .attr ({
+                        .attr({
                             "id": "label-" + id,
                             "for": name
                         })
-                        .text (text)
+                        .text(text)
                 )
                 .append(
                     $("<input>").attr({
@@ -306,9 +524,10 @@ class Hotbar {
                     })
                 );
         }
+
         let fonction_sort_node = "20";
 
-        let select = $("<select></select>").change (function (ev) {
+        let select = $("<select></select>").change(function (ev) {
             console.log(ev);
             console.log(this.value);
             $("#valeur-min-select").val(properties[this.value].valeur_min);
@@ -322,10 +541,10 @@ class Hotbar {
         container.append($("<div></div>")
             .append(
                 $("<label></label>")
-                    .attr ({
+                    .attr({
                         "id": "label-fonction-select"
                     })
-                    .text ("Fonction d'affichage")
+                    .text("Fonction d'affichage")
             )
             .append($("<input>")
                 .attr({
@@ -335,10 +554,10 @@ class Hotbar {
                 })
             ).append($("<button></button>")
                 .text("Valider")
-                .click ((ev) => {
+                .click((ev) => {
                     properties[select.val()].fonction = $("#fonction-select").val();
                     console.log(select, properties);
-                    toDoFunctionCallback (
+                    toDoFunctionCallback(
                         select.val(),
                         properties[select.val()].fonction);
                 })
@@ -360,15 +579,15 @@ class Hotbar {
 
     // fonction rajoutant un panel permettant de faire une sélection d'une propriété
     // et fonction de cette propriété, réajuste le graphique
-    addPanelSortedNodes (properties) {
-        function createTextBox (id, min, max, dft, name, textLabel, todo) {
+    addPanelSortedNodes(properties) {
+        function createTextBox(id, min, max, dft, name, textLabel, todo) {
             if (min >= max) {
                 min = max - 1;
             }
             let span = $("<span></span>")
                 .text(dft)
                 .attr({
-                    "id": "span-"+id
+                    "id": "span-" + id
                 });
             let input = $("<input>").attr({
                 "type": "range",
@@ -380,7 +599,7 @@ class Hotbar {
                 "id": id
             }).on("input", (ev) => {
                 span.text(input.val());
-                todo (input.val());
+                todo(input.val());
             });
             return $("<div></div>")
                 .append(
@@ -415,8 +634,8 @@ class Hotbar {
         );
     }
 
-    addEntry (label, todo) {
-        this.main.append ($("<div></div>")
+    addEntry(label, todo) {
+        this.main.append($("<div></div>")
             .append($("<input>")
                 .attr({
                     type: "radio",
@@ -424,11 +643,11 @@ class Hotbar {
                     name: "hotbar",
                     value: "single"
                 })
-                .prop ({
+                .prop({
                     checked: (this.nbEntries == 0)
                 })
             )
-            .append ($("<label></label>")
+            .append($("<label></label>")
                 .text(label)
                 .attr({
                     for: "radio-hotbar-" + this.nbEntries
@@ -441,11 +660,11 @@ class Hotbar {
         this.nbEntries++;
     }
 
-    addSelectorBackgroundColor () {
+    addSelectorBackgroundColor() {
         let inputColor = $("<input>")
             .attr({
                 type: "color",
-                value: "#f0f0f0"
+                value: "#f0f0f0",
             })
             .change(function () {
                 $("div.vis-network").css({
@@ -460,8 +679,8 @@ class Hotbar {
         this.main.append(selectorBgColor);
     }
 
-    generateHTML () {
-        return this.mainContainer.append(this.main);
+    generateHTML() {
+        return this.mainContainer.append(this.main) && this.mainContainer.append(this.mainChangeGraph);
     }
 
 }
