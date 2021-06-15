@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import toools.io.Cout;
 import toools.io.file.Directory;
+import toools.thread.Threads;
 
 public class GraphStorageService extends Service {
 	public static final Directory baseDirectory = new Directory("$HOME/.og");
@@ -43,10 +44,9 @@ public class GraphStorageService extends Service {
 			g.clear();
 		}
 
-	
 		System.out.println("creating demo graph");
 		gnm(g, 3, 5);
-		
+
 		{
 			var p = new HashMap<String, Object>();
 			p.put("background color", "dark grey");
@@ -73,7 +73,6 @@ public class GraphStorageService extends Service {
 			p.put("default edge width", "5");
 			g.writeProperties(p);
 		}
-
 
 		{
 			var u = g.pickRandomVertex();
@@ -106,6 +105,24 @@ public class GraphStorageService extends Service {
 			p.put("width", "5");
 			g.writeEdge(e, "properties", p);
 		}
+
+		Threads.newThread_loop(1000, () -> true, () -> {
+			double r = Math.random();
+
+			// add vertex
+			if (g.nbVertices() == 0 || r < 0.25) {
+				g.addVertex();
+			} // add edge
+			else if (r < 0.5) {
+				g.addEdge(g.pickRandomVertex(), g.pickRandomVertex());
+			} // remove vertex
+			else if (g.nbEdges() == 0 || r < 0.75) {
+				g.removeVertex(g.pickRandomVertex());
+			} // remove edge
+			else if (r < 1) {
+				g.removeEdge(g.pickRandomEdge());
+			}
+		});
 	}
 
 	private void gnm(Graph g, int n, int m) {
@@ -122,7 +139,7 @@ public class GraphStorageService extends Service {
 		}
 	}
 
-	public static Graph getGraph(String graphID) {
+	public static <V, E> Graph<V, E> getGraph(String graphID) {
 		var graphDir = new Directory(baseDirectory, graphID);
 		return new Graph(graphDir);
 	}
@@ -234,6 +251,16 @@ public class GraphStorageService extends Service {
 	}
 
 	@IdawiOperation
+	public Map getGraphInfo(String gid) {
+		var g = getGraph(gid);
+		var m = new HashMap<>();
+		m.put("id", gid);
+		m.put("nbVertices", g.nbVertices());
+		m.put("nbEdges", g.nbEdges());
+		return m;
+	}
+
+	@IdawiOperation
 	public void create(String gid) {
 		var g = getGraph(gid);
 		g.create();
@@ -252,10 +279,14 @@ public class GraphStorageService extends Service {
 	}
 
 	@IdawiOperation
-	public long changes(String gid, double since) {
+	public List<Change> changes(String gid, double since) {
+		return getGraph(gid).getHistory().stream().filter(c -> c.date >= since).collect(Collectors.toList());
+	}
+
+	@IdawiOperation
+	public List<Change> history(String gid) {
 		var g = getGraph(gid);
-		g.getHistory();
-		return g.pickRandomEdge();
+		return g.getHistory();
 	}
 
 	/*

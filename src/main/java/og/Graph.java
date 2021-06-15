@@ -14,13 +14,13 @@ import og.GraphStorageService.EdgeInfo;
 import og.GraphStorageService.VertexInfo;
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
+import toools.util.Date;
 
 public class Graph<V, E> extends AbstractGraph<V, E> {
 	final Directory d;
 	final DiskStore vertices, edges;
 
 	final LongArrayList emptyList = new LongArrayList();
-	private long nbChange = 0;
 
 	public Graph(Directory d) {
 		this.d = d;
@@ -62,14 +62,14 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 		vertices.add(id);
 		var i = new VertexInfo();
 		i.id = id;
-		addChange(new Change.AddVertex(nbChange++, i));
+		addChange(new Change.AddVertex(i));
 		return id;
 	}
 
 	@Override
 	public void removeVertex(long u) {
 		vertices.remove(u);
-		addChange(new Change.RemoveVertex(nbChange++, u));
+		addChange(new Change.RemoveVertex(u));
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 		i.id = e;
 		i.from = from;
 		i.to = to;
-		addChange(new Change.AddEdge(nbChange++, i));
+		addChange(new Change.AddEdge(i));
 		return e;
 	}
 
@@ -90,7 +90,7 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 	public void removeEdge(long e) {
 		vertices.alter(source(e), "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(e)));
 		edges.remove(e);
-		addChange(new Change.RemoveEdge(nbChange++, e));
+		addChange(new Change.RemoveEdge(e));
 	}
 
 	public V readVertex(long u, String name, Supplier<V> defaultValueSupplier) {
@@ -145,12 +145,12 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 
 	@Override
 	public void traverseVertices(LongConsumer c) {
-		vertices.files(c);
+		vertices.forEach(c);
 	}
 
 	@Override
 	public void traverseEdges(LongConsumer c) {
-		edges.files(c);
+		edges.forEach(c);
 	}
 
 	@Override
@@ -183,6 +183,14 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 
 		if (f.exists()) {
 			l = (List<Change>) f.getContentAsJavaObject();
+
+			var i = l.iterator();
+			var now = Date.time();
+
+			while (i.hasNext() && i.next().date < now - 5) {
+				i.remove();
+			}
+
 		} else {
 			l = new ArrayList<>();
 		}

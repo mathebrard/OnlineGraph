@@ -1,7 +1,7 @@
 package og;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
@@ -27,18 +27,14 @@ public class FlatFileStore extends DiskStore {
 
 	@Override
 	public void add(long name) {
-		file(name, "element").create();
+		file(name, "element").setContentAsJavaObject(new HashSet<String>());
 		++nbEntries;
 	}
 
 	@Override
 	public void remove(long name) {
 		var f = file(name, "element");
-
-		for (var ext : f.getLines()) {
-			file(name, ext).delete();
-		}
-
+		((Set<String>) f.getContentAsJavaObject()).forEach(ext -> file(name, ext).delete());
 		f.delete();
 		--nbEntries;
 	}
@@ -61,7 +57,7 @@ public class FlatFileStore extends DiskStore {
 	}
 
 	@Override
-	public void files(LongConsumer c) {
+	public void forEach(LongConsumer c) {
 		d.listRegularFiles().forEach(f -> {
 			String n = f.getName();
 
@@ -86,17 +82,16 @@ public class FlatFileStore extends DiskStore {
 	}
 
 	@Override
-
-	public List<String> get(long id) {
-		return (List<String>) file(id, null).getLines();
+	public Set<String> get(long id) {
+		return (Set<String>) file(id, null).getContentAsJavaObject();
 	}
 
 	@Override
 	public void set(long id, String ext, Object content) {
 		file(id, ext).setContentAsJavaObject(content);
 		var elementFile = file(id, "element");
-		var lines = new HashSet<>(elementFile.getLines());
+		var lines = (Set<String>) elementFile.getContentAsJavaObject();
 		lines.add(ext);
-		elementFile.setLines(lines);
+		elementFile.setContentAsJavaObject(lines);
 	}
 }

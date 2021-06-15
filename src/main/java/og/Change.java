@@ -4,19 +4,21 @@ import java.io.Serializable;
 
 import og.GraphStorageService.EdgeInfo;
 import og.GraphStorageService.VertexInfo;
+import toools.util.Date;
 
 public class Change implements Serializable {
-	public final long index;
+	public final double date = Date.time();
+	public final String type;
 
-	public Change(long index) {
-		this.index = index;
+	public Change() {
+		var s = getClass().getName();
+		this.type = s.substring(s.lastIndexOf("$") + 1);
 	}
 
 	public static class AddVertex extends Change {
 		public final VertexInfo i;
 
-		public AddVertex(long index, VertexInfo i) {
-			super(index);
+		public AddVertex(VertexInfo i) {
 			this.i = i;
 		}
 	}
@@ -24,8 +26,7 @@ public class Change implements Serializable {
 	public static class AddEdge extends Change {
 		public final EdgeInfo i;
 
-		public AddEdge(long index, EdgeInfo i) {
-			super(index);
+		public AddEdge(EdgeInfo i) {
 			this.i = i;
 		}
 	}
@@ -34,47 +35,45 @@ public class Change implements Serializable {
 
 		final long id;
 
-		public Remove(long index, long id) {
-			super(index);
+		public Remove(long id) {
 			this.id = id;
 		}
 	}
 
 	public static class RemoveVertex extends Remove {
 
-		public RemoveVertex(long index, long id) {
-			super(index, id);
+		public RemoveVertex(long id) {
+			super(id);
 		}
 	}
 
 	public static class RemoveEdge extends Remove {
 
-		public RemoveEdge(long index, long id) {
-			super(index, id);
+		public RemoveEdge(long id) {
+			super(id);
 		}
 	}
 
 	public static class ChangeProperties extends Change {
 
-		final long id;
+		final public long id;
 
-		public ChangeProperties(long index, long id) {
-			super(index);
+		public ChangeProperties(long id) {
 			this.id = id;
 		}
 	}
 
 	public static class ChangeVertexProperties extends ChangeProperties {
 
-		public ChangeVertexProperties(long index, long id) {
-			super(index, id);
+		public ChangeVertexProperties(long id) {
+			super(id);
 		}
 	}
 
 	public static class ChangeEdgesProperties extends ChangeProperties {
 
-		public ChangeEdgesProperties(long index, long id) {
-			super(index, id);
+		public ChangeEdgesProperties(long id) {
+			super(id);
 		}
 	}
 }

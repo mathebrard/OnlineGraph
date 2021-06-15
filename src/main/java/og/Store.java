@@ -1,6 +1,6 @@
 package og;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -12,7 +12,7 @@ public abstract class Store {
 
 	public abstract void add(long id);
 
-	public abstract List<String> get(long id);
+	public abstract Set<String> get(long id);
 
 	public abstract void remove(long id);
 
@@ -22,7 +22,7 @@ public abstract class Store {
 
 	public abstract long random();
 
-	public abstract void files(LongConsumer c);
+	public abstract void forEach(LongConsumer c);
 
 	public <E> E alter(long id, String ext, Supplier<E> defaultValueSupplier, Consumer<E> c) {
 		var o = get(id, ext, defaultValueSupplier);
