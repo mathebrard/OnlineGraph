@@ -16,27 +16,27 @@ public class Change implements Serializable {
 	}
 
 	public static class AddVertex extends Change {
-		public final VertexInfo i;
+		public final VertexInfo vertexInfo;
 
 		public AddVertex(VertexInfo i) {
-			this.i = i;
+			this.vertexInfo = i;
 		}
 	}
 
 	public static class AddEdge extends Change {
-		public final EdgeInfo i;
+		public final EdgeInfo edgeInfo;
 
 		public AddEdge(EdgeInfo i) {
-			this.i = i;
+			this.edgeInfo = i;
 		}
 	}
 
 	public static class Remove extends Change {
 
-		final long id;
+		final long edgeID;
 
 		public Remove(long id) {
-			this.id = id;
+			this.edgeID = id;
 		}
 	}
 
