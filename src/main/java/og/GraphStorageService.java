@@ -65,8 +65,8 @@ public class GraphStorageService extends Service {
 			p.put("default vertex label", "vertex");
 			p.put("default vertex mass", "4");
 			p.put("default vertex shape", "circle");
-			p.put("default vertex value", ""+13);
-			p.put("default vertex foo",""+ 1);
+			p.put("default vertex value", "" + 13);
+			p.put("default vertex foo", "" + 1);
 			p.put("default vertex bar", "hello");
 
 			p.put("default edge directed", "yes");
@@ -112,7 +112,7 @@ public class GraphStorageService extends Service {
 			g.writeEdge(e, "properties", p);
 		}
 
-		Threads.newThread_loop(1000, () -> true, () -> {
+		Threads.newThread_loop(100, () -> true, () -> {
 			double r = Math.random();
 			Cout.debug("#vertices: " + g.nbVertices());
 			// add vertex
@@ -170,8 +170,8 @@ public class GraphStorageService extends Service {
 	}
 
 	@IdawiOperation
-	public long addVertex(String graphID, long u) {
-		return getGraph(graphID).addVertex(u);
+	public void addVertex(String graphID, long u) {
+		getGraph(graphID).addVertex(u);
 	}
 
 	@IdawiOperation

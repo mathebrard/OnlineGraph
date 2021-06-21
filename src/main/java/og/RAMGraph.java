@@ -7,12 +7,11 @@ import java.util.Map;
 
 public class RAMGraph extends Graph {
 	private Map<String, String> props = new HashMap<>();
+	private List<Change> changes = new ArrayList<>();
 
 	public RAMGraph() {
 		super(new RAMElementSet(), new RAMElementSet());
 	}
-
-	List<Change> changes = new ArrayList<>();
 
 	@Override
 	public List<Change> getHistory() {

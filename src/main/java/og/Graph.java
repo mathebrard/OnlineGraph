@@ -30,16 +30,21 @@ public abstract class Graph implements GraphPrimitives {
 	}
 
 	@Override
-	public long addVertex(long u) {
+	public void addVertex(long u) {
 		vertices.add(u);
+		vertices.set(u, "outEdges", new LongArrayList());
+		vertices.set(u, "outVertices", new LongArrayList());
 		var i = new VertexInfo();
 		i.id = u;
 		addChange(new Change.AddVertex(i));
-		return u;
 	}
 
 	@Override
 	public void removeVertex(long u) {
+		for (var e : outEdges(u)) {
+			removeEdge(e);
+		}
+
 		vertices.remove(u);
 		addChange(new Change.RemoveVertex(u));
 	}
@@ -49,7 +54,8 @@ public abstract class Graph implements GraphPrimitives {
 		long e = ThreadLocalRandom.current().nextLong();
 		edges.add(e);
 		edges.set(e, "ends", new long[] { from, to });
-		vertices.alter(from, "outVertices", () -> new LongArrayList(), (LongList outs) -> outs.add(to));
+		vertices.alter(from, "outEdges", null, (LongList outs) -> outs.add(e));
+		vertices.alter(from, "outVertices", null, (LongList outs) -> outs.add(to));
 		var i = new EdgeInfo();
 		i.id = e;
 		i.from = from;
@@ -63,6 +69,7 @@ public abstract class Graph implements GraphPrimitives {
 		var ends = ends(e);
 		var from = ends[0];
 		var to = ends[1];
+		vertices.alter(from, "outEdges", null, (LongList set) -> set.removeLong(set.indexOf(e)));
 		vertices.alter(from, "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(to)));
 		edges.remove(e);
 		addChange(new Change.RemoveEdge(e));
@@ -105,7 +112,7 @@ public abstract class Graph implements GraphPrimitives {
 
 	@Override
 	public LongList outEdges(long v) {
-		return vertices.get(v, "outs", null);
+		return vertices.get(v, "outEdges", null);
 	}
 
 	@Override

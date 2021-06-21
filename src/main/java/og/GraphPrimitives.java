@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.longs.LongList;
 
 public interface GraphPrimitives {
 	// creates a new vertex in the graph, automatically assigning an ID to it
-	long addVertex(long u);
+	void addVertex(long u);
 	
 	public default long addVertex() {
 		long u = ThreadLocalRandom.current().nextLong();

@@ -58,15 +58,13 @@ public class RAMElementSet extends ElementSet {
 			throw new IllegalArgumentException("no such element: " + id);
 
 		var e = m.get(id);
-		var v = e.get(ext);
 
-		if (v != null) {
-			return (E) v;
-		} else if (defaultValueSupplier == null) {
-			throw new IllegalArgumentException("no such ext and no default value available");
+		if (e.containsKey(ext)) {
+			return (E) e.get(ext);
+		} else if (defaultValueSupplier != null) {
+			return defaultValueSupplier.get();
 		} else {
-			var defaultValue = defaultValueSupplier.get();
-			return defaultValue;
+			throw new IllegalArgumentException("no such ext and no default value available: " + ext);
 		}
 	}
 
