@@ -18,9 +18,8 @@ import java.io.Reader;
  *
  */
 public class OGLParser {
-	public void parse(Reader in) throws IOException {
+	public void parse(Graph g, Reader in) throws IOException {
 		var bis = new BufferedReader(in);
-		var g = new Graph<>(null);
 		
 		while (true) {
 			var line = bis.readLine();

@@ -33,46 +33,46 @@ public class Change implements Serializable {
 
 	public static class Remove extends Change {
 
-		final long edgeID;
+		final long elementID;
 
 		public Remove(long id) {
-			this.edgeID = id;
+			this.elementID = id;
 		}
 	}
 
 	public static class RemoveVertex extends Remove {
 
-		public RemoveVertex(long id) {
-			super(id);
+		public RemoveVertex(long vertexID) {
+			super(vertexID);
 		}
 	}
 
 	public static class RemoveEdge extends Remove {
 
-		public RemoveEdge(long id) {
-			super(id);
+		public RemoveEdge(long edgeID) {
+			super(edgeID);
 		}
 	}
 
-	public static class ChangeProperties extends Change {
+	public static class PropertiesChange extends Change {
 
 		final public long id;
 
-		public ChangeProperties(long id) {
+		public PropertiesChange(long id) {
 			this.id = id;
 		}
 	}
 
-	public static class ChangeVertexProperties extends ChangeProperties {
+	public static class VertexPropertiesChange extends PropertiesChange {
 
-		public ChangeVertexProperties(long id) {
+		public VertexPropertiesChange(long id) {
 			super(id);
 		}
 	}
 
-	public static class ChangeEdgesProperties extends ChangeProperties {
+	public static class EdgePropertiesChange extends PropertiesChange {
 
-		public ChangeEdgesProperties(long id) {
+		public EdgePropertiesChange(long id) {
 			super(id);
 		}
 	}

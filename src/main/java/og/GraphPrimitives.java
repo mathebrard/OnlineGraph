@@ -1,11 +1,22 @@
 package og;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+
 import it.unimi.dsi.fastutil.longs.LongConsumer;
 import it.unimi.dsi.fastutil.longs.LongList;
 
-public interface GraphPrimitives<V, E> {
+public interface GraphPrimitives {
 	// creates a new vertex in the graph, automatically assigning an ID to it
-	long addVertex();
+	long addVertex(long u);
+	
+	public default long addVertex() {
+		long u = ThreadLocalRandom.current().nextLong();
+		addVertex(u);
+		return u;
+	}
+
 
 	// removes the given vertex from the graph
 	void removeVertex(long u);
@@ -24,7 +35,8 @@ public interface GraphPrimitives<V, E> {
 
 	long source(long e);
 
-	long destination(long e);
+	long destination(long
+	 e);
 
 	long pickRandomVertex();
 
@@ -34,9 +46,13 @@ public interface GraphPrimitives<V, E> {
 
 	void traverseVertices(LongConsumer v);
 
-	void create();
-
 	void clear();
 
-	boolean exists();
+	List<Change> getHistory();
+
+	void addChange(Change c);
+
+	Map<String, String> getProperties();
+
+	void setProperties(Map<String, String> m);
 }

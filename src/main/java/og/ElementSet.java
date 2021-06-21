@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.longs.LongConsumer;
 
-public abstract class Store {
+public abstract class ElementSet {
 
 	public abstract long nbEntries();
 
@@ -15,6 +15,8 @@ public abstract class Store {
 	public abstract Set<String> get(long id);
 
 	public abstract void remove(long id);
+	
+	public abstract void clear();
 
 	public abstract <E> E get(long id, String ext, Supplier<E> defaultValueSupplier);
 
@@ -30,5 +32,4 @@ public abstract class Store {
 		set(id, ext, o);
 		return o;
 	}
-
 }

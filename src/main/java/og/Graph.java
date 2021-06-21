@@ -1,9 +1,5 @@
 package og;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
@@ -12,38 +8,15 @@ import it.unimi.dsi.fastutil.longs.LongConsumer;
 import it.unimi.dsi.fastutil.longs.LongList;
 import og.GraphStorageService.EdgeInfo;
 import og.GraphStorageService.VertexInfo;
-import toools.io.file.Directory;
-import toools.io.file.RegularFile;
-import toools.util.Date;
 
-public class Graph<V, E> extends AbstractGraph<V, E> {
-	final Directory d;
-	final DiskStore vertices, edges;
+public abstract class Graph implements GraphPrimitives {
+	final ElementSet vertices, edges;
 
-	final LongArrayList emptyList = new LongArrayList();
+	// final LongArrayList emptyList = new LongArrayList();
 
-	public Graph(Directory d) {
-		this.d = d;
-		this.vertices = new FlatFileStore(new Directory(d, "vertices"));
-		this.edges = new FlatFileStore(new Directory(d, "edges"));
-	}
-
-	@Override
-	public String toString() {
-		return d.getPath();
-	}
-
-	@Override
-	public void create() {
-		d.ensureExists();
-		vertices.d.ensureExists();
-		edges.d.ensureExists();
-		writeProperties(new HashMap<>());
-	}
-
-	@Override
-	public boolean exists() {
-		return d.exists();
+	public Graph(ElementSet vertices, ElementSet edges) {
+		this.vertices = vertices;
+		this.edges = edges;
 	}
 
 	@Override
@@ -57,13 +30,12 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 	}
 
 	@Override
-	public long addVertex() {
-		long id = ThreadLocalRandom.current().nextLong();
-		vertices.add(id);
+	public long addVertex(long u) {
+		vertices.add(u);
 		var i = new VertexInfo();
-		i.id = id;
+		i.id = u;
 		addChange(new Change.AddVertex(i));
-		return id;
+		return u;
 	}
 
 	@Override
@@ -88,24 +60,27 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 
 	@Override
 	public void removeEdge(long e) {
-		vertices.alter(source(e), "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(e)));
+		var ends = ends(e);
+		var from = ends[0];
+		var to = ends[1];
+		vertices.alter(from, "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(to)));
 		edges.remove(e);
 		addChange(new Change.RemoveEdge(e));
 	}
 
-	public V readVertex(long u, String name, Supplier<V> defaultValueSupplier) {
+	public <V> V readVertex(long u, String name, Supplier<V> defaultValueSupplier) {
 		return vertices.get(u, name, defaultValueSupplier);
 	}
 
-	public void writeVertex(long u, String name, V p) {
+	public void writeVertex(long u, String name, Object p) {
 		vertices.set(u, name, p);
 	}
 
-	public E readEdge(long e, String name, Supplier<E> defaultValueSupplier) {
+	public <E> E readEdge(long e, String name, Supplier<E> defaultValueSupplier) {
 		return (E) edges.get(e, name, defaultValueSupplier);
 	}
 
-	public void writeEdge(long e, String name, E p) {
+	public void writeEdge(long e, String name, Object p) {
 		edges.set(e, name, p);
 	}
 
@@ -155,48 +130,7 @@ public class Graph<V, E> extends AbstractGraph<V, E> {
 
 	@Override
 	public void clear() {
-		d.deleteRecursively();
-		d.create();
+		edges.clear();
+		vertices.clear();
 	}
-
-	public Map<String, String> readProperties() {
-		return (Map<String, String>) new RegularFile(d, "properties.ser").getContentAsJavaObject();
-	}
-
-	public void writeProperties(Map<String, String> m) {
-		new RegularFile(d, "properties.ser").setContentAsJavaObject(m);
-	}
-
-	public synchronized List<Change> getHistory() {
-		var f = new RegularFile(d, "history.ser");
-
-		if (f.exists()) {
-			return (List<Change>) f.getContentAsJavaObject();
-		} else {
-			return new ArrayList<>();
-		}
-	}
-
-	public synchronized void addChange(Change c) {
-		var f = new RegularFile(d, "history.ser");
-		List<Change> l = null;
-
-		if (f.exists()) {
-			l = (List<Change>) f.getContentAsJavaObject();
-
-			var i = l.iterator();
-			var now = Date.time();
-
-			while (i.hasNext() && i.next().date < now - 5) {
-				i.remove();
-			}
-
-		} else {
-			l = new ArrayList<>();
-		}
-
-		l.add(c);
-		f.setContentAsJavaObject(l);
-	}
-
 }

@@ -38,17 +38,23 @@ public class GraphStorageService extends Service {
 	public GraphStorageService(Component component) {
 		super(component);
 
-		var g = new Graph(new Directory(baseDirectory, "demo_graph"));
+		baseDirectory.listDirectories().forEach(d -> {
+			m.put(d.getName(), new FlatOnDiskDiskGraph(d));
+		});
 
-		if (g.d.exists()) {
-			g.clear();
-		}
+		/*
+		 * var g = new FlatOnDiskDiskGraph(new Directory(baseDirectory, "demo_graph"));
+		 * if (g.exists()) { Cout.debug("clearing demo graph"); g.clear(); } else {
+		 * Cout.debug("creating demo graph"); g.create(); }
+		 */
 
-		System.out.println("creating demo graph");
+		var g = new RAMGraph();
+		m.put("demo_graph", g);
+
 		gnm(g, 3, 5);
 
 		{
-			var p = new HashMap<String, Object>();
+			var p = new HashMap<String, String>();
 			p.put("background color", "dark grey");
 			p.put("default vertex size", "30");
 			p.put("default vertex borderWidth", "5");
@@ -59,8 +65,8 @@ public class GraphStorageService extends Service {
 			p.put("default vertex label", "vertex");
 			p.put("default vertex mass", "4");
 			p.put("default vertex shape", "circle");
-			p.put("default vertex value", 13);
-			p.put("default vertex foo", 1);
+			p.put("default vertex value", ""+13);
+			p.put("default vertex foo",""+ 1);
 			p.put("default vertex bar", "hello");
 
 			p.put("default edge directed", "yes");
@@ -71,7 +77,7 @@ public class GraphStorageService extends Service {
 			p.put("default edge dashes", "true");
 			p.put("default edge label", "relation");
 			p.put("default edge width", "5");
-			g.writeProperties(p);
+			g.setProperties(p);
 		}
 
 		{
@@ -108,26 +114,32 @@ public class GraphStorageService extends Service {
 
 		Threads.newThread_loop(1000, () -> true, () -> {
 			double r = Math.random();
-
+			Cout.debug("#vertices: " + g.nbVertices());
 			// add vertex
 			if (g.nbVertices() == 0 || r < 0.25) {
-				g.addVertex();
+				var u = g.addVertex();
+				Cout.debug("add vertex " + u);
 			} // add edge
 			else if (r < 0.5) {
-				g.addEdge(g.pickRandomVertex(), g.pickRandomVertex());
+				var u = g.pickRandomVertex();
+				var v = g.pickRandomVertex();
+				var e = g.addEdge(u, v);
+				Cout.debug("add edge " + e + ": " + u + " -> " + v);
 			} // remove vertex
 			else if (g.nbEdges() == 0 || r < 0.75) {
-				g.removeVertex(g.pickRandomVertex());
+				var u = g.pickRandomVertex();
+				Cout.debug("remove vertex " + u);
+				g.removeVertex(u);
 			} // remove edge
-			else if (r < 1) {
-				g.removeEdge(g.pickRandomEdge());
+			else {
+				var e = g.pickRandomEdge();
+				Cout.debug("remove edge " + e);
+				g.removeEdge(e);
 			}
 		});
 	}
 
 	private void gnm(Graph g, int n, int m) {
-		g.create();
-
 		for (int i = 0; i < n; ++i) {
 			g.addVertex();
 		}
@@ -139,9 +151,10 @@ public class GraphStorageService extends Service {
 		}
 	}
 
-	public static <V, E> Graph<V, E> getGraph(String graphID) {
-		var graphDir = new Directory(baseDirectory, graphID);
-		return new Graph(graphDir);
+	Map<String, Graph> m = new HashMap<>();
+
+	public Graph getGraph(String graphID) {
+		return m.get(graphID);
 	}
 
 	@IdawiOperation
@@ -152,8 +165,13 @@ public class GraphStorageService extends Service {
 	}
 
 	@IdawiOperation
-	public long addVertex(String graphID) {
+	public long addRandomVertex(String graphID) {
 		return getGraph(graphID).addVertex();
+	}
+
+	@IdawiOperation
+	public long addVertex(String graphID, long u) {
+		return getGraph(graphID).addVertex(u);
 	}
 
 	@IdawiOperation
@@ -187,7 +205,7 @@ public class GraphStorageService extends Service {
 			var ends = g.ends(e);
 			i.from = ends[0];
 			i.to = ends[1];
-			i.props = (Map<String, String>) g.readEdge(e, "properties", () -> new HashMap<>());
+			i.props = g.readEdge(e, "properties", () -> new HashMap<String, String>());
 			edges.add(i);
 		});
 
@@ -233,7 +251,7 @@ public class GraphStorageService extends Service {
 		g.traverseVertices(v -> {
 			var e = new VertexInfo();
 			e.id = v;
-			e.props = (Map<String, String>) g.readVertex(v, "properties", () -> new HashMap<>());
+			e.props = g.readVertex(v, "properties", () -> new HashMap<String, String>());
 			vertices.add(e);
 		});
 
@@ -246,7 +264,7 @@ public class GraphStorageService extends Service {
 		var gi = new GraphInfo();
 		gi.edges = edges(gid);
 		gi.vertices = vertices(gid);
-		gi.props = g.readProperties();
+		gi.props = g.getProperties();
 		return gi;
 	}
 
@@ -262,7 +280,7 @@ public class GraphStorageService extends Service {
 
 	@IdawiOperation
 	public void create(String gid) {
-		var g = getGraph(gid);
+		var g = new FlatOnDiskDiskGraph(new Directory(baseDirectory, gid));
 		g.create();
 	}
 
@@ -299,7 +317,7 @@ public class GraphStorageService extends Service {
 
 		var g = getGraph(gid);
 		Cout.debugSuperVisible(n++);
-		g.create();
+//		g.create();
 		Cout.debugSuperVisible(n++);
 		GraphParser parser = new GraphParser(new ByteArrayInputStream(dot));
 		Cout.debugSuperVisible(n++);
@@ -340,14 +358,10 @@ public class GraphStorageService extends Service {
 		return nbEdges.get();
 	}
 
-	private void importLines(String gid, byte[] edges, BiConsumer<AbstractGraph, String> c) throws IOException {
+	private void importLines(String gid, byte[] edges, BiConsumer<Graph, String> c) throws IOException {
 		// String gid = "graph-" + ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 		var g = getGraph(gid);
 		Cout.debugSuperVisible(g);
-
-		if (!g.exists()) {
-			g.create();
-		}
 
 		var r = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(edges)));
 
