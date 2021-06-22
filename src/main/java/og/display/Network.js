@@ -1,8 +1,9 @@
 class Node {
-    constructor(id, label, params) {
+
+    constructor(id,params,defaultparams) {
         this.id = id;
-        this.label = label;
-        this.messageLabel = label;
+        this.label = undefined;
+        this.messageLabel = undefined;
         this.params = params;
         this.contacts = [];
         this.colorbg = "#FFFFFF";
@@ -16,6 +17,7 @@ class Node {
         this.borderWidth = 2;
         this.mass = 1;
         this.label = undefined;
+        this.defaultparams = defaultparams;
     }
 
 
@@ -45,7 +47,32 @@ class Node {
                 network.unknowProps.push(key);
             }
         })
-
+    }
+    processDefaultParams(visnetwork, network,props) {
+        let currentNode = this;
+        Object.keys(props).forEach(function (key) {
+            if (key == 'default vertex background color') {
+                currentNode.setColor(visnetwork, props[key]);
+            } else if (key == 'default vertex color.border') {
+                currentNode.setBorderColor(visnetwork, props[key]);
+            } else if (key == 'default vertex hidden') {
+                currentNode.setHidden(visnetwork, props[key]);
+            } else if (key == 'default vertex borderWidth') {
+                currentNode.setBorderWitdh(visnetwork, props[key]);
+            } else if (key == 'default vertex mass') {
+                currentNode.setMass(visnetwork, props[key]);
+            } else if (key == 'default vertex label') {
+                currentNode.setLabel(visnetwork, props[key]);
+            } else if (key == 'default vertex shape') {
+                currentNode.setShape(visnetwork, props[key]);
+            } else if (key == 'default vertex image') {
+                currentNode.setImage(visnetwork, props[key]);
+            } else if (key == 'default vertex size') {
+                currentNode.setSize(visnetwork, props[key]);
+            } else {
+                //network.unknowProps.push(key);
+            }
+        })
     }
 
     calcRandomColorByID() {
@@ -112,15 +139,19 @@ class Node {
     setSize(visnetwork, size) {
         let unsizableShapes = ["image", "circularImage", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square", "icon"];
         this.size = parseInt(size);
-        console.log(this.size)
-        if (this.shape in unsizableShapes) {
+        if (!(this.shape in unsizableShapes)) {
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
                 scaling: {
                     min: this.size,
-                    max: this.size
+                    max: this.size,
+                    label: {
+                        enabled: true,
+                        min: this.size,
+                        max: this.size
+                    }
                 },
-                value: this.size
+                value :1
             });
         } else {
             visnetwork.body.data.nodes.updateOnly({
@@ -134,13 +165,13 @@ class Node {
         this.image = image;
         visnetwork.body.data.nodes.updateOnly({
             id: this.id,
+            shape:image,
             image: this.image
         });
     }
 
     setHidden(visnetwork, hidden) {
         this.hidden = (hidden === 'true'); //support hidden as a string
-        console.log(this.hidden)
         visnetwork.body.data.nodes.updateOnly({
             id: this.id,
             hidden: this.hidden
@@ -257,7 +288,7 @@ class Node {
 }
 
 class Link {
-    constructor(nfrom, nto, id, label, params) {
+    constructor(nfrom, nto, id, params, defaultparams) {
         this.from = nfrom;
         this.to = nto;
         this.id = id;
@@ -268,9 +299,10 @@ class Link {
         this.color = '#848484';
         this.arrowImage = undefined;
         this.mass = 1;
-        this.label = label;
+        this.label = undefined;
         this.scale = 1;
         this.width = 1;
+        this.defaultparams = defaultparams;
     }
 
     processParams(visnetwork, network) {
@@ -287,9 +319,9 @@ class Link {
                 currentEdge.setColor(visnetwork, currentEdge.params[key]);
             } else if (key == 'arrow image') {
                 currentEdge.setArrowImage(visnetwork, currentEdge.params[key]);
-            } else if (key == 'mass') {
+            } /*else if (key == 'mass') {
                 currentEdge.setMass(visnetwork, currentEdge.params[key]);
-            } else if (key == 'label') {
+            }*/ else if (key == 'label') {
                 currentEdge.setLabel(visnetwork, currentEdge.params[key]);
             } else if (key == 'arrow scale') {
                 currentEdge.setScale(visnetwork, currentEdge.params[key]);
@@ -297,6 +329,33 @@ class Link {
                 currentEdge.setWidth(visnetwork, currentEdge.params[key]);
             } else {
                 network.unknowProps.push(key);
+            }
+        })
+    }
+    processDefaultParams(visnetwork, network,props) {
+        let currentEdge = this;
+        Object.keys(props).forEach(function (key) {
+            //network.allProps.push(key)
+            if (key == 'default edge arrow type') {
+                currentEdge.setArrowType(visnetwork, props[key]);
+            } else if (key == 'default edge dashes') {
+                currentEdge.setDashes(visnetwork, props[key]);
+            } else if (key == 'default edge directed') {
+                currentEdge.setDirected(visnetwork, props[key]);
+            } else if (key == 'default edge color') {
+                currentEdge.setColor(visnetwork, props[key]);
+            } else if (key == 'default edge arrow image') {
+                currentEdge.setArrowImage(visnetwork, props[key]);
+            } /*else if (key == 'mass') {
+                currentEdge.setMass(visnetwork, currentEdge.params[key]);
+            }*/ else if (key == 'default edge label') {
+                currentEdge.setLabel(visnetwork, props[key]);
+            } else if (key == 'default edge arrow scale') {
+                currentEdge.setScale(visnetwork, props[key]);
+            } else if (key == 'default edge width') {
+                currentEdge.setWidth(visnetwork, props[key]);
+            } else {
+                //network.unknowProps.push(key);
             }
         })
     }
@@ -356,20 +415,20 @@ class Link {
                 to: {
                     src: this.arrowImage,
                     type: 'image',
-                    imageHeight: this.width*40,
-                    imageWidth: this.width*40
+                    imageHeight: this.width * 40,
+                    imageWidth: this.width * 40
                 }
             }
         });
     }
 
-    setMass(visnetwork, mass) {
+    /*setMass(visnetwork, mass) {
         this.mass = mass;
         visnetwork.body.data.edges.updateOnly({
             id: this.id,
             mass: this.mass
         });
-    }
+    }*/
 
     setLabel(visnetwork, label) {
         this.label = label;
@@ -395,7 +454,7 @@ class Link {
                     }
                 }
             },
-            value:this.scale
+            value: this.scale
         });
     }
 
@@ -418,13 +477,47 @@ class Network {
         this.allProps = [];
     }
 
+
     addNode(label, params) {
         let ID;
         //this.listNodes.length > 0 ? ID = this.listNodes[this.listNodes.length - 1].id + 1 : ID = 0;
         ID = label;
-        let newNode = new Node(ID, label, params);
+        let newNode = new Node(ID, params);
         //newNode.processParams(this)
         this.listNodes.push(newNode);
+        return newNode;
+    }
+
+    addVertex(visNetwork,defaultparams, params) {
+        let ID;
+        ID = params['id'];
+        let newNode = new Node(ID, params, defaultparams);
+        visNetwork.body.data.nodes.add([{id: ID, props: params}])
+        this.listNodes.push(newNode);
+        newNode.processDefaultParams(visNetwork,this,defaultparams)
+        newNode.processParams(visNetwork,this,params)
+        return newNode;
+    }
+    removeVertex(visNetwork, ID) {
+        visNetwork.body.data.nodes.remove([ID])
+        //this.listNodes.pop(newNode); //TODO POP node
+        return true;
+    }
+    removeEdge(visNetwork, ID) {
+        visNetwork.body.data.edges.remove([ID])
+        //this.listNodes.pop(newNode); //TODO POP node
+        return true;
+    }
+    addEdge(visNetwork,defaultparams, params) {
+        let ID;
+        ID = params['id'];
+        let from = params['from'];
+        let to = params['to'];
+        let newNode = new Link(from,to,ID, params, defaultparams);
+        visNetwork.body.data.edges.add([{id: ID,from : from,to : to, props: params}])
+        this.listEdges.push(newNode);
+        newNode.processDefaultParams(visNetwork,this,defaultparams)
+        newNode.processParams(visNetwork,this,params)
         return newNode;
     }
 
