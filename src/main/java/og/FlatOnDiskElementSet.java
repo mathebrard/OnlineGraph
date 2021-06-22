@@ -119,4 +119,9 @@ public class FlatOnDiskElementSet extends OnDiskElementSet {
 		d.create();
 		nbEntries.set(0L);
 	}
+
+	@Override
+	public boolean contains(long r) {
+		return file(r, null).exists();
+	}
 }

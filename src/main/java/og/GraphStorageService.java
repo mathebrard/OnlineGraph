@@ -51,8 +51,6 @@ public class GraphStorageService extends Service {
 		var g = new RAMGraph();
 		m.put("demo_graph", g);
 
-		gnm(g, 3, 5);
-
 		{
 			var p = new HashMap<String, String>();
 			p.put("background color", "dark grey");
@@ -80,61 +78,64 @@ public class GraphStorageService extends Service {
 			g.setProperties(p);
 		}
 
-		{
-			var u = g.pickRandomVertex();
-			var p = new HashMap<String, Object>();
-			p.put("size", "30");
-			p.put("borderWidth", "5");
-			p.put("image", "" + 30);
-			p.put("color.border", "blue");
-			p.put("background color", "white");
-			p.put("hidden", "false");
-			p.put("label", "vertex");
-			p.put("mass", "4");
-			p.put("shape", "circle");
-			p.put("value", 13);
-			p.put("foo", 1);
-			p.put("bar", "hello");
-			g.writeVertex(u, "properties", p);
-		}
-
-		{
-			var e = g.pickRandomEdge();
-			var p = new HashMap<String, Object>();
-			p.put("directed", "yes");
-			p.put("arrow image", "http://img.com/arrow.png");
-			p.put("arrow scale", "1");
-			p.put("arrow type", "round");
-			p.put("color", "black");
-			p.put("dashes", "true");
-			p.put("label", "relation");
-			p.put("width", "5");
-			g.writeEdge(e, "properties", p);
-		}
-
-		Threads.newThread_loop(100, () -> true, () -> {
+		Threads.newThread_loop(10, () -> true, () -> {
+			Cout.debug("checking graph");
+			g.check();
 			double r = Math.random();
 			Cout.debug("#vertices: " + g.nbVertices());
 			// add vertex
-			if (g.nbVertices() == 0 || r < 0.25) {
+			if (g.nbVertices() == 0 || r < 0.2) {
+				Cout.debugSuperVisible("ADD VERTEX");
 				var u = g.addVertex();
-				Cout.debug("add vertex " + u);
 			} // add edge
-			else if (r < 0.5) {
+			else if (r < 0.4) {
+				Cout.debugSuperVisible("ADD EDGE");
 				var u = g.pickRandomVertex();
 				var v = g.pickRandomVertex();
 				var e = g.addEdge(u, v);
-				Cout.debug("add edge " + e + ": " + u + " -> " + v);
 			} // remove vertex
-			else if (g.nbEdges() == 0 || r < 0.75) {
+			else if (g.nbEdges() == 0 || r < 0.6) {
+				Cout.debugSuperVisible("REMOVE VERTEX");
 				var u = g.pickRandomVertex();
-				Cout.debug("remove vertex " + u);
 				g.removeVertex(u);
 			} // remove edge
-			else {
+			else if (r < 0.8) {
+				Cout.debugSuperVisible("REMOVE EDGE");
 				var e = g.pickRandomEdge();
-				Cout.debug("remove edge " + e);
 				g.removeEdge(e);
+			} else {
+				Cout.debugSuperVisible("CHANGE PROPERTY");
+				{
+					var u = g.pickRandomVertex();
+					var p = new HashMap<String, Object>();
+					p.put("size", "30");
+					p.put("borderWidth", "5");
+					p.put("image", "" + 30);
+					p.put("color.border", "blue");
+					p.put("background color", "white");
+					p.put("hidden", "false");
+					p.put("label", "vertex");
+					p.put("mass", "4");
+					p.put("shape", "circle");
+					p.put("value", 13);
+					p.put("foo", 1);
+					p.put("bar", "hello");
+					g.writeVertex(u, "properties", p);
+				}
+
+				{
+					var e = g.pickRandomEdge();
+					var p = new HashMap<String, Object>();
+					p.put("directed", "yes");
+					p.put("arrow image", "http://img.com/arrow.png");
+					p.put("arrow scale", "1");
+					p.put("arrow type", "round");
+					p.put("color", "black");
+					p.put("dashes", "true");
+					p.put("label", "relation");
+					p.put("width", "5");
+					g.writeEdge(e, "properties", p);
+				}
 			}
 		});
 	}

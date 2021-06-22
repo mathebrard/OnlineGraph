@@ -10,7 +10,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongConsumer;
 
-public class RAMElementSet extends ElementSet {
+public class HashElementSet extends ElementSet {
 
 	private final Long2ObjectMap<Map<String, Object>> m = new Long2ObjectOpenHashMap<>();
 
@@ -81,5 +81,10 @@ public class RAMElementSet extends ElementSet {
 	@Override
 	public void clear() {
 		m.clear();
+	}
+
+	@Override
+	public boolean contains(long r) {
+		return m.containsKey(r);
 	}
 }

@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import toools.io.Cout;
+
 public class RAMGraph extends Graph {
 	private Map<String, String> props = new HashMap<>();
 	private List<Change> changes = new ArrayList<>();
 
 	public RAMGraph() {
-		super(new RAMElementSet(), new RAMElementSet());
+		super(new HashElementSet(), new HashElementSet());
 	}
 
 	@Override
@@ -20,8 +22,8 @@ public class RAMGraph extends Graph {
 
 	@Override
 	public void addChange(Change c) {
+		Cout.debug(c);
 		changes.add(c);
-
 	}
 
 	@Override
@@ -33,5 +35,4 @@ public class RAMGraph extends Graph {
 	public void setProperties(Map<String, String> m) {
 		this.props = m;
 	}
-
 }

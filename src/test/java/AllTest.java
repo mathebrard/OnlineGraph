@@ -5,15 +5,15 @@ import java.util.concurrent.ThreadLocalRandom;
 import og.ElementSet;
 import og.FlatOnDiskDiskGraph;
 import og.FlatOnDiskElementSet;
+import og.HashElementSet;
 import og.OnDiskElementSet;
-import og.RAMElementSet;
 import toools.io.file.Directory;
 
 public class AllTest {
 	@org.junit.jupiter.api.Test
 	public void main() {
 		test(new FlatOnDiskElementSet(new Directory(Directory.getSystemTempDirectory(), "elementSet")));
-		test(new RAMElementSet());
+		test(new HashElementSet());
 
 		FlatOnDiskDiskGraph g = new FlatOnDiskDiskGraph(new Directory(Directory.getSystemTempDirectory(), "g"));
 		System.out.println("graph is in " + g);
@@ -23,12 +23,12 @@ public class AllTest {
 			g.create();
 		}
 
-		for (int i = 0; i < 100; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			g.addVertex();
 			System.out.println("add vertex " + i);
 		}
 
-		for (int i = 0; i < 100; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			var from = g.pickRandomVertex();
 			var to = g.pickRandomVertex();
 			g.addEdge(from, to);
@@ -65,6 +65,15 @@ public class AllTest {
 		}
 
 		assertEquals(s.nbEntries(), 0);
+
+		for (int i = 0; i < 10; ++i) {
+			s.add(i);
+		}
+
+		for (int i = 0; i < s.nbEntries(); ++i) {
+			var r = s.random();
+			assertEquals(s.contains(r), true);
+		}
 
 	}
 }

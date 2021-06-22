@@ -15,11 +15,21 @@ public class Change implements Serializable {
 		this.type = s.substring(s.lastIndexOf("$") + 1);
 	}
 
+	@Override
+	public String toString() {
+		return type;
+	}
+
 	public static class AddVertex extends Change {
 		public final VertexInfo vertexInfo;
 
 		public AddVertex(VertexInfo i) {
 			this.vertexInfo = i;
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + vertexInfo.id;
 		}
 	}
 
@@ -29,6 +39,11 @@ public class Change implements Serializable {
 		public AddEdge(EdgeInfo i) {
 			this.edgeInfo = i;
 		}
+
+		@Override
+		public String toString() {
+			return super.toString() + edgeInfo.id;
+		}
 	}
 
 	public static class Remove extends Change {
@@ -37,6 +52,11 @@ public class Change implements Serializable {
 
 		public Remove(long id) {
 			this.elementID = id;
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + elementID;
 		}
 	}
 
@@ -60,6 +80,11 @@ public class Change implements Serializable {
 
 		public PropertiesChange(long id) {
 			this.id = id;
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + id;
 		}
 	}
 

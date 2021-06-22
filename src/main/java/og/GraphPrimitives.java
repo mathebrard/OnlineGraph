@@ -8,26 +8,10 @@ import it.unimi.dsi.fastutil.longs.LongConsumer;
 import it.unimi.dsi.fastutil.longs.LongList;
 
 public interface GraphPrimitives {
-	// creates a new vertex in the graph, automatically assigning an ID to it
-	void addVertex(long u);
-	
-	public default long addVertex() {
-		long u = ThreadLocalRandom.current().nextLong();
-		addVertex(u);
-		return u;
-	}
-
-
-	// removes the given vertex from the graph
-	void removeVertex(long u);
-
-	long addEdge(long from, long to);
-
+	// navigation
 	LongList inEdges(long v);
 
 	LongList outEdges(long v);
-
-	void removeEdge(long e);
 
 	long nbVertices();
 
@@ -35,8 +19,7 @@ public interface GraphPrimitives {
 
 	long source(long e);
 
-	long destination(long
-	 e);
+	long destination(long e);
 
 	long pickRandomVertex();
 
@@ -46,7 +29,25 @@ public interface GraphPrimitives {
 
 	void traverseVertices(LongConsumer v);
 
+	// modify graph
+	// creates a new vertex in the graph, automatically assigning an ID to it
 	void clear();
+
+	void addVertex(long u);
+
+	public default long addVertex() {
+		long u = ThreadLocalRandom.current().nextLong();
+		addVertex(u);
+		return u;
+	}
+
+	void removeVertex(long u);
+
+	long addEdge(long from, long to);
+
+	void removeEdge(long e);
+
+	// graph-related methods
 
 	List<Change> getHistory();
 

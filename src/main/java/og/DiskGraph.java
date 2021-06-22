@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import toools.io.Cout;
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
 import toools.util.Date;
@@ -54,6 +55,7 @@ public class DiskGraph<V, E> extends Graph {
 
 	@Override
 	public synchronized void addChange(Change c) {
+		Cout.debugSuperVisible(c);
 		var f = new RegularFile(d, "history.ser");
 		List<Change> l = null;
 

@@ -32,4 +32,6 @@ public abstract class ElementSet {
 		set(id, ext, o);
 		return o;
 	}
+
+	public abstract boolean contains(long r);
 }

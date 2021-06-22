@@ -12,8 +12,6 @@ import og.GraphStorageService.VertexInfo;
 public abstract class Graph implements GraphPrimitives {
 	final ElementSet vertices, edges;
 
-	// final LongArrayList emptyList = new LongArrayList();
-
 	public Graph(ElementSet vertices, ElementSet edges) {
 		this.vertices = vertices;
 		this.edges = edges;
@@ -33,6 +31,7 @@ public abstract class Graph implements GraphPrimitives {
 	public void addVertex(long u) {
 		vertices.add(u);
 		vertices.set(u, "outEdges", new LongArrayList());
+		vertices.set(u, "inEdges", new LongArrayList());
 		vertices.set(u, "outVertices", new LongArrayList());
 		var i = new VertexInfo();
 		i.id = u;
@@ -41,7 +40,11 @@ public abstract class Graph implements GraphPrimitives {
 
 	@Override
 	public void removeVertex(long u) {
-		for (var e : outEdges(u)) {
+		for (var e : new LongArrayList(outEdges(u))) {
+			removeEdge(e);
+		}
+
+		for (var e : new LongArrayList(inEdges(u))) {
 			removeEdge(e);
 		}
 
@@ -55,7 +58,8 @@ public abstract class Graph implements GraphPrimitives {
 		edges.add(e);
 		edges.set(e, "ends", new long[] { from, to });
 		vertices.alter(from, "outEdges", null, (LongList outs) -> outs.add(e));
-		vertices.alter(from, "outVertices", null, (LongList outs) -> outs.add(to));
+		vertices.alter(to, "inEdges", null, (LongList ins) -> ins.add(e));
+//		vertices.alter(from, "outVertices", null, (LongList outs) -> outs.add(to));
 		var i = new EdgeInfo();
 		i.id = e;
 		i.from = from;
@@ -64,13 +68,41 @@ public abstract class Graph implements GraphPrimitives {
 		return e;
 	}
 
+	public void check() {
+		edges.forEach(e -> {
+			var ends = ends(e);
+			var from = ends[0];
+
+			if (!vertices.contains(from))
+				throw new IllegalStateException("unknown source : " + from);
+
+			var to = ends[1];
+
+			if (!vertices.contains(to))
+				throw new IllegalStateException("unknown destination : " + to);
+		});
+
+		vertices.forEach(v -> {
+			for (var e : outEdges(v)) {
+				if (!edges.contains(e))
+					throw new IllegalStateException("unknown out edge : " + e);
+			}
+
+			for (var e : inEdges(v)) {
+				if (!edges.contains(e))
+					throw new IllegalStateException("unknown in edge : " + e);
+			}
+		});
+	}
+
 	@Override
 	public void removeEdge(long e) {
 		var ends = ends(e);
 		var from = ends[0];
 		var to = ends[1];
 		vertices.alter(from, "outEdges", null, (LongList set) -> set.removeLong(set.indexOf(e)));
-		vertices.alter(from, "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(to)));
+		vertices.alter(to, "inEdges", null, (LongList set) -> set.removeLong(set.indexOf(e)));
+//		vertices.alter(from, "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(to)));
 		edges.remove(e);
 		addChange(new Change.RemoveEdge(e));
 	}
