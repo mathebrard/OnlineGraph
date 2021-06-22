@@ -78,7 +78,7 @@ public class GraphStorageService extends Service {
 			g.setProperties(p);
 		}
 
-		Threads.newThread_loop(10, () -> true, () -> {
+		Threads.newThread_loop(1000, () -> true, () -> {
 			Cout.debug("checking graph");
 			g.check();
 			double r = Math.random();
