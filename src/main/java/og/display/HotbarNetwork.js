@@ -143,9 +143,9 @@ class Hotbar {
             })
             return changerC;
         }
-        //    container.append(draggerCreation());
+        //    container.append(draggerCreation())
         container.append(resizerCreation());
-        container.append(changerCreation());
+        //container.append(changerCreation());
         this.mainContainer.append(container);
     }
 

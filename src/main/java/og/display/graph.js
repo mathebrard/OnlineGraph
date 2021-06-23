@@ -296,7 +296,7 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
     hotbar = new Hotbar();
     console.log(allprops)
     hotbar.addPanelLinkPropertiesToFunction(attributes, allprops);
-    hotbar.addPanelLinkChangeGraph(attributesChangeGraph, visnetwork, json);
+    //hotbar.addPanelLinkChangeGraph(attributesChangeGraph, visnetwork, json);
     hotbar.addPanelChangeLabel(network, visnetwork, allprops);
 
     /*hotbar.addEntry("Sélection Simple", (e) => {
