@@ -1,6 +1,7 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const gid = urlParams.get('gid')
+const gid = urlParams.get('gid');
+const refreshRate = parseInt("refresh") ? refreshRate : 1000;
 let lastChangesAskedTime;
 
 $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
@@ -11,7 +12,7 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
     // create an array with edges
     var edges = new vis.DataSet(json['value']['edges']);
     // defaults props
-    var props = json['value']['props']
+    var props = json['value']['props'];
     // create a network
     var container = document.getElementById("mynetwork");
     var data = {
@@ -20,8 +21,10 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
     };
 
     if (props["background color"] != undefined) {
-        container.style.backgroundColor = props["background color"]
+        container.style.backgroundColor = props["background color"];
     }
+    var shapeAllowedNode = ["ellipse", "circle", "database", "box", "text","image", "circularImage", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square","icon"]
+    var shapeAllowedEdge = ["arrow", "bar", "box", "circle", "crow", "curve", "diamond", "image", "inv_curve", "inv_triangle", "triangle", "vee"]
     // options pour l'initialisation de visnetwork TODO unkonwn property
     let options = {
         nodes: {
@@ -32,9 +35,8 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
             },
             borderWidth: parseInt(props["default vertex borderWidth"]),
             image: props["default vertex image"],
-            shape: props["default vertex shape"],
             hidden: (props["default vertex hidden"] === 'true'),
-            value: props["default vertex value"],
+            value: parseInt(props["default vertex value"]),
             label: props["default vertex label"],
             size: parseInt(props["default vertex size"]),
             scaling: {
@@ -51,7 +53,6 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
             arrows: {
                 to: {
                     enabled: (props["default edge directed"] === "true"),
-                    type: props["default edge arrow type"],
                     src: props["default edge arrow image"],
                     imageHeight: parseInt(props["default edge width"]) * 40,
                     imageWidth: parseInt(props["default edge width"]) * 40
@@ -77,11 +78,24 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
             stabilization: true,
              adaptiveTimestep: true,
              //timestep: true,
-            /*barnesHut: {
+           barnesHut: {
                 springLength: 200,
+            }
+        },
+        layout: {
+            improvedLayout: true,
+            /*hierarchical: {        
+      		sortMethod: 'directed'
             }*/
         }
     }
+    if (props["default vertex shape"] in shapeAllowedNode){
+    	options["node"]["shape"] = props["default vertex shape"];
+    }
+    if (props["default edge arrow type"] in shapeAllowedEdge){
+    	options["edge"]["arrows"]["to"]["type"] = props["default edge arrow type"];
+    }
+   console.log(options)
     var visnetwork = new vis.Network(container, data, options);
     let network = generateNetwork(nodes, edges);
     network.getListNodes().forEach((node) => {
@@ -93,6 +107,7 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
         node.processDefaultParams(visnetwork, network, props);
         node.processParams(visnetwork, network);
     });
+	console.log(network.allProps)
 
     let unknownprops = {}
     for (let prop in network.unknowProps) {
@@ -279,7 +294,8 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
     };
 // CREATION DU MENU DE CHOIX
     hotbar = new Hotbar();
-    hotbar.addPanelLinkPropertiesToFunction(attributes, unknownprops);
+    console.log(allprops)
+    hotbar.addPanelLinkPropertiesToFunction(attributes, allprops);
     hotbar.addPanelLinkChangeGraph(attributesChangeGraph, visnetwork, json);
     hotbar.addPanelChangeLabel(network, visnetwork, allprops);
 
@@ -301,9 +317,9 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
 
 	function doAjax() {
 	    $.getJSON("/api/og/og.GraphStorageService/changes/" + gid + "," + lastChangesAskedTime, function (json1) {
-			lastChangesAskedTime = new Date().getTime()/1000;
+	    	lastChangesAskedTime = new Date().getTime()/1000;
 		    processChanges(json1, network, visnetwork, props)
-		    setTimeout(doAjax, 100);
+		    setTimeout(doAjax, refreshRate);
 		});
 	}
     
@@ -311,8 +327,22 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
 	    for (let change in json['value']) {
 	        if (json['value'][change]['type'] == "AddVertex") {
 	            network.addVertex(visnetwork, defaultProps, json['value'][change]['vertexInfo'])
+			    visnetwork.fit({
+	    			  //minZoomLevel: 0,
+	    			  animation: {
+	    				  duration: 1000,
+	    				  easingFunction: "linear"
+	    			  }
+	    			});
 	        } else if (json['value'][change]['type'] == "RemoveVertex") {
 	            network.removeVertex(visnetwork, json['value'][change]['elementID'])
+			    visnetwork.fit({
+	    			  //minZoomLevel: 0,
+			    	animation: {
+	    				  duration: 1000,
+	    				  easingFunction: "linear"
+	    			  }
+	    			});
 	        } else if (json['value'][change]['type'] == "AddEdge") {
 	            network.addEdge(visnetwork, defaultProps, json['value'][change]['edgeInfo'])
 	        } else if (json['value'][change]['type'] == "RemoveEdge") {
