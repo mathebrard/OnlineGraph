@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,20 +56,20 @@ public class GraphStorageService extends Service {
 		 * Cout.debug("creating demo graph"); g.create(); }
 		 */
 
-		var g = new RAMGraph();
+		var g = new HashGraph();
 		m.put("demo_graph", g);
 
 		{
 			var p = new HashMap<String, String>();
 			p.put("background color", "dark grey");
-			p.put("default vertex size", "30");
-			p.put("default vertex borderWidth", "5");
+			p.put("default vertex size", "20");
+			p.put("default vertex borderWidth", "1");
 			p.put("default vertex image", "" + 30);
 			p.put("default vertex color.border", "blue");
 			p.put("default vertex background color", "white");
 			p.put("default vertex hidden", "false");
 			p.put("default vertex label", "vertex");
-			p.put("default vertex mass", "4");
+			p.put("default vertex mass", "1");
 			p.put("default vertex shape", "circle");
 			p.put("default vertex value", "" + 13);
 			p.put("default vertex foo", "" + 1);
@@ -81,89 +82,92 @@ public class GraphStorageService extends Service {
 			p.put("default edge color", "black");
 			p.put("default edge dashes", "true");
 			p.put("default edge label", "relation");
-			p.put("default edge width", "5");
+			p.put("default edge width", "1");
 			g.setProperties(p);
 		}
 
 		Threads.newThread_loop(1000, () -> true, () -> {
 			Cout.debug("checking graph");
 			g.check();
-			double r = Math.random();
 			Cout.debug("#vertices: " + g.nbVertices());
+			double targetN = 10;
+			double targetD = 20;
+			double nbVertices = g.nbVertices();
+			double nbEdges = g.nbEdges();
+			double degree = nbEdges / nbVertices;
 
-			if (r < -0.1 * g.nbVertices() + 1) {
-				Cout.debugSuperVisible("ADD VERTEX");
+			if (Math.random() < -0.5 * nbVertices / targetN + 1) {
 				g.addVertex();
-			} else if (r < 0.1 * g.nbVertices()) {
-				Cout.debugSuperVisible("REMOVE VERTEX");
+			}
+
+			if (Math.random() < 0.5 * nbVertices / targetN) {
 				g.removeVertex(g.pickRandomVertex());
-			} else if (r < 1 + -(g.nbEdges() / (double) g.nbVertices())) {
-				Cout.debugSuperVisible("ADD EDGE");
+			}
+
+			if (Math.random() < -0.5 * degree / targetD + 1) {
 				g.addEdge(g.pickRandomVertex(), g.pickRandomVertex());
-			} else if (r < g.nbEdges() / (double) g.nbVertices()) {
-				Cout.debugSuperVisible("REMOVE EDGE");
+			}
+
+			if (Math.random() < 0.5 * degree / targetD) {
 				g.removeEdge(g.pickRandomEdge());
-			} else {
-				Cout.debugSuperVisible("CHANGE PROPERTY");
-				int n = 20;
-				double rr = Math.random();
-				double interval = 1d / n;
+			}
 
-				if (g.nbVertices() > 0) {
-					var u = g.pickRandomVertex();
-					var p = new HashMap<String, Object>();
+			if (Math.random() < 0.4 && g.nbVertices() > 0) {
+				var u = g.pickRandomVertex();
+				var p = g.getVertexValue(u, "properties", () -> new HashMap<String, Object>());
+				double pp = 0.5;
 
-					if (rr < 0.05)
-						p.put("size", 10 + 50 * Math.random());
-					else if ((rr -= interval) < 0.05)
-						p.put("borderWidth", Math.random() * 20);
-					else if ((rr -= interval) < 0.05)
-						p.put("image", Math.random() * 50);
-					else if ((rr -= interval) < 0.05)
-						p.put("color.border", colors[new Random().nextInt(colors.length)]);
-					else if ((rr -= interval) < 0.05)
-						p.put("background color", colors[new Random().nextInt(colors.length)]);
-					else if ((rr -= interval) < 0.05)
-						p.put("hidden", Math.random() < 0.5 ? "true" : "false");
-					else if ((rr -= interval) < 0.05)
-						p.put("label", colors[new Random().nextInt(colors.length)]);
-					else if ((rr -= interval) < 0.05)
-						p.put("mass", Math.random() * 20);
-					else if ((rr -= interval) < 0.05)
-						p.put("shape", shapes[new Random().nextInt(shapes.length)]);
-					else if ((rr -= interval) < 0.05)
-						p.put("value", Math.random() * 100);
-					else if ((rr -= interval) < 0.05)
-						p.put("foo", Math.random());
-					else if ((rr -= interval) < 0.05)
-						p.put("bar", "" + (Math.random() * 20));
+				if (Math.random() < pp)
+					p.put("size", 10 + 50 * Math.random());
+				if (Math.random() < pp)
+					p.put("borderWidth", Math.random() * 20);
+				if (Math.random() < pp)
+					p.put("image", Math.random() * 50);
+				if (Math.random() < pp)
+					p.put("color.border", colors[new Random().nextInt(colors.length)]);
+				if (Math.random() < pp)
+					p.put("background color", colors[new Random().nextInt(colors.length)]);
+				if (Math.random() < pp)
+					p.put("hidden", Math.random() < 0.5 ? "true" : "false");
+				if (Math.random() < pp)
+					p.put("label", colors[new Random().nextInt(colors.length)]);
+				if (Math.random() < pp)
+					p.put("mass", Math.random() * 20);
+				if (Math.random() < pp)
+					p.put("shape", shapes[new Random().nextInt(shapes.length)]);
+				if (Math.random() < pp)
+					p.put("value", Math.random() * 100);
+				if (Math.random() < pp)
+					p.put("foo", Math.random());
+				if (Math.random() < pp)
+					p.put("bar", "" + (Math.random() * 20));
 
-					g.setVertexValue(u, "properties", p);
-				}
+				g.setVertexValue(u, "properties", p);
+			}
 
-				if (g.nbEdges() > 0) {
-					var e = g.pickRandomEdge();
-					var p = new HashMap<String, Object>();
+			if (Math.random() < 0.4 && g.nbEdges() > 0) {
+				var e = g.pickRandomEdge();
+				var p = g.getEdgeValue(e, "properties", () -> new HashMap<String, Object>());
+				double pp = 0.5;
+				
+				if (Math.random() < pp)
+					p.put("directed", Math.random() < 0.5 ? "true" : "false");
+				if (Math.random() < pp)
+					p.put("arrow image", "http://img.com/arrow.png");
+				if (Math.random() < pp)
+					p.put("arrow scale", Math.random() * 100);
+				if (Math.random() < pp)
+					p.put("arrow type", arrowTypes[new Random().nextInt(arrowTypes.length)]);
+				if (Math.random() < pp)
+					p.put("color", colors[new Random().nextInt(colors.length)]);
+				if (Math.random() < pp)
+					p.put("dashes", Math.random() < 0.5 ? "true" : "false");
+				if (Math.random() < pp)
+					p.put("label", colors[new Random().nextInt(colors.length)]);
+				if (Math.random() < pp)
+					p.put("width", "" + (Math.random() * 5));
 
-					if ((rr -= interval) < 0.05)
-						p.put("directed", Math.random() < 0.5 ? "true" : "false");
-					else if ((rr -= interval) < 0.05)
-						p.put("arrow image", "http://img.com/arrow.png");
-					else if ((rr -= interval) < 0.05)
-						p.put("arrow scale", Math.random() * 100);
-					else if ((rr -= interval) < 0.05)
-						p.put("arrow type", arrowTypes[new Random().nextInt(arrowTypes.length)]);
-					else if ((rr -= interval) < 0.05)
-						p.put("color", colors[new Random().nextInt(colors.length)]);
-					else if ((rr -= interval) < 0.05)
-						p.put("dashes", Math.random() < 0.5 ? "true" : "false");
-					else if ((rr -= interval) < 0.05)
-						p.put("label", colors[new Random().nextInt(colors.length)]);
-					else if ((rr -= interval) < 0.05)
-						p.put("width", "" + (Math.random() * 15));
-
-					g.setEdgeValue(e, "properties", p);
-				}
+				g.setEdgeValue(e, "properties", p);
 			}
 		});
 	}
@@ -297,6 +301,8 @@ public class GraphStorageService extends Service {
 		return gi;
 	}
 
+	private static final List<String> dotNodeProperties = Arrays.asList(new String[] { "" });
+
 	@IdawiOperation
 	public String toDOT(String gid) {
 		var g = getGraph(gid);
@@ -306,17 +312,48 @@ public class GraphStorageService extends Service {
 		out.println("digraph {");
 
 		g.traverseVertices(u -> {
-			out.println("\t" + u);
+			out.print("\t" + u);
+			var p = (Map<String, Object>) g.getVertexValue(u, "properties", () -> null);
+
+			if (p != null && !p.isEmpty()) {
+			//	p.keySet().removeIf(k -> !dotNodeProperties.contains(k));
+				f(p, out);
+			}
+
+			out.println();
 		});
 
 		g.traverseEdges(e -> {
 			var ends = g.ends(e);
-			out.println("\t" + ends[0] + " -> " + ends[1]);
+			out.print("\t" + ends[0] + " -> " + ends[1]);
+			var p = (Map<String, Object>) g.getEdgeValue(e, "properties", () -> null);
+
+			if (p != null && !p.isEmpty()) {
+				f(p, out);
+			}
+
+			out.println();
 		});
 
 		out.println("}");
 		out.flush();
 		return new String(bos.toByteArray());
+	}
+
+	private void f(Map<String, Object> p, PrintStream out) {
+		out.print("\t [");
+		var i = p.entrySet().iterator();
+
+		while (i.hasNext()) {
+			var e = i.next();
+			out.print(e.getKey() + "=" + e.getValue());
+
+			if (i.hasNext()) {
+				out.print(", ");
+			}
+		}
+
+		out.print("]");
 	}
 
 	@IdawiOperation

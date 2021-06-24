@@ -7,11 +7,11 @@ import java.util.Map;
 
 import toools.io.Cout;
 
-public class RAMGraph extends Graph {
+public class HashGraph extends Graph {
 	private Map<String, String> props = new HashMap<>();
 	private List<Change> changes = new ArrayList<>();
 
-	public RAMGraph() {
+	public HashGraph() {
 		super(new HashElementSet(), new HashElementSet());
 	}
 
@@ -22,7 +22,7 @@ public class RAMGraph extends Graph {
 
 	@Override
 	public void addChange(Change c) {
-		Cout.debug(c);
+//		Cout.debug(c);
 		changes.add(c);
 	}
 
