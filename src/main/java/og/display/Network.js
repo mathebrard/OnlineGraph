@@ -429,64 +429,95 @@ class Link {
 
     setArrowType(visnetwork, arrowtype) {
         this.arrowtype = arrowtype;
-        visnetwork.body.data.edges.updateOnly({
-            id: this.id,
-            arrows: {
-                to: {
-                    type: this.arrowtype
+        try {
+            visnetwork.body.data.edges.updateOnly({
+                id: this.id,
+                arrows: {
+                    to: {
+                        type: this.arrowtype
+                    }
                 }
-            }
-        });
+            });
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setDashes(visnetwork, dashes) {
         this.dashes = dashes;
-        if (typeof this.dashes === 'boolean') {
-            visnetwork.body.data.edges.updateOnly({
-                id: this.id,
-                dashes: (this.dashes != false) //TODO refaire
-            });
-        } else if (this.dashes instanceof Array) {
-            visnetwork.body.data.edges.updateOnly({
-                id: this.id,
-                dashes: this.dashes //TODO refaire
-            });
+        try {
+
+            if (typeof this.dashes === 'boolean') {
+                visnetwork.body.data.edges.updateOnly({
+                    id: this.id,
+                    dashes: (this.dashes != false) //TODO refaire
+                });
+            } else if (this.dashes instanceof Array) {
+                visnetwork.body.data.edges.updateOnly({
+                    id: this.id,
+                    dashes: this.dashes //TODO refaire
+                });
+            }
+        } 
+        catch (error) {
+        	  console.log(error);
         }
+
     }
 
     setDirected(visnetwork, directed) {
         this.directed = directed;
-        visnetwork.body.data.edges.updateOnly({
-            id: this.id,
-            arrows: {
-                to: {
-                    enabled: (this.directed === 'true')
+        try {
+            visnetwork.body.data.edges.updateOnly({
+                id: this.id,
+                arrows: {
+                    to: {
+                        enabled: (this.directed === 'true')
+                    }
                 }
-            }
-        });
+            });
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setColor(visnetwork, color) {
         this.color = color;
-        visnetwork.body.data.edges.updateOnly({
-            id: this.id,
-            color: this.color
-        });
+        try {
+            visnetwork.body.data.edges.updateOnly({
+                id: this.id,
+                color: this.color
+            });
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setArrowImage(visnetwork, arrowImage) {
         this.arrowImage = arrowImage;
-        visnetwork.body.data.edges.updateOnly({
-            id: this.id,
-            arrows: {
-                to: {
-                    src: this.arrowImage,
-                    type: 'image',
-                    imageHeight: this.width * 40,
-                    imageWidth: this.width * 40
+        try {
+            visnetwork.body.data.edges.updateOnly({
+                id: this.id,
+                arrows: {
+                    to: {
+                        src: this.arrowImage,
+                        type: 'image',
+                        imageHeight: this.width * 40,
+                        imageWidth: this.width * 40
+                    }
                 }
-            }
-        });
+            });
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     /*setMass(visnetwork, mass) {
@@ -499,38 +530,56 @@ class Link {
 
     setLabel(visnetwork, label) {
         this.label = label;
-        visnetwork.body.data.edges.updateOnly({
-            id: this.id,
-            label: this.label
-        });
+        try {
+            visnetwork.body.data.edges.updateOnly({
+                id: this.id,
+                label: this.label
+            });
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setScale(visnetwork, scale) {
         this.scale = scale;
-        visnetwork.body.data.edges.updateOnly({
-            id: this.id,
-            scaling: {
-                min: this.scale,
-                max: this.scale,
-                customScalingFunction: function (min, max, total, value) {
-                    if (max === min) {
-                        return 0.5;
-                    } else {
-                        var scale = 1 / (max - min);
-                        return Math.max(0, (value - min) * scale);
+        try {
+            visnetwork.body.data.edges.updateOnly({
+                id: this.id,
+                scaling: {
+                    min: this.scale,
+                    max: this.scale,
+                    customScalingFunction: function (min, max, total, value) {
+                        if (max === min) {
+                            return 0.5;
+                        } else {
+                            var scale = 1 / (max - min);
+                            return Math.max(0, (value - min) * scale);
+                        }
                     }
-                }
-            },
-            value: this.scale
-        });
+                },
+                value: this.scale
+            });	
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setWidth(visnetwork, width) {
         this.width = width;
-        visnetwork.body.data.edges.updateOnly({
-            id: this.id,
-            width: this.width
-        });
+        try {
+            visnetwork.body.data.edges.updateOnly({
+                id: this.id,
+                width: this.width
+            });
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 }
 

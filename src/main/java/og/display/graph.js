@@ -355,7 +355,7 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
 	});*/
 	
 	doAjax();
-
+	fitWindow(visnetwork);
 	function doAjax() {
 	    $.getJSON("/api/og/og.GraphStorageService/changes/" + gid + "," + lastChangesAskedTime, function (json1) {
 	    	lastChangesAskedTime = new Date().getTime()/1000;
@@ -363,18 +363,27 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
 		    setTimeout(doAjax, refreshRate);
 		});
 	}
-    
+	function fitWindow(visnetwork) {
+	    visnetwork.fit({
+			  //minZoomLevel: 0,
+			  animation: {
+				  duration: 50,
+				  easingFunction: "linear"
+			  }
+			});
+	    setTimeout(doAjax, 50);
+	}
 	function processChanges(json, network, visnetwork, defaultProps) {
 	    for (let change in json['value']) {
 	        if (json['value'][change]['type'] == "AddVertex") {
 	            network.addVertex(visnetwork, defaultProps, json['value'][change]['vertexInfo'])
-			    visnetwork.fit({
+			    /*visnetwork.fit({
 	    			  //minZoomLevel: 0,
 	    			  animation: {
 	    				  duration: 1000,
 	    				  easingFunction: "linear"
 	    			  }
-	    			});
+	    			});*/
 	            var select = document.getElementById("select-label");
 	            var text = select.options[select.selectedIndex].text;	            
 	            network.getListNodes().forEach((node) => {
