@@ -81,7 +81,7 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
            barnesHut: {
                 //springLength: 200,
         	   centralGravity: 1,
-        	   gravitationalConstant : -1000
+        	   gravitationalConstant : -500
             },
             maxVelocity : 1
         },
