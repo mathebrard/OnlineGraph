@@ -69,7 +69,7 @@ public class HashElementSet extends ElementSet {
 	}
 
 	@Override
-	public Set<String> get(long id) {
+	public Set<String> getKeys(long id) {
 		return m.get(id).keySet();
 	}
 

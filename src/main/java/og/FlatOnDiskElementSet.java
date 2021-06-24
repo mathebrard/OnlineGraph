@@ -100,7 +100,7 @@ public class FlatOnDiskElementSet extends OnDiskElementSet {
 	}
 
 	@Override
-	public Set<String> get(long id) {
+	public Set<String> getKeys(long id) {
 		return (Set<String>) file(id, null).getContentAsJavaObject();
 	}
 

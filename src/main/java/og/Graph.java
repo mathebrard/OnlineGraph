@@ -1,5 +1,8 @@
 package og;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
@@ -9,25 +12,38 @@ import it.unimi.dsi.fastutil.longs.LongList;
 import og.GraphStorageService.EdgeInfo;
 import og.GraphStorageService.VertexInfo;
 
-public abstract class Graph implements GraphPrimitives {
-	final ElementSet vertices, edges;
+public abstract class Graph {
+	protected final ElementSet vertices, edges;
 
 	public Graph(ElementSet vertices, ElementSet edges) {
 		this.vertices = vertices;
 		this.edges = edges;
 	}
 
-	@Override
+	public long addVertex() {
+		long u = ThreadLocalRandom.current().nextLong();
+		addVertex(u);
+		return u;
+	}
+
+	// graph-related methods
+
+	public abstract List<Change> getHistory();
+
+	public abstract void addChange(Change c);
+
+	public abstract Map<String, String> getProperties();
+
+	public abstract void setProperties(Map<String, String> m);
+
 	public long nbVertices() {
 		return vertices.nbEntries();
 	}
 
-	@Override
 	public long nbEdges() {
 		return edges.nbEntries();
 	}
 
-	@Override
 	public void addVertex(long u) {
 		vertices.add(u);
 		vertices.set(u, "outEdges", new LongArrayList());
@@ -38,7 +54,6 @@ public abstract class Graph implements GraphPrimitives {
 		addChange(new Change.AddVertex(i));
 	}
 
-	@Override
 	public void removeVertex(long u) {
 		for (var e : new LongArrayList(outEdges(u))) {
 			removeEdge(e);
@@ -52,7 +67,6 @@ public abstract class Graph implements GraphPrimitives {
 		addChange(new Change.RemoveVertex(u));
 	}
 
-	@Override
 	public long addEdge(long from, long to) {
 		long e = ThreadLocalRandom.current().nextLong();
 		edges.add(e);
@@ -95,7 +109,6 @@ public abstract class Graph implements GraphPrimitives {
 		});
 	}
 
-	@Override
 	public void removeEdge(long e) {
 		var ends = ends(e);
 		var from = ends[0];
@@ -107,67 +120,58 @@ public abstract class Graph implements GraphPrimitives {
 		addChange(new Change.RemoveEdge(e));
 	}
 
-	public <V> V readVertex(long u, String name, Supplier<V> defaultValueSupplier) {
-		return vertices.get(u, name, defaultValueSupplier);
+	public <V> V getVertexValue(long u, String key, Supplier<V> defaultValueSupplier) {
+		return vertices.get(u, key, defaultValueSupplier);
 	}
 
-	public void writeVertex(long u, String name, Object p) {
-		vertices.set(u, name, p);
+	public void setVertexValue(long u, String key, Object p) {
+		vertices.set(u, key, p);
 	}
 
-	public <E> E readEdge(long e, String name, Supplier<E> defaultValueSupplier) {
-		return (E) edges.get(e, name, defaultValueSupplier);
+	public <E> E getEdgeValue(long e, String key, Supplier<E> defaultValueSupplier) {
+		return (E) edges.get(e, key, defaultValueSupplier);
 	}
 
-	public void writeEdge(long e, String name, Object p) {
-		edges.set(e, name, p);
+	public void setEdgeValue(long e, String key, Object p) {
+		edges.set(e, key, p);
 	}
 
 	public long[] ends(long e) {
 		return (long[]) edges.get(e, "ends", null);
 	}
 
-	@Override
 	public long source(long e) {
 		return ends(e)[0];
 	}
 
-	@Override
 	public long destination(long e) {
 		return ends(e)[1];
 	}
 
-	@Override
 	public LongList inEdges(long v) {
 		return vertices.get(v, "inEdges", null);
 	}
 
-	@Override
 	public LongList outEdges(long v) {
 		return vertices.get(v, "outEdges", null);
 	}
 
-	@Override
 	public long pickRandomVertex() {
 		return vertices.random();
 	}
 
-	@Override
 	public long pickRandomEdge() {
 		return edges.random();
 	}
 
-	@Override
 	public void traverseVertices(LongConsumer c) {
 		vertices.forEach(c);
 	}
 
-	@Override
 	public void traverseEdges(LongConsumer c) {
 		edges.forEach(c);
 	}
 
-	@Override
 	public void clear() {
 		edges.clear();
 		vertices.clear();

@@ -90,12 +90,12 @@ public class GraphProcessingService extends Service {
 	@IdawiOperation
 	public double clusteringCoefficient(String graphID, long v) {
 		var g = getGraph(graphID);
-		var neighbors = (LongList) g.readVertex(v, "outNeighbors", null);
+		var neighbors = (LongList) g.getVertexValue(v, "outNeighbors", null);
 
 		int count = 0;
 
 		for (var n : neighbors) {
-			for (var nn : (LongList) g.readVertex(n, "outNeighbors", null)) {
+			for (var nn : (LongList) g.getVertexValue(n, "outNeighbors", null)) {
 				if (neighbors.contains(nn)) {
 					++count;
 				}

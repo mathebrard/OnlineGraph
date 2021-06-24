@@ -2,13 +2,16 @@ package og;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
@@ -29,6 +32,10 @@ import toools.io.file.Directory;
 import toools.thread.Threads;
 
 public class GraphStorageService extends Service {
+	String[] colors = new String[] { "blue", "red", "green", "purple", "cyan", "yellow", "grey", "white" };
+	String[] shapes = new String[] { "box", "polygon", "ellipse", "oval", "circle", "point", "egg", "triangle" };
+	String[] arrowTypes = new String[] { "box", "crow", "diamond", "dot", "normal", "vee" };
+
 	public static final Directory baseDirectory = new Directory("$HOME/.og");
 
 	static {
@@ -83,58 +90,79 @@ public class GraphStorageService extends Service {
 			g.check();
 			double r = Math.random();
 			Cout.debug("#vertices: " + g.nbVertices());
-			// add vertex
-			if (g.nbVertices() == 0 || r < 0.2) {
+
+			if (r < -0.1 * g.nbVertices() + 1) {
 				Cout.debugSuperVisible("ADD VERTEX");
-				var u = g.addVertex();
-			} // add edge
-			else if (r < 0.4) {
-				Cout.debugSuperVisible("ADD EDGE");
-				var u = g.pickRandomVertex();
-				var v = g.pickRandomVertex();
-				var e = g.addEdge(u, v);
-			} // remove vertex
-			else if (g.nbEdges() == 0 || r < 0.6) {
+				g.addVertex();
+			} else if (r < 0.1 * g.nbVertices()) {
 				Cout.debugSuperVisible("REMOVE VERTEX");
-				var u = g.pickRandomVertex();
-				g.removeVertex(u);
-			} // remove edge
-			else if (r < 0.8) {
+				g.removeVertex(g.pickRandomVertex());
+			} else if (r < 1 + -(g.nbEdges() / (double) g.nbVertices())) {
+				Cout.debugSuperVisible("ADD EDGE");
+				g.addEdge(g.pickRandomVertex(), g.pickRandomVertex());
+			} else if (r < g.nbEdges() / (double) g.nbVertices()) {
 				Cout.debugSuperVisible("REMOVE EDGE");
-				var e = g.pickRandomEdge();
-				g.removeEdge(e);
+				g.removeEdge(g.pickRandomEdge());
 			} else {
 				Cout.debugSuperVisible("CHANGE PROPERTY");
-				{
+				int n = 20;
+				double rr = Math.random();
+				double interval = 1d / n;
+
+				if (g.nbVertices() > 0) {
 					var u = g.pickRandomVertex();
 					var p = new HashMap<String, Object>();
-					p.put("size", "30");
-					p.put("borderWidth", "5");
-					p.put("image", "" + 30);
-					p.put("color.border", "blue");
-					p.put("background color", "white");
-					p.put("hidden", "false");
-					p.put("label", "vertex");
-					p.put("mass", "4");
-					p.put("shape", "circle");
-					p.put("value", 13);
-					p.put("foo", 1);
-					p.put("bar", "hello");
-					g.writeVertex(u, "properties", p);
+
+					if (rr < 0.05)
+						p.put("size", 10 + 50 * Math.random());
+					else if ((rr -= interval) < 0.05)
+						p.put("borderWidth", Math.random() * 20);
+					else if ((rr -= interval) < 0.05)
+						p.put("image", Math.random() * 50);
+					else if ((rr -= interval) < 0.05)
+						p.put("color.border", colors[new Random().nextInt(colors.length)]);
+					else if ((rr -= interval) < 0.05)
+						p.put("background color", colors[new Random().nextInt(colors.length)]);
+					else if ((rr -= interval) < 0.05)
+						p.put("hidden", Math.random() < 0.5 ? "true" : "false");
+					else if ((rr -= interval) < 0.05)
+						p.put("label", colors[new Random().nextInt(colors.length)]);
+					else if ((rr -= interval) < 0.05)
+						p.put("mass", Math.random() * 20);
+					else if ((rr -= interval) < 0.05)
+						p.put("shape", shapes[new Random().nextInt(shapes.length)]);
+					else if ((rr -= interval) < 0.05)
+						p.put("value", Math.random() * 100);
+					else if ((rr -= interval) < 0.05)
+						p.put("foo", Math.random());
+					else if ((rr -= interval) < 0.05)
+						p.put("bar", "" + (Math.random() * 20));
+
+					g.setVertexValue(u, "properties", p);
 				}
 
-				{
+				if (g.nbEdges() > 0) {
 					var e = g.pickRandomEdge();
 					var p = new HashMap<String, Object>();
-					p.put("directed", "yes");
-					p.put("arrow image", "http://img.com/arrow.png");
-					p.put("arrow scale", "1");
-					p.put("arrow type", "round");
-					p.put("color", "black");
-					p.put("dashes", "true");
-					p.put("label", "relation");
-					p.put("width", "5");
-					g.writeEdge(e, "properties", p);
+
+					if ((rr -= interval) < 0.05)
+						p.put("directed", Math.random() < 0.5 ? "true" : "false");
+					else if ((rr -= interval) < 0.05)
+						p.put("arrow image", "http://img.com/arrow.png");
+					else if ((rr -= interval) < 0.05)
+						p.put("arrow scale", Math.random() * 100);
+					else if ((rr -= interval) < 0.05)
+						p.put("arrow type", arrowTypes[new Random().nextInt(arrowTypes.length)]);
+					else if ((rr -= interval) < 0.05)
+						p.put("color", colors[new Random().nextInt(colors.length)]);
+					else if ((rr -= interval) < 0.05)
+						p.put("dashes", Math.random() < 0.5 ? "true" : "false");
+					else if ((rr -= interval) < 0.05)
+						p.put("label", colors[new Random().nextInt(colors.length)]);
+					else if ((rr -= interval) < 0.05)
+						p.put("width", "" + (Math.random() * 15));
+
+					g.setEdgeValue(e, "properties", p);
 				}
 			}
 		});
@@ -206,7 +234,7 @@ public class GraphStorageService extends Service {
 			var ends = g.ends(e);
 			i.from = ends[0];
 			i.to = ends[1];
-			i.props = g.readEdge(e, "properties", () -> new HashMap<String, String>());
+			i.props = g.getEdgeValue(e, "properties", () -> new HashMap<String, String>());
 			edges.add(i);
 		});
 
@@ -252,7 +280,7 @@ public class GraphStorageService extends Service {
 		g.traverseVertices(v -> {
 			var e = new VertexInfo();
 			e.id = v;
-			e.props = g.readVertex(v, "properties", () -> new HashMap<String, String>());
+			e.props = g.getVertexValue(v, "properties", () -> new HashMap<String, String>());
 			vertices.add(e);
 		});
 
@@ -267,6 +295,28 @@ public class GraphStorageService extends Service {
 		gi.vertices = vertices(gid);
 		gi.props = g.getProperties();
 		return gi;
+	}
+
+	@IdawiOperation
+	public String toDOT(String gid) {
+		var g = getGraph(gid);
+		var bos = new ByteArrayOutputStream();
+		var out = new PrintStream(bos);
+		out.println("# graph \"" + gid + "\" has " + g.nbVertices() + " vertices and " + g.nbEdges() + " edges");
+		out.println("digraph {");
+
+		g.traverseVertices(u -> {
+			out.println("\t" + u);
+		});
+
+		g.traverseEdges(e -> {
+			var ends = g.ends(e);
+			out.println("\t" + ends[0] + " -> " + ends[1]);
+		});
+
+		out.println("}");
+		out.flush();
+		return new String(bos.toByteArray());
 	}
 
 	@IdawiOperation

@@ -10,28 +10,28 @@ public abstract class ElementSet {
 
 	public abstract long nbEntries();
 
+	public abstract long random();
+
 	public abstract void add(long id);
 
-	public abstract Set<String> get(long id);
+	public abstract boolean contains(long id);
 
-	public abstract void remove(long id);
-	
-	public abstract void clear();
-
-	public abstract <E> E get(long id, String ext, Supplier<E> defaultValueSupplier);
-
-	public abstract void set(long id, String ext, Object content);
-
-	public abstract long random();
+	public abstract Set<String> getKeys(long id);
 
 	public abstract void forEach(LongConsumer c);
 
-	public <E> E alter(long id, String ext, Supplier<E> defaultValueSupplier, Consumer<E> c) {
-		var o = get(id, ext, defaultValueSupplier);
-		c.accept(o);
-		set(id, ext, o);
-		return o;
-	}
+	public abstract void remove(long id);
 
-	public abstract boolean contains(long r);
+	public abstract void clear();
+
+	public abstract <E> E get(long id, String key, Supplier<E> defaultValueSupplier);
+
+	public abstract void set(long id, String key, Object content);
+
+	public <E> E alter(long id, String key, Supplier<E> defaultValueSupplier, Consumer<E> modificationCode) {
+		var data = get(id, key, defaultValueSupplier);
+		modificationCode.accept(data);
+		set(id, key, data);
+		return data;
+	}
 }
