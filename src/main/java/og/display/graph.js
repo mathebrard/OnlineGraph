@@ -127,9 +127,18 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
             functionApply: (key, fx) => {
 
                 if (key != undefined && key != "") {
-                    network.getListNodes().forEach((node) => {
-                        node.setBackgroundColor(visnetwork, fx.getcolor(node.params[key]));
-                    });
+                    try {
+                        network.getListNodes().forEach((node) => {
+                            if (node.params[key])
+                                node.setBackgroundColor(visnetwork, fx.getcolor(node.params[key]));
+                            else if (node.defaultparams[key])
+                                node.setBackgroundColor(visnetwork, fx.getcolor(node.defaultparams[key]));
+                        });	
+                    } 
+                    catch (error) {
+                    	  console.log(error);
+                    }
+
                 } else {
                     /*network.getListNodes().forEach((node) => {
                         node.setDefaultBackgroundColor(visnetwork);
@@ -143,10 +152,19 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
             type: "color",
             functionApply: (key, fx) => {
                 if (key != "") {
-                    network.getListNodes().forEach((node) => {
-                        if (node.params[key])
-                            node.setBorderColor(visnetwork, fx.getcolor(node.params[key]))
-                    });
+                    try {
+                        network.getListNodes().forEach((node) => {
+                            if (node.params[key])
+                                node.setBorderColor(visnetwork, fx.getcolor(node.params[key]))
+                            else if (node.defaultparams[key])
+                                node.setBorderColor(visnetwork, fx.getcolor(node.defaultparams[key]))
+
+                        });
+                    } 
+                    catch (error) {
+                    	  console.log(error);
+                    }
+
                 } else {
                     /*network.getListNodes().forEach((node) => {
                         node.setDefaultBorderColor(visnetwork);
@@ -172,10 +190,18 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
                 let newFX = new Function("x", "return Math.max(0," + fx + ");");
                 console.log("return " + fx)
                 if (key != undefined && key != "") {
-                    network.getListNodes().forEach((node) => {
-                        if (node.params[key])
-                            node.setSize(visnetwork, newFX(node.params[key]))
-                    });
+                    try {
+                        network.getListNodes().forEach((node) => {
+                            if (node.params[key])
+                                node.setSize(visnetwork, newFX(node.params[key]));
+                            else if (node.defaultparams[key])
+                                node.setSize(visnetwork, newFX(node.defaultparams[key]));
+                        });
+                    } 
+                    catch (error) {
+                    	  console.log(error);
+                    }
+
                 } else {
                     /*console.log("passed")
                     network.getListNodes().forEach((node) => {
@@ -191,16 +217,30 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
             dftfunction: "0",
             functionApply: (key, fx) => {
                 var newFX = new Function("x", "return " + fx);
-                network.getListNodes().forEach((node) => {
-                    if (node.params[key]) {
-                        let newSize = newFX(node.params[key]);
-                        console.log(newSize)
-                        visnetwork.body.data.nodes.updateOnly({
-                            id: node.id,
-                            borderWidth: newSize
-                        });
-                    }
-                });
+                try {
+                    network.getListNodes().forEach((node) => {
+                        if (node.params[key]) {
+                            let newSize = newFX(node.params[key]);
+                            console.log(newSize)
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                borderWidth: newSize
+                            });
+                        }
+                        else if (node.defaultparams[key]){
+                        	let newSize = newFX(node.defaultparams[key]);
+                            console.log(newSize)
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                borderWidth: newSize
+                            });
+                        }
+                    });
+                } 
+                catch (error) {
+                	  console.log(error);
+                }
+
                 visnetwork.redraw();
             }
         }
@@ -298,6 +338,7 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
     hotbar.addPanelLinkPropertiesToFunction(attributes, allprops);
     //hotbar.addPanelLinkChangeGraph(attributesChangeGraph, visnetwork, json);
     hotbar.addPanelChangeLabel(network, visnetwork, allprops);
+    hotbar.addStats(visnetwork);
 
     /*hotbar.addEntry("Sélection Simple", (e) => {
         TYPESELECTION = "simple";
@@ -334,6 +375,17 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
 	    				  easingFunction: "linear"
 	    			  }
 	    			});
+	            var select = document.getElementById("select-label");
+	            var text = select.options[select.selectedIndex].text;	            
+	            network.getListNodes().forEach((node) => {
+	                console.log(node);
+	                console.log(node.params[text])
+	                if (node.params[text])
+	                    node.setLabel(visnetwork, node.params[text]);
+	                else if(node.defaultparams[text])
+	                    node.setLabel(visnetwork, node.defaultparams[text]);
+	            });
+	            refreshSelects();
 	        } else if (json['value'][change]['type'] == "RemoveVertex") {
 	            network.removeVertex(visnetwork, json['value'][change]['elementID'])
 			    visnetwork.fit({
@@ -345,10 +397,48 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
 	    			});
 	        } else if (json['value'][change]['type'] == "AddEdge") {
 	            network.addEdge(visnetwork, defaultProps, json['value'][change]['edgeInfo'])
+	            refreshSelects();
+	            var select = document.getElementById("select-label");
+	            var text = select.options[select.selectedIndex].text;
+	            network.getListEdges().forEach((node) => {
+	                if (node.params[text])
+	                    node.setLabel(visnetwork, node.params[text]);
+	                else if(node.defaultparams[text])
+	                    node.setLabel(visnetwork, node.defaultparams[text]);
+	            });
 	        } else if (json['value'][change]['type'] == "RemoveEdge") {
 	            network.removeEdge(visnetwork, json['value'][change]['elementID'])
 	        }
 	    }
+	    //document.getElementById("stats").textContent = "Number of vertices : " + network.listNodes.length +" , number of edges : " + network.listEdges.length ;         // Create a text node
+	    document.getElementById("stats").textContent = "Number of vertices : " + visnetwork.body.data.nodes.length +" , number of edges : " + visnetwork.body.data.edges.length ;         // Create a text node
+
+	}
+	
+	function refreshSelects(){
+		$(".select-propertie-value").each((index, select) => {
+			let values = [];
+		    for (let prop in network.allProps) {
+		        allprops[network.allProps[prop]] = {
+		            "name": network.allProps[prop]
+		        }
+		    }
+			for (let i=0;i<select.options.length;i++)
+				values.push(select.options[i].value);
+			for (let i=0;i<allprops.length;i++){
+				if (!allprops[i] in values){
+					console.log(allprops[i])
+					// create new option element
+					var opt = document.createElement('option');
+					// create text node to add to option element (opt)
+					opt.appendChild( document.createTextNode(allprops[i]) );
+					// set value property of opt
+					opt.value = allprops[i];
+					// add opt to end of select box (sel)
+					sel.appendChild(opt); 
+				}
+			}
+        });
 	}
 
 });

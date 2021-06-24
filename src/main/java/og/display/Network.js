@@ -16,8 +16,8 @@ class Node {
         this.shape = "ellipse";
         this.borderWidth = 2;
         this.mass = 1;
-        this.label = undefined;
-        this.defaultparams = defaultparams;
+        this.label = undefined
+        this.defaultparams = {}
     }
 
 
@@ -51,6 +51,11 @@ class Node {
     processDefaultParams(visnetwork, network,props) {
         let currentNode = this;
         Object.keys(props).forEach(function (key) {
+            network.allProps.push(key)
+            console.log(props)
+            console.log(currentNode.defaultparams)
+            if (key.includes("vertex"))
+                currentNode.defaultparams[key]=props[key]
             if (key == 'default vertex background color') {
                 currentNode.setColor(visnetwork, props[key]);
             } else if (key == 'default vertex color.border') {
@@ -70,7 +75,7 @@ class Node {
             } else if (key == 'default vertex size') {
                 currentNode.setSize(visnetwork, props[key]);
             } else {
-                //network.unknowProps.push(key);
+                network.unknowProps.push(key);
             }
         })
     }
@@ -139,100 +144,159 @@ class Node {
     setSize(visnetwork, size) {
         let unsizableShapes = ["image", "circularImage", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square", "icon"];
         this.size = parseInt(size);
-        if (!(this.shape in unsizableShapes)) {
-            visnetwork.body.data.nodes.updateOnly({
-                id: this.id,
-                scaling: {
-                    min: this.size,
-                    max: this.size,
-                    label: {
-                        enabled: true,
+        console.log("setsize" + size);
+        try {
+            if (!(this.shape in unsizableShapes)) {
+                visnetwork.body.data.nodes.updateOnly({
+                    id: this.id,
+                    scaling: {
                         min: this.size,
-                        max: this.size
-                    }
-                },
-                value :1
-            });
-        } else {
-            visnetwork.body.data.nodes.updateOnly({
-                id: this.id,
-                size: this.size
-            });
+                        max: this.size,
+                        label: {
+                            enabled: true,
+                            min: this.size,
+                            max: this.size
+                        }
+                    },
+                    value :1
+                });
+            } else {
+                visnetwork.body.data.nodes.updateOnly({
+                    id: this.id,
+                    size: this.size
+                });
+            }       	
+        } 
+        catch (error) {
+        	  console.log(error);
         }
+
     }
 
     setImage(visnetwork, image) {
         this.image = image;
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            shape:image,
-            image: this.image
-        });
+        try {
+
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                shape:image,
+                image: this.image
+            });	
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setHidden(visnetwork, hidden) {
         this.hidden = (hidden === 'true'); //support hidden as a string
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            hidden: this.hidden
-        });
+        try {
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                hidden: this.hidden
+            });	
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
+
     }
 
     setShape(visnetwork, shape) {
         this.shape = shape;
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            shape: this.shape
-        });
+        try {
+
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                shape: this.shape
+            });   	
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setBorderWitdh(visnetwork, borderWidth) {
         this.borderWidth = borderWidth;
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            borderWidth: this.borderWidth
-        });
+        try {
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                borderWidth: this.borderWidth
+            });
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
+
     }
 
     setMass(visnetwork, mass) {
         this.mass = mass;
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            mass: this.mass
-        });
+        try {
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                mass: this.mass
+            });   	
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
     setLabel(visnetwork, label) {
         this.label = label;
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            label: this.label
-        });
+        try {
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                label: this.label
+            });        	
+        } 
+        catch (error) {
+        	  console.log(error);
+        }
+
     }
 
 
     setBackgroundColor(visnetwork, color) {
-        if (color != "#000000") {
+        try {
+            if (color != "#000000") {
 
-            this.colorbg = color;
-            visnetwork.body.data.nodes.updateOnly({
-                id: this.id,
-                color: {
-                    background: color
-                }
-            });
+                this.colorbg = color;
+                visnetwork.body.data.nodes.updateOnly({
+                    id: this.id,
+                    color: {
+                        background: color
+                    }
+                });
+            }      	
+        } 
+        catch (error) {
+        	  console.log(error);
         }
+
 
     }
 
     setBorderColor(visnetwork, color) {
         this.colorborder = color;
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            color: {
-                border: color
-            }
-        });
+        try {
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                color: {
+                    border: color
+                }
+            });        	
+        } 
+        catch (error) {
+        	  console.log(error)
+        }
+
     }
 
     linkTo(node) {
@@ -308,7 +372,8 @@ class Link {
     processParams(visnetwork, network) {
         let currentEdge = this;
         Object.keys(this.params).forEach(function (key) {
-            network.allProps.push(key)
+            network.allProps.push(key);
+
             if (key == 'arrow type') {
                 currentEdge.setArrowType(visnetwork, currentEdge.params[key]);
             } else if (key == 'dashes') {
@@ -336,6 +401,8 @@ class Link {
         let currentEdge = this;
         Object.keys(props).forEach(function (key) {
             //network.allProps.push(key)
+            if (key.includes("edge"))
+            	currentEdge.defaultparams[key]=props[key];
             if (key == 'default edge arrow type') {
                 currentEdge.setArrowType(visnetwork, props[key]);
             } else if (key == 'default edge dashes') {
@@ -496,6 +563,7 @@ class Network {
         this.listNodes.push(newNode);
         newNode.processDefaultParams(visNetwork,this,defaultparams)
         newNode.processParams(visNetwork,this,params)
+        console.log("allProps")
         return newNode;
     }
     removeVertex(visNetwork, ID) {

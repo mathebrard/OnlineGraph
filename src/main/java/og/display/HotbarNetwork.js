@@ -18,6 +18,16 @@ class Hotbar {
         this.nbEntries = 0;
     }
 
+    addStats(visnetwork){
+    	var node = document.createElement("div");                 // Create a <li> node
+    	node.id="stats"
+    	/*node.css({
+    		background-color: gray;
+        });*/
+	    node.textContent = "Number of vertices : " + visnetwork.body.data.nodes.length +" , number of edges : " + visnetwork.body.data.edges.length ;         // Create a text node
+    	document.body.appendChild(node);
+    	
+    }
     addPanelDragAndResize() {
         let container = $("<div></div>");
 
@@ -473,17 +483,22 @@ class Hotbar {
     addPanelChangeLabel(network, visnetwork, listProperties) {
         console.log(listProperties);
         let conteneur = $("<div></div>");
-        let select = $("<select></select>").change((ev) => {
+        let select = $("<select id='select-label'></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
-            console.log(text)
             network.getListNodes().forEach((node) => {
+                console.log(node);
+                console.log(node.params[text])
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
+                else if(node.defaultparams[text])
+                    node.setLabel(visnetwork, node.defaultparams[text]);
             });
             network.getListEdges().forEach((node) => {
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
+                else if(node.defaultparams[text])
+                    node.setLabel(visnetwork, node.defaultparams[text]);
             });
             visnetwork.redraw();
         });
