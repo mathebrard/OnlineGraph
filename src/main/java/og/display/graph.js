@@ -79,8 +79,11 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
              adaptiveTimestep: true,
              //timestep: true,
            barnesHut: {
-                springLength: 200,
-            }
+                //springLength: 200,
+        	   centralGravity: 1,
+        	   gravitationalConstant : -1000
+            },
+            maxVelocity : 1
         },
         layout: {
             improvedLayout: true,
@@ -371,7 +374,7 @@ $.getJSON("/api/og/og.GraphStorageService/get/" + gid, function (json) {
 				  easingFunction: "linear"
 			  }
 			});
-	    setTimeout(doAjax, 50);
+	    setTimeout(fitWindow, 50);
 	}
 	function processChanges(json, network, visnetwork, defaultProps) {
 	    for (let change in json['value']) {
