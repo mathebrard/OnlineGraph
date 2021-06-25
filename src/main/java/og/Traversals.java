@@ -1,6 +1,7 @@
 package og;
 
 import java.io.Serializable;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import idawi.Component;
@@ -10,11 +11,11 @@ import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import toools.io.Cout;
 import toools.progression.LongProcess;
-import toools.thread.Threads;
 
-public class GraphProcessingService extends Service {
-	public GraphProcessingService(Component component) {
+public class Traversals extends Service {
+	public Traversals(Component component) {
 		super(component);
 	}
 
@@ -37,14 +38,20 @@ public class GraphProcessingService extends Service {
 	@IdawiOperation
 	public BFSResult bfs(String graphID, long source, long maxDistance, long maxNbVerticesVisited) {
 		var g = getGraph(graphID);
+
+		if (source == -1) {
+			source = g.pickRandomVertex();
+		}
+
+		Cout.debugSuperVisible("bfs");
 		long nbVertices = g.nbVertices();
 		BFSResult r = new BFSResult();
 
 		AtomicBoolean completed = new AtomicBoolean(false);
 
-		Threads.newThread_loop_periodic(1000, () -> completed.get(), () -> {
-			// reply(triggerMsg, new ProgressRatio(nbVertices, r.nbVerticesVisited));
-		});
+		// Threads.newThread_loop_periodic(1000, () -> completed.get(), () -> {
+		// reply(triggerMsg, new ProgressRatio(nbVertices, r.nbVerticesVisited));
+		// });
 
 		var lp = new LongProcess("BFS (classic)", " vertex", nbVertices);
 		r.distances = new Long2LongOpenHashMap();
@@ -54,6 +61,7 @@ public class GraphProcessingService extends Service {
 		long nbVerticesVisited = 1;
 
 		while (!q.isEmpty()) {
+			Cout.debug(q.size() + " elements in queue");
 			++lp.sensor.progressStatus;
 
 			var v = q.removeLong(0);
@@ -84,7 +92,43 @@ public class GraphProcessingService extends Service {
 		lp.end();
 		completed.set(true);
 		// reply(triggerMsg, r);
+
+		Cout.debugSuperVisible("bfs completed");
+
 		return r;
+	}
+
+	@IdawiOperation
+	public LongList randomWalk(String graphID, long source, long maxDistance) {
+		var g = getGraph(graphID);
+
+		if (source == -1) {
+			source = g.pickRandomVertex();
+		}
+
+		Cout.debugSuperVisible("random search");
+
+		var l = new LongArrayList();
+
+		while (l.size() < maxDistance) {
+			l.add(source);
+			var succ = new LongArrayList();
+
+			for (var e : g.outEdges(source)) {
+				var s = g.destination(e);
+				
+				if (!l.contains(s)) {
+					succ.add(s);
+				}
+			}
+
+			if (succ.isEmpty())
+				break;
+
+			source = succ.getLong(new Random().nextInt(succ.size()));
+		}
+
+		return l;
 	}
 
 	@IdawiOperation

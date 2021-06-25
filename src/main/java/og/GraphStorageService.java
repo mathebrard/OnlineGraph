@@ -86,9 +86,7 @@ public class GraphStorageService extends Service {
 		}
 
 		Threads.newThread_loop(1000, () -> true, () -> {
-			Cout.debug("checking graph");
 			g.check();
-			Cout.debug("#vertices: " + g.nbVertices());
 			double targetN = 10;
 			double targetD = 20;
 			double nbVertices = g.nbVertices();
