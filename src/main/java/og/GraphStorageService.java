@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,14 +27,14 @@ import idawi.IdawiOperation;
 import idawi.Service;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import toools.gui.GraphViz;
+import toools.gui.GraphViz.COMMAND;
+import toools.gui.GraphViz.OUTPUT_FORMAT;
 import toools.io.Cout;
 import toools.io.file.Directory;
 import toools.thread.Threads;
 
 public class GraphStorageService extends Service {
-	String[] colors = new String[] { "blue", "red", "green", "purple", "cyan", "yellow", "grey", "white" };
-	String[] shapes = new String[] { "box", "polygon", "ellipse", "oval", "circle", "point", "egg", "triangle" };
-	String[] arrowTypes = new String[] { "box", "crow", "diamond", "dot", "normal", "vee" };
 
 	public static final Directory baseDirectory = new Directory("$HOME/.og");
 
@@ -104,41 +103,38 @@ public class GraphStorageService extends Service {
 				g.removeVertex(g.pickRandomVertex());
 			}
 
-			if (Math.random() < -0.5 * degree / targetD + 1) {
+			if (Math.random() < -degree / targetD + 1) {
 				g.addEdge(g.pickRandomVertex(), g.pickRandomVertex());
 			}
 
-			if (Math.random() < 0.5 * degree / targetD) {
+			if (Math.random() < degree / targetD) {
 				g.removeEdge(g.pickRandomEdge());
 			}
 
 			if (Math.random() < 0.4 && g.nbVertices() > 0) {
 				var u = g.pickRandomVertex();
-				var p = g.getVertexValue(u, "properties", () -> new HashMap<String, Object>());
+				var p = g.getVertexValue(u, "properties", () -> new HashMap<String, String>());
 				double pp = 0.5;
 
 				if (Math.random() < pp)
-					p.put("size", 10 + 50 * Math.random());
+					p.put(VertexProperties.scale.getName(), VertexProperties.scale.random());
 				if (Math.random() < pp)
-					p.put("borderWidth", Math.random() * 20);
+					p.put(VertexProperties.borderWidth.getName(), VertexProperties.borderWidth.random());
 				if (Math.random() < pp)
-					p.put("image", Math.random() * 50);
+					p.put(VertexProperties.borderColor.getName(), VertexProperties.borderColor.random());
 				if (Math.random() < pp)
-					p.put("color.border", colors[new Random().nextInt(colors.length)]);
+					p.put(VertexProperties.fillColor.getName(), VertexProperties.fillColor.random());
 				if (Math.random() < pp)
-					p.put("background color", colors[new Random().nextInt(colors.length)]);
+					p.put(VertexProperties.hidden.getName(), VertexProperties.hidden.random());
 				if (Math.random() < pp)
-					p.put("hidden", Math.random() < 0.5 ? "true" : "false");
+					p.put(VertexProperties.labelColor.getName(), VertexProperties.labelColor.random());
 				if (Math.random() < pp)
-					p.put("label", colors[new Random().nextInt(colors.length)]);
+					p.put(VertexProperties.label.getName(), VertexProperties.label.random());
 				if (Math.random() < pp)
-					p.put("mass", Math.random() * 20);
+					p.put(VertexProperties.shape.getName(), VertexProperties.shape.random());
 				if (Math.random() < pp)
-					p.put("shape", shapes[new Random().nextInt(shapes.length)]);
-				if (Math.random() < pp)
-					p.put("value", Math.random() * 100);
-				if (Math.random() < pp)
-					p.put("foo", Math.random());
+					if (Math.random() < pp)
+						p.put("foo", "" + Math.random());
 				if (Math.random() < pp)
 					p.put("bar", "" + (Math.random() * 20));
 
@@ -147,25 +143,23 @@ public class GraphStorageService extends Service {
 
 			if (Math.random() < 0.4 && g.nbEdges() > 0) {
 				var e = g.pickRandomEdge();
-				var p = g.getEdgeValue(e, "properties", () -> new HashMap<String, Object>());
+				var p = g.getEdgeValue(e, "properties", () -> new HashMap<String, String>());
 				double pp = 0.5;
-				
+
 				if (Math.random() < pp)
-					p.put("directed", Math.random() < 0.5 ? "true" : "false");
+					p.put(EdgeProperties.directed.getName(), EdgeProperties.directed.random());
 				if (Math.random() < pp)
-					p.put("arrow image", "http://img.com/arrow.png");
+					p.put(EdgeProperties.arrowSize.getName(), EdgeProperties.arrowShape.random());
 				if (Math.random() < pp)
-					p.put("arrow scale", Math.random() * 100);
+					p.put(EdgeProperties.arrowShape.getName(), EdgeProperties.arrowShape.random());
 				if (Math.random() < pp)
-					p.put("arrow type", arrowTypes[new Random().nextInt(arrowTypes.length)]);
+					p.put(EdgeProperties.color.getName(), EdgeProperties.color.random());
 				if (Math.random() < pp)
-					p.put("color", colors[new Random().nextInt(colors.length)]);
+					p.put(EdgeProperties.style.getName(), EdgeProperties.style.random());
 				if (Math.random() < pp)
-					p.put("dashes", Math.random() < 0.5 ? "true" : "false");
+					p.put(EdgeProperties.label.getName(), EdgeProperties.label.random());
 				if (Math.random() < pp)
-					p.put("label", colors[new Random().nextInt(colors.length)]);
-				if (Math.random() < pp)
-					p.put("width", "" + (Math.random() * 5));
+					p.put(EdgeProperties.width.getName(), EdgeProperties.width.random());
 
 				g.setEdgeValue(e, "properties", p);
 			}
@@ -313,25 +307,69 @@ public class GraphStorageService extends Service {
 
 		g.traverseVertices(u -> {
 			out.print("\t" + u);
-			var p = (Map<String, Object>) g.getVertexValue(u, "properties", () -> null);
+			var p = g.getVertexValue(u, "properties", () -> new HashMap<String, String>());
+			var gvp = new HashMap<String, String>();
 
-			if (p != null && !p.isEmpty()) {
-			//	p.keySet().removeIf(k -> !dotNodeProperties.contains(k));
-				f(p, out);
+			var shape = p.get(VertexProperties.shape.getName());
+
+			if (shape != null) {
+				gvp.put("shape", VertexProperties.shape.toGraphviz(shape));
 			}
 
+			var borderColor = p.get(VertexProperties.borderColor.getName());
+
+			if (borderColor != null) {
+				gvp.put("color", VertexProperties.borderColor.toGraphviz(borderColor));
+			}
+
+			var fillColor = p.get(VertexProperties.fillColor.getName());
+
+			if (fillColor != null) {
+				gvp.put("style", "filled");
+				gvp.put("fillcolor", VertexProperties.fillColor.toGraphviz(fillColor));
+			}
+
+			var borderWidth = p.get(VertexProperties.borderWidth.getName());
+			gvp.put("penwidth", borderWidth == null ? "1" : "" + borderWidth);
+
+			var label = p.get(VertexProperties.label.getName());
+
+			if (label != null) {
+				gvp.put("label", VertexProperties.label.toGraphviz(label));
+			}
+			var hidden = p.get(VertexProperties.hidden.getName());
+			var scale = p.get(VertexProperties.scale.getName());
+
+			if (scale != null) {
+				gvp.put("width", VertexProperties.scale.toGraphviz(scale));
+				gvp.put("height", VertexProperties.scale.toGraphviz(scale));
+			}
+			
+//var labelColor = p.get(VertexProperties.labelColor.getName());
+
+			f(gvp, out);
 			out.println();
 		});
 
 		g.traverseEdges(e -> {
 			var ends = g.ends(e);
 			out.print("\t" + ends[0] + " -> " + ends[1]);
-			var p = (Map<String, Object>) g.getEdgeValue(e, "properties", () -> null);
+			var p = g.getEdgeValue(e, "properties", () -> new HashMap<String, String>());
+			var gvp = new HashMap<String, String>();
 
-			if (p != null && !p.isEmpty()) {
-				f(p, out);
+			var arrowShape = p.get(EdgeProperties.arrowShape.getName());
+
+			if (arrowShape != null) {
+				gvp.put("arrowhead", EdgeProperties.arrowShape.toGraphviz(arrowShape));
 			}
 
+			var style = p.get(EdgeProperties.style.getName());
+
+			if (style != null) {
+				gvp.put("style", EdgeProperties.style.toGraphviz(style));
+			}
+
+			f(gvp, out);
 			out.println();
 		});
 
@@ -340,13 +378,20 @@ public class GraphStorageService extends Service {
 		return new String(bos.toByteArray());
 	}
 
-	private void f(Map<String, Object> p, PrintStream out) {
+	@IdawiOperation
+	public byte[] graphviz(String gid, String command, String outputFormat) {
+		return GraphViz.toBytes(COMMAND.valueOf(command), toDOT(gid), OUTPUT_FORMAT.valueOf(outputFormat));
+	}
+
+	private void f(Map<String, String> p, PrintStream out) {
+		// p.keySet().removeIf(k -> p.get(k) == null);
+
 		out.print("\t [");
 		var i = p.entrySet().iterator();
 
 		while (i.hasNext()) {
 			var e = i.next();
-			out.print(e.getKey() + "=" + e.getValue());
+			out.print(e.getKey() + "=\"" + e.getValue() + "\"");
 
 			if (i.hasNext()) {
 				out.print(", ");
