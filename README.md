@@ -18,13 +18,13 @@ A graph is defined as a set of vertices relating to each other through links. Ea
 ## API
 ### Primitives
 #### Topology
-- addVertex(long)
-- removeVertex(long)
-- addEdge(long from, long to)
-- long removeEdge(long)
-- forEachVertex(long u, lambda)
-- forEachEdge(long e, lambda)
-- forEachOutEdge(long u, lamba f(u) -> bool)
+- *addVertex(long)*
+- *removeVertex(long)*
+- *addEdge(long from, long to)*
+- *long removeEdge(long)*
+- *forEachVertex(long u, lambda)*
+- *forEachEdge(long e, lambda)*
+- *forEachOutEdge(long u, lamba f(u) -> bool)*
 
 #### Dealing with data
 - get(long vertex/edge, String key)
