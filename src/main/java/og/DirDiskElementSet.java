@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 import fr.cnrs.i3s.Cache;
-import it.unimi.dsi.fastutil.longs.LongConsumer;
+import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 import toools.io.Cout;
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
@@ -60,9 +60,11 @@ public class DirDiskElementSet extends OnDiskElementSet {
 	}
 
 	@Override
-	public void forEach(LongConsumer c) {
+	public void forEach(Long2BooleanFunction c) {
 		for (var f : d.javaFile.list()) {
-			c.accept(Long.parseLong(f));
+			if (!c.get(Long.parseLong(f))) {
+				return;
+			}
 		}
 	}
 

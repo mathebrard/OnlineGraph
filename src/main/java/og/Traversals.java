@@ -46,14 +46,15 @@ public class Traversals extends Service {
 		Cout.debugSuperVisible("bfs");
 		long nbVertices = g.nbVertices();
 		BFSResult r = new BFSResult();
+		r.visitOrder = new LongArrayList();
 
-		AtomicBoolean completed = new AtomicBoolean(false);
+//		AtomicBoolean completed = new AtomicBoolean(false);
 
 		// Threads.newThread_loop_periodic(1000, () -> completed.get(), () -> {
 		// reply(triggerMsg, new ProgressRatio(nbVertices, r.nbVerticesVisited));
 		// });
 
-		var lp = new LongProcess("BFS (classic)", " vertex", nbVertices);
+//		var lp = new LongProcess("BFS (classic)", " vertex", nbVertices);
 		r.distances = new Long2LongOpenHashMap();
 		var q = new LongArrayList();
 		q.add(source);
@@ -62,7 +63,7 @@ public class Traversals extends Service {
 
 		while (!q.isEmpty()) {
 			Cout.debug(q.size() + " elements in queue");
-			++lp.sensor.progressStatus;
+//			++lp.sensor.progressStatus;
 
 			var v = q.removeLong(0);
 
@@ -89,8 +90,8 @@ public class Traversals extends Service {
 			}
 		}
 
-		lp.end();
-		completed.set(true);
+//		lp.end();
+//		completed.set(true);
 		// reply(triggerMsg, r);
 
 		Cout.debugSuperVisible("bfs completed");

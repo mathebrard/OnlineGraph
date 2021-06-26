@@ -55,7 +55,7 @@ public class VertexProperties {
 			return "labelColor";
 		}
 	};
-	public static Property scale = new DoubleProperty(0.1, 10) {
+	public static Property scale = new DoubleProperty(0.1, 2) {
 
 		@Override
 		public String getName() {

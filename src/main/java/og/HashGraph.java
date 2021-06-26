@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 import toools.io.Cout;
 
 public class HashGraph extends Graph {
@@ -35,4 +38,5 @@ public class HashGraph extends Graph {
 	public void setProperties(Map<String, String> m) {
 		this.props = m;
 	}
+
 }

@@ -86,81 +86,7 @@ public class GraphStorageService extends Service {
 		}
 
 		Threads.newThread_loop(1000, () -> true, () -> {
-			g.check();
-			double targetN = 10;
-			double targetD = 20;
-			double nbVertices = g.nbVertices();
-			double nbEdges = g.nbEdges();
-			double degree = nbEdges / nbVertices;
-
-			if (Math.random() < -0.5 * nbVertices / targetN + 1) {
-				g.addVertex();
-			}
-
-			if (Math.random() < 0.5 * nbVertices / targetN) {
-				g.removeVertex(g.pickRandomVertex());
-			}
-
-			if (Math.random() < -degree / targetD + 1) {
-				g.addEdge(g.pickRandomVertex(), g.pickRandomVertex());
-			}
-
-			if (Math.random() < degree / targetD) {
-				g.removeEdge(g.pickRandomEdge());
-			}
-
-			if (Math.random() < 0.4 && g.nbVertices() > 0) {
-				var u = g.pickRandomVertex();
-				var p = g.getVertexValue(u, "properties", () -> new HashMap<String, String>());
-				double pp = 0.5;
-
-				if (Math.random() < pp)
-					p.put(VertexProperties.scale.getName(), VertexProperties.scale.random());
-				if (Math.random() < pp)
-					p.put(VertexProperties.borderWidth.getName(), VertexProperties.borderWidth.random());
-				if (Math.random() < pp)
-					p.put(VertexProperties.borderColor.getName(), VertexProperties.borderColor.random());
-				if (Math.random() < pp)
-					p.put(VertexProperties.fillColor.getName(), VertexProperties.fillColor.random());
-				if (Math.random() < pp)
-					p.put(VertexProperties.hidden.getName(), VertexProperties.hidden.random());
-				if (Math.random() < pp)
-					p.put(VertexProperties.labelColor.getName(), VertexProperties.labelColor.random());
-				if (Math.random() < pp)
-					p.put(VertexProperties.label.getName(), VertexProperties.label.random());
-				if (Math.random() < pp)
-					p.put(VertexProperties.shape.getName(), VertexProperties.shape.random());
-				if (Math.random() < pp)
-					if (Math.random() < pp)
-						p.put("foo", "" + Math.random());
-				if (Math.random() < pp)
-					p.put("bar", "" + (Math.random() * 20));
-
-				g.setVertexValue(u, "properties", p);
-			}
-
-			if (Math.random() < 0.4 && g.nbEdges() > 0) {
-				var e = g.pickRandomEdge();
-				var p = g.getEdgeValue(e, "properties", () -> new HashMap<String, String>());
-				double pp = 0.5;
-
-				if (Math.random() < pp)
-					p.put(EdgeProperties.directed.getName(), EdgeProperties.directed.random());
-				if (Math.random() < pp)
-					p.put(EdgeProperties.arrowSize.getName(), EdgeProperties.arrowShape.random());
-				if (Math.random() < pp)
-					p.put(EdgeProperties.arrowShape.getName(), EdgeProperties.arrowShape.random());
-				if (Math.random() < pp)
-					p.put(EdgeProperties.color.getName(), EdgeProperties.color.random());
-				if (Math.random() < pp)
-					p.put(EdgeProperties.style.getName(), EdgeProperties.style.random());
-				if (Math.random() < pp)
-					p.put(EdgeProperties.label.getName(), EdgeProperties.label.random());
-				if (Math.random() < pp)
-					p.put(EdgeProperties.width.getName(), EdgeProperties.width.random());
-
-				g.setEdgeValue(e, "properties", p);
-			}
+			RandomEvolver.apply(g);
 		});
 	}
 
@@ -232,6 +158,7 @@ public class GraphStorageService extends Service {
 			i.to = ends[1];
 			i.props = g.getEdgeValue(e, "properties", () -> new HashMap<String, String>());
 			edges.add(i);
+			return true;
 		});
 
 		return edges;
@@ -263,6 +190,8 @@ public class GraphStorageService extends Service {
 
 		g.traverseVertices(u -> {
 			l.add(u);
+			return true;
+
 		});
 
 		return l;
@@ -278,6 +207,8 @@ public class GraphStorageService extends Service {
 			e.id = v;
 			e.props = g.getVertexValue(v, "properties", () -> new HashMap<String, String>());
 			vertices.add(e);
+			return true;
+
 		});
 
 		return vertices;
@@ -342,11 +273,13 @@ public class GraphStorageService extends Service {
 				gvp.put("width", VertexProperties.scale.toGraphviz(scale));
 				gvp.put("height", VertexProperties.scale.toGraphviz(scale));
 			}
-			
+
 //var labelColor = p.get(VertexProperties.labelColor.getName());
 
 			f(gvp, out);
 			out.println();
+			return true;
+
 		});
 
 		g.traverseEdges(e -> {
@@ -369,6 +302,8 @@ public class GraphStorageService extends Service {
 
 			f(gvp, out);
 			out.println();
+			return true;
+
 		});
 
 		out.println("}");

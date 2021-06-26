@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 import fr.cnrs.i3s.Cache;
-import it.unimi.dsi.fastutil.longs.LongConsumer;
+import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
 
@@ -74,12 +74,14 @@ public class FlatOnDiskElementSet extends OnDiskElementSet {
 	}
 
 	@Override
-	public void forEach(LongConsumer c) {
+	public void forEach(Long2BooleanFunction c) {
 		d.listRegularFiles().forEach(f -> {
 			String n = f.getName();
 
 			if (f.getName().indexOf(".") == -1) {
-				c.accept(Long.parseLong(f.getName()));
+				if (!c.get(Long.parseLong(f.getName()))) {
+					return;
+				}
 			}
 		});
 	}

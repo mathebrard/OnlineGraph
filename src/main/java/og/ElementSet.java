@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import it.unimi.dsi.fastutil.longs.LongConsumer;
+import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 
 public abstract class ElementSet {
 
@@ -18,7 +18,7 @@ public abstract class ElementSet {
 
 	public abstract Set<String> getKeys(long id);
 
-	public abstract void forEach(LongConsumer c);
+	public abstract void forEach(Long2BooleanFunction c);
 
 	public abstract void remove(long id);
 

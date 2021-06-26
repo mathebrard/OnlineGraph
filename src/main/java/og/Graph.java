@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
+import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongConsumer;
 import it.unimi.dsi.fastutil.longs.LongList;
 import og.GraphStorageService.EdgeInfo;
 import og.GraphStorageService.VertexInfo;
@@ -41,6 +41,50 @@ public abstract class Graph {
 
 	public long nbEdges() {
 		return edges.nbEntries();
+	}
+
+	public LongList findVertices(int nbExpected, Long2BooleanFunction condition) {
+		return findVertices(nbExpected, condition, null);
+	}
+
+	public LongList findVertices(int nbExpected, Long2BooleanFunction condition, Long2BooleanFunction otherwise) {
+		LongList l = new LongArrayList();
+
+		vertices.forEach(u -> {
+			if (condition.get(u)) {
+				l.add(u);
+
+				if (l.size() == nbExpected) {
+					return false;
+				}
+			}
+
+			return true;
+		});
+
+		if (otherwise != null && l.size() < nbExpected) {
+			vertices.forEach(u -> {
+				if (otherwise.get(u)) {
+					l.add(u);
+
+					if (l.size() == nbExpected) {
+						return false;
+					}
+				}
+
+				return true;
+			});
+		}
+
+		return l;
+	}
+
+	public boolean isIsolated(long u) {
+		return outEdges(u).isEmpty() && inEdges(u).isEmpty();
+	}
+
+	public boolean isSink(long u) {
+		return outEdges(u).isEmpty();
 	}
 
 	public void addVertex(long u) {
@@ -93,6 +137,8 @@ public abstract class Graph {
 
 			if (!vertices.contains(to))
 				throw new IllegalStateException("unknown destination : " + to);
+
+			return true;
 		});
 
 		vertices.forEach(v -> {
@@ -105,6 +151,8 @@ public abstract class Graph {
 				if (!edges.contains(e))
 					throw new IllegalStateException("unknown in edge : " + e);
 			}
+
+			return true;
 		});
 	}
 
@@ -163,11 +211,11 @@ public abstract class Graph {
 		return edges.random();
 	}
 
-	public void traverseVertices(LongConsumer c) {
+	public void traverseVertices(Long2BooleanFunction c) {
 		vertices.forEach(c);
 	}
 
-	public void traverseEdges(LongConsumer c) {
+	public void traverseEdges(Long2BooleanFunction c) {
 		edges.forEach(c);
 	}
 

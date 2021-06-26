@@ -1,6 +1,8 @@
 # OnlineGraph
 
-OnlineGraph is a cloud graph library. In OnlineGraph, graphs are stored on a server which also provide a set of Web services to manipulate them.
+OnlineGraph is a cloud graph library. 
+OnlineGraph comes in the form of a server that exposes a set of Web services for the storage and manipulation of graphs.
+It relies on Idawi.
 
 OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Université Côte d'Azur. Its development team is composed of:
 - Luc Hogie (project leader)
@@ -11,8 +13,6 @@ OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Universit�
 Use the following command to start the server: 
 java og.RunServer
 
-## Architecture
-OnlineGraph comes in the form of a server. It relies on Idawi.
 
 ## Graph model
 A graph is defined as a set of vertices relating to each other through links. Each of these elements (vertices and links) exhibit the properties:
@@ -38,12 +38,15 @@ A graph is defined as a set of vertices relating to each other through links. Ea
 #### Traversal
 - BFS
 - Random walk
+
 #### Clustering coefficient
 - of a single node
+
 ### Import formats
 - edge list
 - ADJ lists
 - GraphViz (under progress)
+
 ### Export formats
 - edge list
 - ADJ lists
@@ -51,6 +54,26 @@ A graph is defined as a set of vertices relating to each other through links. Ea
 - JSON
 
 ## Display
+
+Vertex properties:
+- shape
+- fill color
+- label
+- label color
+- scale
+- border color
+- bolder width
+- hidden
+
+Edge properties:
+- style
+- color
+- width
+- label
+- arrow shape
+- arrow size
+- directed
+
 ### Dynamic view
 The dynamic view for displaying graphs relies on the Vis JavaScript framework.
 

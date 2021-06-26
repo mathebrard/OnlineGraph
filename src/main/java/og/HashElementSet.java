@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
+import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongConsumer;
 
 public class HashElementSet extends ElementSet {
 
@@ -44,11 +44,13 @@ public class HashElementSet extends ElementSet {
 	}
 
 	@Override
-	public void forEach(LongConsumer c) {
+	public void forEach(Long2BooleanFunction c) {
 		var i = m.keySet().iterator();
 
 		while (i.hasNext()) {
-			c.accept(i.nextLong());
+			if (!c.get(i.nextLong())) {
+				return;
+			}
 		}
 	}
 
