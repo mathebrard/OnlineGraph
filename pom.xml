@@ -8,10 +8,10 @@
 	<version>0.0.1</version>
 	<name>Online Graph</name>
 	<description>A web distributed graph librarie</description>
-	<url>https://github.com/lhogie/toools</url>
+	<url>https://github.com/lhogie/onlinegraph</url>
 	<properties>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>14</maven.compiler.target>
+		<maven.compiler.source>14</maven.compiler.source>
 	</properties>
 	<licenses>
 		<license>
