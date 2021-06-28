@@ -141,7 +141,7 @@ public class GraphService extends Service {
 			var ends = g.edges.ends(e);
 			i.from = ends[0];
 			i.to = ends[1];
-			i.props = g.edges.get(e, "properties", () -> new HashMap<String, String>());
+			i.properties = g.edges.get(e, "properties", () -> new HashMap<String, String>());
 			edges.add(i);
 			return true;
 		});
@@ -151,7 +151,7 @@ public class GraphService extends Service {
 
 	public static class Info implements Serializable {
 		public long id;
-		Map<String, String> props;
+		Map<String, String> properties;
 	}
 
 	public static class EdgeInfo extends Info {
@@ -163,7 +163,7 @@ public class GraphService extends Service {
 
 	public static class GraphInfo implements Serializable {
 		public String name;
-		Map<String, String> props;
+		Map<String, String> properties;
 		List<VertexInfo> vertices;
 		List<EdgeInfo> edges;
 	}
@@ -190,7 +190,7 @@ public class GraphService extends Service {
 		g.vertices.forEach(v -> {
 			var e = new VertexInfo();
 			e.id = v;
-			e.props = g.vertices.get(v, "properties", () -> new HashMap<String, String>());
+			e.properties = g.vertices.get(v, "properties", () -> new HashMap<String, String>());
 			vertices.add(e);
 			return true;
 
@@ -205,7 +205,7 @@ public class GraphService extends Service {
 		var gi = new GraphInfo();
 		gi.edges = edges(gid);
 		gi.vertices = vertices(gid);
-		gi.props = g.getProperties();
+		gi.properties = g.getProperties();
 		return gi;
 	}
 
