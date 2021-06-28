@@ -35,6 +35,11 @@ public class VertexProperties {
 			return "shape";
 		}
 
+		@Override
+		public String getDefaultValue() {
+			return shapes.circle.name();
+		}
+
 	};
 
 	public static Property fillColor = new ColorProperty() {
@@ -42,17 +47,33 @@ public class VertexProperties {
 		public String getName() {
 			return "fillColor";
 		}
+
+		@Override
+		public String getDefaultValue() {
+			return "white";
+		}
+
 	};
 	public static Property borderColor = new ColorProperty() {
 		@Override
 		public String getName() {
 			return "borderColor";
 		}
+
+		@Override
+		public String getDefaultValue() {
+			return "black";
+		}
 	};
 	public static Property labelColor = new ColorProperty() {
 		@Override
 		public String getName() {
 			return "labelColor";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "black";
 		}
 	};
 	public static Property scale = new DoubleProperty(0.1, 2) {
@@ -62,11 +83,21 @@ public class VertexProperties {
 			return "scale";
 		}
 
+		@Override
+		public String getDefaultValue() {
+			return "1";
+		}
+
 	};
 	public static Property borderWidth = new IntProperty(10) {
 		@Override
 		public String getName() {
 			return "borderWidth";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "1";
 		}
 	};
 	public static Property label = new LabelProperty() {
@@ -76,12 +107,21 @@ public class VertexProperties {
 			return "label";
 		}
 
+		@Override
+		public String getDefaultValue() {
+			return "";
+		}
 	};
 	public static Property hidden = new BooleanProperty() {
 
 		@Override
 		public String getName() {
 			return "hidden";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "false";
 		}
 
 	};

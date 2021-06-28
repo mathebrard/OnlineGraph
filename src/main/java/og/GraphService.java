@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
@@ -61,29 +61,17 @@ public class GraphService extends Service {
 		m.put("demo_graph", g);
 
 		{
-			var p = new HashMap<String, String>();
+			var p = new TreeMap<String, String>();
 			p.put("background color", "dark grey");
-			p.put("default vertex size", "20");
-			p.put("default vertex borderWidth", "1");
-			p.put("default vertex image", "" + 30);
-			p.put("default vertex color.border", "blue");
-			p.put("default vertex background color", "white");
-			p.put("default vertex hidden", "false");
-			p.put("default vertex label", "vertex");
-			p.put("default vertex mass", "1");
-			p.put("default vertex shape", "circle");
-			p.put("default vertex value", "" + 13);
-			p.put("default vertex foo", "" + 1);
-			p.put("default vertex bar", "hello");
+	
+			VertexProperties.forEach(pa ->  {
+				p.put("default vertex " + pa.getName(), pa.getDefaultValue());
+			});
 
-			p.put("default edge directed", "yes");
-			p.put("default edge arrow image", "http://img.com/arrow.png");
-			p.put("default edge arrow scale", "1");
-			p.put("default edge arrow type", "round");
-			p.put("default edge color", "black");
-			p.put("default edge dashes", "true");
-			p.put("default edge label", "relation");
-			p.put("default edge width", "1");
+			EdgeProperties.forEach(pa ->  {
+				p.put("default edge " + pa.getName(), pa.getDefaultValue());
+			});
+
 			g.setProperties(p);
 		}
 

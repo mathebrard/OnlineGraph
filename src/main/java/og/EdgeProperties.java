@@ -1,6 +1,7 @@
 package og;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
 import og.VertexProperties.shapes;
 
@@ -8,7 +9,7 @@ public class EdgeProperties {
 	enum arrowShapes {
 		none, normal, diamond;
 	}
-	
+
 	public static Property arrowSize = new IntProperty(40) {
 
 		@Override
@@ -16,6 +17,10 @@ public class EdgeProperties {
 			return "arrowSize";
 		}
 
+		@Override
+		public String getDefaultValue() {
+			return "20";
+		}
 	};
 	public static Property width = new IntProperty(10) {
 
@@ -24,6 +29,10 @@ public class EdgeProperties {
 			return "width";
 		}
 
+		@Override
+		public String getDefaultValue() {
+			return "1";
+		}
 	};
 	public static Property label = new LabelProperty() {
 
@@ -32,12 +41,21 @@ public class EdgeProperties {
 			return "label";
 		}
 
+		@Override
+		public String getDefaultValue() {
+			return "";
+		}
 	};
 	public static Property color = new ColorProperty() {
 
 		@Override
 		public String getName() {
 			return "color";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "black";
 		}
 	};
 
@@ -46,6 +64,11 @@ public class EdgeProperties {
 		@Override
 		public String getName() {
 			return "directed";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "true";
 		}
 	};
 
@@ -62,21 +85,24 @@ public class EdgeProperties {
 
 		@Override
 		public String random() {
-			return shapes.values()[new Random().nextInt(shapes.values().length)].name();
+			return styles.values()[new Random().nextInt(styles.values().length)].name();
 		}
 
 		@Override
 		public boolean accept(String value) {
-			return shapes.valueOf(value) != null;
+			return styles.valueOf(value) != null;
 		}
 
 		@Override
 		public String getName() {
 			return "style";
 		}
+
+		@Override
+		public String getDefaultValue() {
+			return styles.solid.name();
+		}
 	};
-
-
 
 	public static Property arrowShape = new Property() {
 
@@ -99,5 +125,20 @@ public class EdgeProperties {
 		public String getName() {
 			return "arrowShape";
 		}
+
+		@Override
+		public String getDefaultValue() {
+			return arrowShapes.normal.name();
+		}
 	};
+
+	public static void forEach(Consumer<Property> p) {
+		p.accept(arrowShape);
+		p.accept(arrowSize);
+		p.accept(color);
+		p.accept(directed);
+		p.accept(label);
+		p.accept(style);
+		p.accept(width);
+	}
 }

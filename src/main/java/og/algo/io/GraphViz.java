@@ -17,6 +17,18 @@ public class GraphViz {
 				+ " edges");
 		out.println("digraph {");
 
+		out.print("node ");
+		var m = new HashMap<String, String>();
+		VertexProperties.forEach(p -> m.put(p.getName(), p.getDefaultValue()));
+		map2string(m, out);
+
+		out.print("edge ");
+		m.clear();
+		EdgeProperties.forEach(p -> m.put(p.getName(), p.getDefaultValue()));
+		map2string(m, out);
+
+		out.println();
+
 		g.vertices.forEach(u -> {
 			out.print("\t" + u);
 			var p = g.vertices.get(u, "properties", () -> new HashMap<String, String>());
@@ -59,13 +71,11 @@ public class GraphViz {
 
 //var labelColor = p.get(VertexProperties.labelColor.getName());
 
-			
-			
-			f(gvp, out);
+			map2string(gvp, out);
 			out.println();
 			return true;
 		});
-		
+
 		g.edges.forEach(e -> {
 			var ends = g.edges.ends(e);
 			out.print("\t" + ends[0] + " -> " + ends[1]);
@@ -84,7 +94,7 @@ public class GraphViz {
 				gvp.put("style", EdgeProperties.style.toGraphviz(style));
 			}
 
-			f(gvp, out);
+			map2string(gvp, out);
 			out.println();
 			return true;
 
@@ -93,12 +103,15 @@ public class GraphViz {
 		out.println("}");
 		out.flush();
 
-		var dot =new String(bos.toByteArray());
-		return dot ;
+		var dot = new String(bos.toByteArray());
+		return dot;
 	}
 
-	private static void f(Map<String, String> p, PrintStream out) {
+	private static void map2string(Map<String, String> p, PrintStream out) {
 		// p.keySet().removeIf(k -> p.get(k) == null);
+
+		if (p.isEmpty())
+			return;
 
 		out.print("\t [");
 		var i = p.entrySet().iterator();

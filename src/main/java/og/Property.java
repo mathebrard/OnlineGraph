@@ -7,5 +7,7 @@ public abstract class Property {
 
 	public abstract String toGraphviz(String value);
 
-	protected abstract String random();
+	public abstract String random();
+
+	public abstract String getDefaultValue();
 }
