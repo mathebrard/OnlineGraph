@@ -92,12 +92,12 @@ public class GraphStorageService extends Service {
 
 	private void gnm(Graph g, int n, int m) {
 		for (int i = 0; i < n; ++i) {
-			g.addVertex();
+			g.vertices.add();
 		}
 
 		for (int i = 0; i < m; ++i) {
-			var u = g.pickRandomVertex();
-			var v = g.pickRandomVertex();
+			var u = g.vertices.random();
+			var v = g.vertices.random();
 			g.addEdge(u, v);
 		}
 	}
@@ -117,7 +117,7 @@ public class GraphStorageService extends Service {
 
 	@IdawiOperation
 	public long addRandomVertex(String graphID) {
-		return getGraph(graphID).addVertex();
+		return getGraph(graphID).vertices.add();
 	}
 
 	@IdawiOperation
@@ -156,7 +156,7 @@ public class GraphStorageService extends Service {
 			var ends = g.ends(e);
 			i.from = ends[0];
 			i.to = ends[1];
-			i.props = g.getEdgeValue(e, "properties", () -> new HashMap<String, String>());
+			i.props = g.edges.get(e, "properties", () -> new HashMap<String, String>());
 			edges.add(i);
 			return true;
 		});
@@ -205,7 +205,7 @@ public class GraphStorageService extends Service {
 		g.traverseVertices(v -> {
 			var e = new VertexInfo();
 			e.id = v;
-			e.props = g.getVertexValue(v, "properties", () -> new HashMap<String, String>());
+			e.props = g.vertices.get(v, "properties", () -> new HashMap<String, String>());
 			vertices.add(e);
 			return true;
 
@@ -231,12 +231,13 @@ public class GraphStorageService extends Service {
 		var g = getGraph(gid);
 		var bos = new ByteArrayOutputStream();
 		var out = new PrintStream(bos);
-		out.println("# graph \"" + gid + "\" has " + g.nbVertices() + " vertices and " + g.nbEdges() + " edges");
+		out.println("# graph \"" + gid + "\" has " + g.vertices.nbEntries() + " vertices and " + g.edges.nbEntries()
+				+ " edges");
 		out.println("digraph {");
 
 		g.traverseVertices(u -> {
 			out.print("\t" + u);
-			var p = g.getVertexValue(u, "properties", () -> new HashMap<String, String>());
+			var p = g.vertices.get(u, "properties", () -> new HashMap<String, String>());
 			var gvp = new HashMap<String, String>();
 
 			var shape = p.get(VertexProperties.shape.getName());
@@ -285,7 +286,7 @@ public class GraphStorageService extends Service {
 		g.traverseEdges(e -> {
 			var ends = g.ends(e);
 			out.print("\t" + ends[0] + " -> " + ends[1]);
-			var p = g.getEdgeValue(e, "properties", () -> new HashMap<String, String>());
+			var p = g.edges.get(e, "properties", () -> new HashMap<String, String>());
 			var gvp = new HashMap<String, String>();
 
 			var arrowShape = p.get(EdgeProperties.arrowShape.getName());
@@ -339,8 +340,8 @@ public class GraphStorageService extends Service {
 		var g = getGraph(gid);
 		var m = new HashMap<>();
 		m.put("id", gid);
-		m.put("nbVertices", g.nbVertices());
-		m.put("nbEdges", g.nbEdges());
+		m.put("nbVertices", g.vertices.nbEntries());
+		m.put("nbEdges", g.edges.nbEntries());
 		return m;
 	}
 
@@ -353,13 +354,13 @@ public class GraphStorageService extends Service {
 	@IdawiOperation
 	public long pickRandomVertex(String gid) {
 		var g = getGraph(gid);
-		return g.pickRandomVertex();
+		return g.vertices.random();
 	}
 
 	@IdawiOperation
 	public long pickRandomEdge(String gid) {
 		var g = getGraph(gid);
-		return g.pickRandomEdge();
+		return g.edges.random();
 	}
 
 	@IdawiOperation

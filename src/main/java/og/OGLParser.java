@@ -31,7 +31,7 @@ public class OGLParser {
 			if (line.startsWith("clear")) {
 				g.clear();
 			}else if (line.startsWith("add vertex")) {
-				g.addVertex();
+				g.vertices.add();
 			}else if (line.startsWith("set vertex ")) {
 //				String 
 //				g.addVertex();

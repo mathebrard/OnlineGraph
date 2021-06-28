@@ -15,9 +15,9 @@ java og.RunServer
 
 
 ## Graph model
-A graph is defined as a set of vertices relating to each other through links. Each of these elements (vertices and links) exhibit the properties:
+A graph is defined as a set of vertices relating to each other through links. Each of these elements (vertices and links) exhibit the following properties:
 - they are identified by a 64-bit integer
-- they are associated to a named data chunks
+- they are associated to named data chunks (this data chunks can be retrieved independantly)
 
 ## API
 ### Primitives
@@ -29,10 +29,14 @@ A graph is defined as a set of vertices relating to each other through links. Ea
 - *forEachVertex(long u, lambda)*
 - *forEachEdge(long e, lambda)*
 - *forEachOutEdge(long u, lamba f(u) -> bool)*
+- *find(int nbExcpected, primaryCondition lambda, alternativeCondition lambda)* returns a set of nbExcpected elements matching the primary condition, otherwise the alternative one.
 
 #### Dealing with data
 - *get(long vertex/edge, String key)* returns the data associated to the given vertex or edge.
 - set(long vertex/edge, String key)
+
+#### Graph dynamics
+- *changes(long vertex/edge, long second)* returns the list of changes that occured on the given graph from the given moment in time.
 
 ### Algorithms
 #### Traversal
@@ -48,15 +52,15 @@ A graph is defined as a set of vertices relating to each other through links. Ea
 - GraphViz (under progress)
 
 ### Export formats
+- JSON
 - edge list
 - ADJ lists
-- GraphViz
-- JSON
+- GraphViz (as *dot* text or as any output image produced by *dot*, *circo*, *neato* and *fdp*)
 
 ## Display
 
 Vertex properties:
-- shape
+- shape (point, circle, square, triangle, rectangle)
 - fill color
 - label
 - label color
@@ -66,11 +70,11 @@ Vertex properties:
 - hidden
 
 Edge properties:
-- style
+- style (solid, dashed)
 - color
 - width
 - label
-- arrow shape
+- arrow shape (none, normal, diamond)
 - arrow size
 - directed
 

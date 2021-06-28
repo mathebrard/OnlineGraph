@@ -3,7 +3,6 @@ package og;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -12,17 +11,11 @@ import og.GraphStorageService.EdgeInfo;
 import og.GraphStorageService.VertexInfo;
 
 public abstract class Graph {
-	protected final ElementSet vertices, edges;
+	public final ElementSet vertices, edges;
 
 	public Graph(ElementSet vertices, ElementSet edges) {
 		this.vertices = vertices;
 		this.edges = edges;
-	}
-
-	public long addVertex() {
-		long u = ThreadLocalRandom.current().nextLong();
-		addVertex(u);
-		return u;
 	}
 
 	// graph-related methods
@@ -34,50 +27,6 @@ public abstract class Graph {
 	public abstract Map<String, String> getProperties();
 
 	public abstract void setProperties(Map<String, String> m);
-
-	public long nbVertices() {
-		return vertices.nbEntries();
-	}
-
-	public long nbEdges() {
-		return edges.nbEntries();
-	}
-
-	public LongList findVertices(int nbExpected, Long2BooleanFunction condition) {
-		return findVertices(nbExpected, condition, null);
-	}
-
-	public LongList findVertices(int nbExpected, Long2BooleanFunction condition, Long2BooleanFunction otherwise) {
-		LongList l = new LongArrayList();
-
-		vertices.forEach(u -> {
-			if (condition.get(u)) {
-				l.add(u);
-
-				if (l.size() == nbExpected) {
-					return false;
-				}
-			}
-
-			return true;
-		});
-
-		if (otherwise != null && l.size() < nbExpected) {
-			vertices.forEach(u -> {
-				if (otherwise.get(u)) {
-					l.add(u);
-
-					if (l.size() == nbExpected) {
-						return false;
-					}
-				}
-
-				return true;
-			});
-		}
-
-		return l;
-	}
 
 	public boolean isIsolated(long u) {
 		return outEdges(u).isEmpty() && inEdges(u).isEmpty();
@@ -114,8 +63,8 @@ public abstract class Graph {
 		long e = ThreadLocalRandom.current().nextLong();
 		edges.add(e);
 		edges.set(e, "ends", new long[] { from, to });
-		vertices.alter(from, "outEdges", null, (LongList outs) -> outs.add(e));
-		vertices.alter(to, "inEdges", null, (LongList ins) -> ins.add(e));
+		vertices.alter(from, "outEdges", () -> new LongArrayList(), (LongList outs) -> outs.add(e));
+		vertices.alter(to, "inEdges", () -> new LongArrayList(), (LongList ins) -> ins.add(e));
 //		vertices.alter(from, "outVertices", null, (LongList outs) -> outs.add(to));
 		var i = new EdgeInfo();
 		i.id = e;
@@ -167,22 +116,6 @@ public abstract class Graph {
 		addChange(new Change.RemoveEdge(e));
 	}
 
-	public <V> V getVertexValue(long u, String key, Supplier<V> defaultValueSupplier) {
-		return vertices.get(u, key, defaultValueSupplier);
-	}
-
-	public void setVertexValue(long u, String key, Object p) {
-		vertices.set(u, key, p);
-	}
-
-	public <E> E getEdgeValue(long e, String key, Supplier<E> defaultValueSupplier) {
-		return (E) edges.get(e, key, defaultValueSupplier);
-	}
-
-	public void setEdgeValue(long e, String key, Object p) {
-		edges.set(e, key, p);
-	}
-
 	public long[] ends(long e) {
 		return (long[]) edges.get(e, "ends", null);
 	}
@@ -196,19 +129,13 @@ public abstract class Graph {
 	}
 
 	public LongList inEdges(long v) {
-		return vertices.get(v, "inEdges", null);
+		return vertices.get(v, "inEdges", () -> emptyList);
 	}
+
+	public final LongList emptyList = new LongArrayList();
 
 	public LongList outEdges(long v) {
-		return vertices.get(v, "outEdges", null);
-	}
-
-	public long pickRandomVertex() {
-		return vertices.random();
-	}
-
-	public long pickRandomEdge() {
-		return edges.random();
+		return vertices.get(v, "outEdges", () -> emptyList);
 	}
 
 	public void traverseVertices(Long2BooleanFunction c) {

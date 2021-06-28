@@ -5,7 +5,10 @@ import java.util.Random;
 import og.VertexProperties.shapes;
 
 public class EdgeProperties {
-
+	enum arrowShapes {
+		none, normal, diamond;
+	}
+	
 	public static Property arrowSize = new IntProperty(40) {
 
 		@Override
@@ -73,9 +76,7 @@ public class EdgeProperties {
 		}
 	};
 
-	enum arrowShapes {
-		none, normal, diamond, box;
-	}
+
 
 	public static Property arrowShape = new Property() {
 

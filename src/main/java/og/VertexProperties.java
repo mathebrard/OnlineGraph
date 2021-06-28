@@ -6,11 +6,11 @@ import java.util.function.Consumer;
 public class VertexProperties {
 
 	enum arrowTypes {
-		box, crow, diamond, dot, normal, vee
+		diamond, normal
 	};
 
 	enum shapes {
-		box, polygon, ellipse, oval, circle, point, egg, triangle
+		point, circle, square, triangle, rectangle
 	}
 
 	public static Property shape = new Property() {

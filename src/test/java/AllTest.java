@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import og.ElementSet;
 import og.FlatOnDiskDiskGraph;
 import og.FlatOnDiskElementSet;
+import og.Graph;
 import og.HashElementSet;
 import og.OnDiskElementSet;
 import toools.io.file.Directory;
@@ -24,20 +25,20 @@ public class AllTest {
 		}
 
 		for (int i = 0; i < 10; ++i) {
-			g.addVertex();
+			g.vertices.add();
 			System.out.println("add vertex " + i);
 		}
 
 		for (int i = 0; i < 10; ++i) {
-			var from = g.pickRandomVertex();
-			var to = g.pickRandomVertex();
+			var from = g.vertices.random();
+			var to = g.vertices.random();
 			g.addEdge(from, to);
 			System.out.println("add edge " + i);
 		}
 
-		while (g.nbEdges() > 0) {
-			System.out.println("remove edge from " + g.nbEdges());
-			var e = g.pickRandomEdge();
+		while (g.edges.nbEntries() > 0) {
+			System.out.println("remove edge from " + g.edges.nbEntries());
+			var e = g.edges.random();
 			g.removeEdge(e);
 		}
 	}

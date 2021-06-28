@@ -2,7 +2,6 @@ package og;
 
 import java.io.Serializable;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import idawi.Component;
 import idawi.IdawiOperation;
@@ -12,7 +11,6 @@ import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import toools.io.Cout;
-import toools.progression.LongProcess;
 
 public class Traversals extends Service {
 	public Traversals(Component component) {
@@ -40,11 +38,11 @@ public class Traversals extends Service {
 		var g = getGraph(graphID);
 
 		if (source == -1) {
-			source = g.pickRandomVertex();
+			source = g.vertices.random();
 		}
 
 		Cout.debugSuperVisible("bfs");
-		long nbVertices = g.nbVertices();
+		long nbVertices = g.vertices.nbEntries();
 		BFSResult r = new BFSResult();
 		r.visitOrder = new LongArrayList();
 
@@ -104,7 +102,7 @@ public class Traversals extends Service {
 		var g = getGraph(graphID);
 
 		if (source == -1) {
-			source = g.pickRandomVertex();
+			source = g.vertices.random();
 		}
 
 		Cout.debugSuperVisible("random search");
@@ -117,7 +115,7 @@ public class Traversals extends Service {
 
 			for (var e : g.outEdges(source)) {
 				var s = g.destination(e);
-				
+
 				if (!l.contains(s)) {
 					succ.add(s);
 				}
@@ -135,12 +133,12 @@ public class Traversals extends Service {
 	@IdawiOperation
 	public double clusteringCoefficient(String graphID, long v) {
 		var g = getGraph(graphID);
-		var neighbors = (LongList) g.getVertexValue(v, "outNeighbors", null);
+		var neighbors = (LongList) g.vertices.get(v, "outNeighbors", null);
 
 		int count = 0;
 
 		for (var n : neighbors) {
-			for (var nn : (LongList) g.getVertexValue(n, "outNeighbors", null)) {
+			for (var nn : (LongList) g.vertices.get(n, "outNeighbors", null)) {
 				if (neighbors.contains(nn)) {
 					++count;
 				}
