@@ -13,8 +13,7 @@ public class RunServer {
 		var descriptor = new ComponentDescriptor();
 		descriptor.friendlyName = "og";
 		Component c = new Component(descriptor);
-		c.lookupService(ServiceManager.class).ensureStarted(GraphStorageService.class);
-		c.lookupService(ServiceManager.class).ensureStarted(Traversals.class);
+		c.lookupService(ServiceManager.class).ensureStarted(GraphService.class);
 		c.lookupService(ServiceManager.class).ensureStarted(RESTService.class);
 		var rest = c.lookupService(RESTService.class);
 		int port = RESTService.DEFAULT_PORT;

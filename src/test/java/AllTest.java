@@ -5,7 +5,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import og.ElementSet;
 import og.FlatOnDiskDiskGraph;
 import og.FlatOnDiskElementSet;
-import og.Graph;
 import og.HashElementSet;
 import og.OnDiskElementSet;
 import toools.io.file.Directory;
@@ -18,6 +17,7 @@ public class AllTest {
 
 		FlatOnDiskDiskGraph g = new FlatOnDiskDiskGraph(new Directory(Directory.getSystemTempDirectory(), "g"));
 		System.out.println("graph is in " + g);
+
 		if (g.exists()) {
 			g.clear();
 		} else {

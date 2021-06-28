@@ -2,7 +2,7 @@ package og;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import og.GraphStorageService.VertexInfo;
+import og.GraphService.VertexInfo;
 
 public class VertexSet extends GraphElementSet {
 

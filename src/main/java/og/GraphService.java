@@ -2,7 +2,6 @@ package og;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -27,6 +26,9 @@ import idawi.IdawiOperation;
 import idawi.Service;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import og.algo.BFS;
+import og.algo.CC;
+import og.algo.RandomWalk;
 import toools.gui.GraphViz;
 import toools.gui.GraphViz.COMMAND;
 import toools.gui.GraphViz.OUTPUT_FORMAT;
@@ -34,7 +36,7 @@ import toools.io.Cout;
 import toools.io.file.Directory;
 import toools.thread.Threads;
 
-public class GraphStorageService extends Service {
+public class GraphService extends Service {
 
 	public static final Directory baseDirectory = new Directory("$HOME/.og");
 
@@ -42,7 +44,7 @@ public class GraphStorageService extends Service {
 		baseDirectory.ensureExists();
 	}
 
-	public GraphStorageService(Component component) {
+	public GraphService(Component component) {
 		super(component);
 
 		baseDirectory.listDirectories().forEach(d -> {
@@ -223,88 +225,7 @@ public class GraphStorageService extends Service {
 
 	@IdawiOperation
 	public String toDOT(String gid) {
-		var g = getGraph(gid);
-		var bos = new ByteArrayOutputStream();
-		var out = new PrintStream(bos);
-		out.println("# graph \"" + gid + "\" has " + g.vertices.nbEntries() + " vertices and " + g.edges.nbEntries()
-				+ " edges");
-		out.println("digraph {");
-
-		g.vertices.forEach(u -> {
-			out.print("\t" + u);
-			var p = g.vertices.get(u, "properties", () -> new HashMap<String, String>());
-			var gvp = new HashMap<String, String>();
-
-			var shape = p.get(VertexProperties.shape.getName());
-
-			if (shape != null) {
-				gvp.put("shape", VertexProperties.shape.toGraphviz(shape));
-			}
-
-			var borderColor = p.get(VertexProperties.borderColor.getName());
-
-			if (borderColor != null) {
-				gvp.put("color", VertexProperties.borderColor.toGraphviz(borderColor));
-			}
-
-			var fillColor = p.get(VertexProperties.fillColor.getName());
-
-			if (fillColor != null) {
-				gvp.put("style", "filled");
-				gvp.put("fillcolor", VertexProperties.fillColor.toGraphviz(fillColor));
-			}
-
-			var borderWidth = p.get(VertexProperties.borderWidth.getName());
-			gvp.put("penwidth", borderWidth == null ? "1" : "" + borderWidth);
-
-			var label = p.get(VertexProperties.label.getName());
-
-			if (label != null) {
-				gvp.put("label", VertexProperties.label.toGraphviz(label));
-			}
-			var hidden = p.get(VertexProperties.hidden.getName());
-			var scale = p.get(VertexProperties.scale.getName());
-
-			if (scale != null) {
-				gvp.put("width", VertexProperties.scale.toGraphviz(scale));
-				gvp.put("height", VertexProperties.scale.toGraphviz(scale));
-			}
-
-//var labelColor = p.get(VertexProperties.labelColor.getName());
-
-			f(gvp, out);
-			out.println();
-			return true;
-
-		});
-
-		g.edges.forEach(e -> {
-			var ends = g.edges.ends(e);
-			out.print("\t" + ends[0] + " -> " + ends[1]);
-			var p = g.edges.get(e, "properties", () -> new HashMap<String, String>());
-			var gvp = new HashMap<String, String>();
-
-			var arrowShape = p.get(EdgeProperties.arrowShape.getName());
-
-			if (arrowShape != null) {
-				gvp.put("arrowhead", EdgeProperties.arrowShape.toGraphviz(arrowShape));
-			}
-
-			var style = p.get(EdgeProperties.style.getName());
-
-			if (style != null) {
-				gvp.put("style", EdgeProperties.style.toGraphviz(style));
-			}
-
-			f(gvp, out);
-			out.println();
-			return true;
-
-		});
-
-		out.println("}");
-		out.flush();
-		return new String(bos.toByteArray());
+		return og.algo.io.GraphViz.toDOT(getGraph(gid));
 	}
 
 	@IdawiOperation
@@ -312,23 +233,7 @@ public class GraphStorageService extends Service {
 		return GraphViz.toBytes(COMMAND.valueOf(command), toDOT(gid), OUTPUT_FORMAT.valueOf(outputFormat));
 	}
 
-	private void f(Map<String, String> p, PrintStream out) {
-		// p.keySet().removeIf(k -> p.get(k) == null);
 
-		out.print("\t [");
-		var i = p.entrySet().iterator();
-
-		while (i.hasNext()) {
-			var e = i.next();
-			out.print(e.getKey() + "=\"" + e.getValue() + "\"");
-
-			if (i.hasNext()) {
-				out.print(", ");
-			}
-		}
-
-		out.print("]");
-	}
 
 	@IdawiOperation
 	public Map getGraphInfo(String gid) {
@@ -438,4 +343,18 @@ public class GraphStorageService extends Service {
 		}
 	}
 
+	@IdawiOperation
+	public BFS.BFSResult bfs(String graphID, long source, long maxDistance, long maxNbVerticesVisited) {
+		return BFS.bfs(getGraph(graphID), source, maxDistance, maxNbVerticesVisited);
+	}
+
+	@IdawiOperation
+	public LongList randomWalk(String graphID, long source, long maxDistance) {
+		return RandomWalk.randomWalk(getGraph(graphID), source, maxDistance);
+	}
+
+	@IdawiOperation
+	public double clusteringCoefficient(String graphID, long v) {
+		return CC.clusteringCoefficient(getGraph(graphID), v);
+	}
 }

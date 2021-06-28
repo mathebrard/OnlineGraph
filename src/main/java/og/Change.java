@@ -2,8 +2,8 @@ package og;
 
 import java.io.Serializable;
 
-import og.GraphStorageService.EdgeInfo;
-import og.GraphStorageService.VertexInfo;
+import og.GraphService.EdgeInfo;
+import og.GraphService.VertexInfo;
 import toools.util.Date;
 
 public class Change implements Serializable {

@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import og.GraphStorageService.EdgeInfo;
+import og.GraphService.EdgeInfo;
 
 public class EdgeSet extends GraphElementSet {
 
