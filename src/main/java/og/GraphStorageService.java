@@ -98,7 +98,7 @@ public class GraphStorageService extends Service {
 		for (int i = 0; i < m; ++i) {
 			var u = g.vertices.random();
 			var v = g.vertices.random();
-			g.addEdge(u, v);
+			g.edges.add(u, v);
 		}
 	}
 
@@ -122,27 +122,22 @@ public class GraphStorageService extends Service {
 
 	@IdawiOperation
 	public void addVertex(String graphID, long u) {
-		getGraph(graphID).addVertex(u);
+		getGraph(graphID).vertices.add(u);
 	}
 
 	@IdawiOperation
 	public void removeVertex(String graphID, long v) {
-		getGraph(graphID).removeVertex(v);
-	}
-
-	@IdawiOperation
-	public void clear(String graphID) {
-		getGraph(graphID).clear();
+		getGraph(graphID).vertices.remove(v);
 	}
 
 	@IdawiOperation
 	public long addEdge(String graphID, long from, long to) {
-		return getGraph(graphID).addEdge(from, to);
+		return getGraph(graphID).edges.add(from, to);
 	}
 
 	@IdawiOperation
 	public void removeEdge(String graphID, long e) {
-		getGraph(graphID).removeEdge(e);
+		getGraph(graphID).edges.remove(e);
 	}
 
 	@IdawiOperation
@@ -150,10 +145,10 @@ public class GraphStorageService extends Service {
 		var g = getGraph(gid);
 		List<EdgeInfo> edges = new ArrayList<>();
 
-		g.traverseEdges(e -> {
+		g.edges.forEach(e -> {
 			var i = new EdgeInfo();
 			i.id = e;
-			var ends = g.ends(e);
+			var ends = g.edges.ends(e);
 			i.from = ends[0];
 			i.to = ends[1];
 			i.props = g.edges.get(e, "properties", () -> new HashMap<String, String>());
@@ -188,7 +183,7 @@ public class GraphStorageService extends Service {
 		var g = getGraph(gid);
 		LongList l = new LongArrayList();
 
-		g.traverseVertices(u -> {
+		g.vertices.forEach(u -> {
 			l.add(u);
 			return true;
 
@@ -202,7 +197,7 @@ public class GraphStorageService extends Service {
 		var g = getGraph(gid);
 		List<VertexInfo> vertices = new ArrayList<>();
 
-		g.traverseVertices(v -> {
+		g.vertices.forEach(v -> {
 			var e = new VertexInfo();
 			e.id = v;
 			e.props = g.vertices.get(v, "properties", () -> new HashMap<String, String>());
@@ -235,7 +230,7 @@ public class GraphStorageService extends Service {
 				+ " edges");
 		out.println("digraph {");
 
-		g.traverseVertices(u -> {
+		g.vertices.forEach(u -> {
 			out.print("\t" + u);
 			var p = g.vertices.get(u, "properties", () -> new HashMap<String, String>());
 			var gvp = new HashMap<String, String>();
@@ -283,8 +278,8 @@ public class GraphStorageService extends Service {
 
 		});
 
-		g.traverseEdges(e -> {
-			var ends = g.ends(e);
+		g.edges.forEach(e -> {
+			var ends = g.edges.ends(e);
 			out.print("\t" + ends[0] + " -> " + ends[1]);
 			var p = g.edges.get(e, "properties", () -> new HashMap<String, String>());
 			var gvp = new HashMap<String, String>();
@@ -401,7 +396,7 @@ public class GraphStorageService extends Service {
 			var t = newLine.trim().split("[^0-9]+");
 			long src = Long.valueOf(t[0]);
 			long dest = Long.valueOf(t[1]);
-			g.addEdge(src, dest);
+			g.edges.add(src, dest);
 		});
 
 		return "ok";
@@ -417,7 +412,7 @@ public class GraphStorageService extends Service {
 
 			for (int i = 1; i < t.length; ++i) {
 				long dest = Long.valueOf(t[i]);
-				g.addEdge(src, dest);
+				g.edges.add(src, dest);
 				nbEdges.incrementAndGet();
 			}
 		});

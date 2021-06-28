@@ -12,7 +12,7 @@ public class FlatOnDiskDiskGraph extends DiskGraph {
 	@Override
 	public void create() {
 		super.create();
-		((FlatOnDiskElementSet) vertices).ensureExists();
-		((FlatOnDiskElementSet) edges).ensureExists();
+		((FlatOnDiskElementSet) vertices.impl).ensureExists();
+		((FlatOnDiskElementSet) edges.impl).ensureExists();
 	}
 }

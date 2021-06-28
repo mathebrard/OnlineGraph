@@ -29,9 +29,9 @@ public abstract class ElementSet {
 
 	public abstract void forEach(Long2BooleanFunction c);
 
-	protected abstract void remove(long id);
+	public abstract void remove(long id);
 
-	protected abstract void clear();
+	public abstract void clear();
 
 	public abstract <E> E get(long id, String key, Supplier<E> defaultValueSupplier);
 

@@ -7,6 +7,10 @@ import og.GraphStorageService.VertexInfo;
 import toools.util.Date;
 
 public class Change implements Serializable {
+	public static class Clear extends Change {
+
+	}
+
 	public final double date = Date.time();
 	public final String type;
 

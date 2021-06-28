@@ -3,6 +3,7 @@ package og;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 
@@ -20,23 +21,20 @@ import java.io.Reader;
 public class OGLParser {
 	public void parse(Graph g, Reader in) throws IOException {
 		var bis = new BufferedReader(in);
-		
+
 		while (true) {
 			var line = bis.readLine();
-			
+
 			if (line == null) {
 				return;
 			}
 
-			if (line.startsWith("clear")) {
-				g.clear();
-			}else if (line.startsWith("add vertex")) {
-				g.vertices.add();
-			}else if (line.startsWith("set vertex ")) {
+			if (line.startsWith("add vertex")) {
+				g.vertices.add(ThreadLocalRandom.current().nextLong());
+			} else if (line.startsWith("set vertex ")) {
 //				String 
 //				g.addVertex();
 			}
-
 
 		}
 	}

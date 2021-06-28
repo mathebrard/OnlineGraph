@@ -14,32 +14,32 @@ public class RandomEvolver {
 
 		if (Math.random() < -0.5 * nbVertices / targetN + 1) {
 			long u = g.vertices.add();
-			var to = g.vertices.find(1, condition -> !g.isIsolated(condition), otherwise -> true);
-			g.addEdge(u, to.getLong(0));
+			var to = g.vertices.find(1, condition -> !g.vertices.isIsolated(condition), otherwise -> true);
+			g.edges.add(u, to.getLong(0));
 		}
 
 		if (Math.random() < 0.5 * nbVertices / targetN) {
-			g.removeVertex(g.vertices.random());
+			g.vertices.remove(g.vertices.random());
 		}
 
 		if (Math.random() < -0.5 * degree / targetD + 1) {
-			var from = g.vertices.find(1, u -> g.isIsolated(u));
+			var from = g.vertices.find(1, u -> g.vertices.isIsolated(u));
 
 			while (from.isEmpty()) {
 				from.add(g.vertices.random());
 			}
 
-			var to = g.vertices.find(1, u -> !g.isIsolated(u));
+			var to = g.vertices.find(1, u -> !g.vertices.isIsolated(u));
 
 			while (to.isEmpty()) {
 				to.add(g.vertices.random());
 			}
 
-			g.addEdge(from.getLong(0), to.getLong(0));
+			g.edges.add(from.getLong(0), to.getLong(0));
 		}
 
 		if (Math.random() < 0.5 * degree / targetD) {
-			g.removeEdge(g.edges.random());
+			g.edges.remove(g.edges.random());
 		}
 
 		if (Math.random() < 0.4 && g.vertices.nbEntries() > 0) {

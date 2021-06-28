@@ -32,14 +32,14 @@ public class AllTest {
 		for (int i = 0; i < 10; ++i) {
 			var from = g.vertices.random();
 			var to = g.vertices.random();
-			g.addEdge(from, to);
+			g.edges.add(from, to);
 			System.out.println("add edge " + i);
 		}
 
 		while (g.edges.nbEntries() > 0) {
 			System.out.println("remove edge from " + g.edges.nbEntries());
 			var e = g.edges.random();
-			g.removeEdge(e);
+			g.edges.remove(e);
 		}
 	}
 

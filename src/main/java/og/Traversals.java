@@ -72,8 +72,8 @@ public class Traversals extends Service {
 			var d = r.distances.get(v);
 
 			if (d <= maxDistance) {
-				for (var e : g.outEdges(v)) {
-					var n = g.destination(e);
+				for (var e : g.vertices.outEdges(v)) {
+					var n = g.edges.destination(e);
 
 					if (!r.distances.containsKey(n)) {
 						r.distances.put(n, d + 1);
@@ -113,8 +113,8 @@ public class Traversals extends Service {
 			l.add(source);
 			var succ = new LongArrayList();
 
-			for (var e : g.outEdges(source)) {
-				var s = g.destination(e);
+			for (var e : g.vertices.outEdges(source)) {
+				var s = g.edges.destination(e);
 
 				if (!l.contains(s)) {
 					succ.add(s);

@@ -81,12 +81,12 @@ public class HashElementSet extends ElementSet {
 	}
 
 	@Override
-	public void clear() {
-		m.clear();
+	public boolean contains(long r) {
+		return m.containsKey(r);
 	}
 
 	@Override
-	public boolean contains(long r) {
-		return m.containsKey(r);
+	public void clear() {
+		m.clear();
 	}
 }
