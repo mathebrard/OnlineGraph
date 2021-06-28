@@ -5,11 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
-import toools.io.Cout;
-
 public class HashGraph extends Graph {
 	private Map<String, String> props = new HashMap<>();
 	private List<Change> changes = new ArrayList<>();
