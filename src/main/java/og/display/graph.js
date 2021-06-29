@@ -62,9 +62,10 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
             //timestep: true,
             barnesHut: {
                 //springLength: 200,
-        	   centralGravity: 2,
+        	   centralGravity: 1,
         	   gravitationalConstant : -500,
         	   //damping: .05
+				avoidOverlap : .5
             },
             maxVelocity : 0.9
         },
@@ -230,7 +231,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     });
                 });*/
                 let newFX = new Function("x", "return Math.max(0," + fx + ");");
-                console.log("return " + fx)
                 if (key != undefined && key != "") {
                     try {
                         network.getListNodes().forEach((node) => {
@@ -263,7 +263,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     network.getListNodes().forEach((node) => {
                         if (node.params[key]) {
                             let newSize = newFX(node.params[key]);
-                            console.log(newSize)
                             visnetwork.body.data.nodes.updateOnly({
                                 id: node.id,
                                 borderWidth: newSize
@@ -271,7 +270,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                         }
                         else if (node.defaultparams[key]){
                         	let newSize = newFX(node.defaultparams[key]);
-                            console.log(newSize)
                             visnetwork.body.data.nodes.updateOnly({
                                 id: node.id,
                                 borderWidth: newSize
@@ -337,10 +335,8 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     });
                 });*/
                 let newFX = new Function("x", "return Math.max(0," + fx + ");");
-                console.log("return " + fx)
                 if (key != undefined && key != "") {
                     network.getListNodes().forEach((node) => {
-                        console.log(node.params[key])
                         if (node.params[key])
                             node.setSize(visnetwork, newFX(node.params[key]))
                     });
@@ -362,7 +358,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                 network.getListNodes().forEach((node) => {
                     if (node.params[key]) {
                         let newSize = newFX(node.params[key]);
-                        console.log(newSize)
                         visnetwork.body.data.nodes.updateOnly({
                             id: node.id,
                             borderWidth: newSize
@@ -376,7 +371,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     };
 // CREATION DU MENU DE CHOIX
     hotbar = new Hotbar();
-    console.log(allprops)
     hotbar.addPanelLinkPropertiesToFunction(attributes, allprops);
     //hotbar.addPanelLinkChangeGraph(attributesChangeGraph, visnetwork, json);
     hotbar.addPanelChangeLabel(network, visnetwork, allprops);
@@ -397,12 +391,10 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	});*/
 	
 	doAjax();
-	console.log(visnetwork)
 	fitWindow(visnetwork);
 	function doAjax() {
 	    $.getJSON("/api/og/og.GraphService/changes/" + gid + "," + lastChangesAskedTime, function (json1) {
 	    	lastChangesAskedTime = new Date().getTime()/1000;
-	    	console.log("trigger")
 		    processChanges(json1, network, visnetwork, props)
 		    setTimeout(doAjax, refreshRate);
 		});
@@ -418,10 +410,8 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	    setTimeout(function(){fitWindow(visnetwork)}, 50);
 	}
 	function processChanges(json, network, visnetwork, defaultProps) {
-		console.log(json)
 	    for (let change in json) {
 	        if (json[change]['type'] == "AddVertex") {
-	    		console.log( json[change]['vertexInfo'])
 	            network.addVertex(visnetwork, defaultProps, json[change]['vertexInfo'])
 			    /*visnetwork.fit({
 	    			  //minZoomLevel: 0,
@@ -462,7 +452,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	            network.addEdge(visnetwork, defaultProps, json[change]['edgeInfo'])
 	            refreshSelects();
 	            var select = document.getElementById("select-label");
-	            console.log(select.selectedIndex)
 	            try {
 		            var text = select.options[select.selectedIndex].text;
 	            }
@@ -483,6 +472,46 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	        } else if (json[change]['type'] == "RemoveEdge") {
 	            network.removeEdge(visnetwork, json[change]['elementID'])
 	        }
+	         else if (json[change]['type'] == "EdgeDataChange") {
+				if (json[change]['name'] ==  "properties"){
+					$.getJSON("/api/og/og.GraphService/get/" + gid, function (jsoncomplet) {
+							//recuperer noeud
+							var n = network.getEdge(json[change]['id'])
+							//recuperer properties
+							if (n!=undefined){
+								for (let a in jsoncomplet["edges"]){
+									if (jsoncomplet["edges"][a]["id"]==json[change]['id']){
+										n.params = jsoncomplet["edges"][a]["properties"]
+										console.log("aaaaaa" + a + jsoncomplet["edges"][a]["properties"]);
+	        							n.processParams(visnetwork,network)
+									}
+								}
+							}
+						});
+				}
+	        }
+	         else if (json[change]['type'] == "VertexDataChange") {
+				if (json[change]['name'] ==  "properties"){
+
+					$.getJSON("/api/og/og.GraphService/get/" + gid, function (jsoncomplet) {
+							//recuperer noeud
+							var n = network.getNode(json[change]['id'])
+							console.log(json[change]['id'])
+							console.log(n)
+							//recuperer properties
+							if (n!=undefined){
+								for (let a in jsoncomplet["vertices"]){
+									if (jsoncomplet["vertices"][a]["id"]==json[change]['id']){
+										n.params = jsoncomplet["vertices"][a]["properties"]
+										console.log("aaaaaa" + a + jsoncomplet["vertices"][a]["properties"])
+	        							n.processParams(visnetwork,network)
+									}
+								}
+							}
+						});
+				}
+	        }
+			  
 	    }
 	    //document.getElementById("stats").textContent = "Number of vertices : " + network.listNodes.length +" , number of edges : " + network.listEdges.length ;         // Create a text node
 	    document.getElementById("stats").textContent = "Number of vertices : " + visnetwork.body.data.nodes.length +" , number of edges : " + visnetwork.body.data.edges.length ;         // Create a text node
@@ -501,7 +530,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 				values.push(select.options[i].value);
 			for (let i=0;i<allprops.length;i++){
 				if (!allprops[i] in values){
-					console.log(allprops[i])
 					// create new option element
 					var opt = document.createElement('option');
 					// create text node to add to option element (opt)

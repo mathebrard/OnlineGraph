@@ -24,7 +24,6 @@ class Node {
     processParams(visnetwork, network) {
         let currentNode = this;
         Object.keys(this.params).forEach(function (key) {
-        	console.log(key);
             network.allProps.push(key)
             if (key == 'fillColor') {
                 currentNode.setColor(visnetwork, currentNode.params[key]);
@@ -143,7 +142,6 @@ class Node {
     setSize(visnetwork, size) {
         let unsizableShapes = ["image", "circularImage", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square", "icon"];
         this.size = parseInt(size);
-        console.log("setsize" + size);
         try {
             if (!(this.shape in unsizableShapes)) {
                 visnetwork.body.data.nodes.updateOnly({
@@ -265,7 +263,6 @@ class Node {
     setBackgroundColor(visnetwork, color) {
         try {
             if (color != "#000000") {
-				console.log("colorpass")
                 this.colorbg = color;
                 visnetwork.body.data.nodes.updateOnly({
                     id: this.id,
@@ -611,7 +608,6 @@ class Network {
         this.listNodes.push(newNode);
         newNode.processDefaultParams(visNetwork,this,defaultparams)
         newNode.processParams(visNetwork,this,params)
-        console.log("allProps")
         return newNode;
     }
     removeVertex(visNetwork, ID) {
@@ -658,6 +654,16 @@ class Network {
         return res;
     }
 
+    getEdge(ID) {
+        let res = null;
+        this.listEdges.forEach((node) => {
+            if (node.id == ID) {
+                res = node;
+                return;
+            }
+        })
+        return res;
+    }
     getNodeFromLabel(label) {
         let res = null;
         this.listNodes.forEach((node) => {
