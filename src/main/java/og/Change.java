@@ -78,12 +78,14 @@ public class Change implements Serializable {
 		}
 	}
 
-	public static class PropertiesChange extends Change {
+	public static class DataChange extends Change {
 
 		final public long id;
+		final public String name;
 
-		public PropertiesChange(long id) {
+		public DataChange(long id, String key) {
 			this.id = id;
+			this.name = key;
 		}
 
 		@Override
@@ -92,17 +94,17 @@ public class Change implements Serializable {
 		}
 	}
 
-	public static class VertexPropertiesChange extends PropertiesChange {
+	public static class VertexDataChange extends DataChange {
 
-		public VertexPropertiesChange(long id) {
-			super(id);
+		public VertexDataChange(long u, String key) {
+			super(u, key);
 		}
 	}
 
-	public static class EdgePropertiesChange extends PropertiesChange {
+	public static class EdgeDataChange extends DataChange {
 
-		public EdgePropertiesChange(long id) {
-			super(id);
+		public EdgeDataChange(long id, String key) {
+			super(id, key);
 		}
 	}
 }

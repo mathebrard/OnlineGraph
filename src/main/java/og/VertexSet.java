@@ -60,4 +60,11 @@ public class VertexSet extends GraphElementSet {
 		graph.edges.impl.clear();
 		graph.addChange(new Change.Clear());
 	}
+	
+	@Override
+	public void set(long id, String key, Object content) {
+		super.set(id, key, content);
+		graph.addChange(new Change.VertexDataChange(id, key));
+	}
+
 }

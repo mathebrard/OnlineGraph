@@ -136,4 +136,6 @@ public class VertexProperties {
 		p.accept(shape);
 		p.accept(scale);
 	}
+	
+
 }

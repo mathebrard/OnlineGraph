@@ -176,7 +176,6 @@ public class GraphService extends Service {
 		g.vertices.forEach(u -> {
 			l.add(u);
 			return true;
-
 		});
 
 		return l;

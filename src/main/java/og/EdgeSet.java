@@ -63,4 +63,10 @@ public class EdgeSet extends GraphElementSet {
 		graph.addChange(new Change.Clear());
 	}
 
+	@Override
+	public void set(long id, String key, Object content) {
+		super.set(id, key, content);
+		graph.addChange(new Change.EdgeDataChange(id, key));
+	}
+
 }
