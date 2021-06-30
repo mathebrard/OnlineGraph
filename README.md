@@ -1,5 +1,4 @@
 # OnlineGraph
-
 OnlineGraph is a cloud graph library. 
 OnlineGraph comes in the form of a server that exposes a set of Web services for the storage and manipulation of graphs.
 It relies on Idawi.
@@ -18,21 +17,52 @@ java og.RunServer
 A graph is defined as a set of vertices relating to each other through links. Each of these elements (vertices and links) exhibit the following properties:
 - they are identified by a 64-bit integer
 - they are associated to named data chunks (this data chunks can be retrieved independantly)
+In the rest of this article, vertices and edges will be referred to as their ID.
 
 ## API
+The API is composed of a set of web services whose the URL is formed against the following pattern:
+http://***server***:***port***/api/og/og.GraphService/***operation***/***parameters***
+Where:
+- ***server*** is the DNS name or IP address of the server running OnlineGraph ;
+- ***port*** is the TCP port the server is listening to requests ;
+- ***operation*** is the name of the web service offered to users ;
+- ***parameters*** is the sequence of parameters passed to the operation. Parameters are delimited by the "/" character.
+
 ### Primitives
+##### creating a new graph
+To create a graph named "myGraph", use:
+http://localhost:8081/api/og/og.GraphService/create/myGraph
+
 #### Topology
-- *addVertex(long)*
-- *removeVertex(long)*
-- *addEdge(long from, long to)*
-- *removeEdge(long)*
-- *forEachVertex(long u, lambda)*
-- *forEachEdge(long e, lambda)*
-- *forEachOutEdge(long u, lamba f(u) -> bool)*
-- *find(int nbExcpected, primaryCondition lambda, alternativeCondition lambda)* returns a set of nbExcpected elements matching the primary condition, otherwise the alternative one.
+In order to minimize the number of calls to the server, primites use multiplicity when possible.
+
+##### addition of new vertices
+http://localhost:8081/api/og/og.GraphService/addV/myGraph/145,21,43
+Adds vertices 145, 21, and 43 to graph "myGraph".
+If you need to add more vertices than what an URL can embed, you can pass any number of 8-bytes ID in the data body of an HTTP POST requests.
+##### removal of existing vertices
+This works similarly to the addition.
+http://localhost:8081/api/og/og.GraphService/removeV/myGraph/145,21,43
+##### adding new edges
+For the moment, the addition of multiple edges in one shot is not supported. Edges must be added individually like this:
+http://localhost:8081/api/og/og.GraphService/addEdge/myGraph/145,21
+##### removing existing edges
+But edges can be removed in groups, like this:
+http://localhost:8081/api/og/og.GraphService/removeE/myGraph/11,2,5,6
+##### obtaining a list of vertices
+http://localhost:8081/api/og/og.GraphService/vertices/myGraph
+##### obtaining a list of edges
+http://localhost:8081/api/og/og.GraphService/edges/myGraph
+##### picking random elements
+Many graph algorithms rely on the ability to pick random elements from graphs. 
+http://localhost:8081/api/og/og.GraphService/randomV/myGraph/5
+Picks 5 vertices in the graph and this does the same with edges:
+http://localhost:8081/api/og/og.GraphService/randomE/myGraph/5
 
 #### Dealing with data
-- *get(long vertex/edge, String key)* returns the data associated to the given vertex or edge.
+As already said, both vertices and edges are associated to data slot identified by a name.
+To get the content of the "foo" data slots associated to vertices 45 and 56, do:
+http://localhost:8081/api/og/og.GraphService/getVertexData/myGraph/45,56/foo
 - set(long vertex/edge, String key)
 
 #### Graph dynamics
@@ -40,6 +70,7 @@ A graph is defined as a set of vertices relating to each other through links. Ea
 
 ### Algorithms
 #### Traversal
+
 - BFS
 - Random walk
 

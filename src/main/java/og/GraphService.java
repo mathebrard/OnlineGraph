@@ -25,6 +25,8 @@ import idawi.IdawiOperation;
 import idawi.Service;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import og.algo.BFS;
 import og.algo.CC;
 import og.algo.GNM;
@@ -83,8 +85,13 @@ public class GraphService extends Service {
 		});
 	}
 
-	public Graph getGraph(String graphID) {
-		return m.get(graphID);
+	public Graph getGraph(String gid) {
+		var g = m.get(gid);
+
+		if (g == null)
+			throw new IllegalArgumentException("no such graph " + gid);
+
+		return g;
 	}
 
 	@IdawiOperation
@@ -94,9 +101,7 @@ public class GraphService extends Service {
 
 	@IdawiOperation
 	public Set<String> listGraphs() {
-		var directories = baseDirectory.listDirectories();
-		var graphIDs = directories.stream().map(d -> d.getName()).collect(Collectors.toSet());
-		return new TreeSet<>(graphIDs);
+		return new TreeSet<>(m.keySet());
 	}
 
 	@IdawiOperation
@@ -105,8 +110,8 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public void addVertex(String graphID, long u) {
-		getGraph(graphID).vertices.add(u);
+	public void addVertices(String graphID, LongSet s) {
+		s.forEach((long u) -> getGraph(graphID).vertices.add(u));
 	}
 
 	@IdawiOperation
@@ -121,8 +126,12 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public void removeVertex(String graphID, long v) {
-		getGraph(graphID).vertices.remove(v);
+	public void removeVertex(String graphID, LongList v) {
+		var g = getGraph(graphID);
+
+		while (!v.isEmpty()) {
+			g.vertices.remove(v.removeLong(v.size() - 1));
+		}
 	}
 
 	@IdawiOperation
@@ -131,8 +140,12 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public void removeEdge(String graphID, long e) {
-		getGraph(graphID).edges.remove(e);
+	public void removeEdge(String graphID, LongList e) {
+		var g = getGraph(graphID);
+
+		while (!e.isEmpty()) {
+			g.edges.remove(e.removeLong(e.size() - 1));
+		}
 	}
 
 	@IdawiOperation
@@ -247,13 +260,24 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public void create(String gid, String className) throws NoSuchMethodException, SecurityException {
+	public void create(String gid) throws NoSuchMethodException, SecurityException {
+		create2(gid, HashGraph.class.getName());
+	}
+
+	@IdawiOperation
+	public void create2(String gid, String className) throws NoSuchMethodException, SecurityException {
+		var g = m.get(gid);
+
+		if (g != null) {
+			throw new IllegalArgumentException("graphp already exists");
+		}
+
 		Class<? extends Graph> c = Clazz.findClass(className);
 
 		if (c == null)
 			throw new IllegalArgumentException("can't get class " + className);
 
-		Graph g = null;
+		g = null;
 
 		if (DiskGraph.class.isAssignableFrom(c)) {
 			var cc = c.getConstructor(Directory.class);
@@ -268,15 +292,27 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public long pickRandomVertex(String gid) {
+	public LongSet pickRandomVertex(String gid, long n) {
+		LongSet s = new LongOpenHashSet();
 		var g = getGraph(gid);
-		return g.vertices.random();
+
+		while (s.size() < n) {
+			s.add(g.vertices.random());
+		}
+
+		return s;
 	}
 
 	@IdawiOperation
-	public long pickRandomEdge(String gid) {
+	public LongSet pickRandomEdge(String gid, long n) {
+		LongSet s = new LongOpenHashSet();
 		var g = getGraph(gid);
-		return g.edges.random();
+
+		while (s.size() < n) {
+			s.add(g.edges.random());
+		}
+
+		return s;
 	}
 
 	@IdawiOperation

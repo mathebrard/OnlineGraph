@@ -21,11 +21,17 @@ public class HashElementSet extends ElementSet {
 
 	@Override
 	public void add(long id) {
+		if (m.containsKey(id))
+			throw new IllegalArgumentException("vertex already exists " + id);
+
 		m.put(id, new HashMap<>());
 	}
 
 	@Override
 	public void remove(long id) {
+		if (m.containsKey(id))
+			throw new IllegalArgumentException("no such vertex " + id);
+
 		m.remove(id);
 	}
 
