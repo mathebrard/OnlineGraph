@@ -32,13 +32,16 @@ Where:
 - ***operation*** is the name of the web service offered to users ;
 - ***parameters*** is the sequence of parameters passed to the operation. Parameters are delimited by the "/" character.
 ### Results
+In response of calling a webservice, you get a chunk of JSON that follows the pattern:
 ```json
 {
   "errors": [],
   "results": []
 }
 ```
-`
+If the _errors_ array is left empty, then the execution went fine and you will get results, if any.
+
+
 ### Primitives
 ##### creating a new graph
 To create a graph named "myGraph", use:
