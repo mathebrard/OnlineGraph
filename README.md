@@ -45,7 +45,7 @@ If the _errors_ array is left empty, then the execution went fine and you will g
 ### Primitives
 ##### creating a new graph
 To create a graph named "myGraph", use:
-```html
+```
 http://localhost:8081/api/og/og.GraphService/create/myGraph
 ````
 
