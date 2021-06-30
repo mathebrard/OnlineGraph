@@ -32,10 +32,13 @@ Where:
 - ***operation*** is the name of the web service offered to users ;
 - ***parameters*** is the sequence of parameters passed to the operation. Parameters are delimited by the "/" character.
 ### Results
+```json
 {
   "errors": [],
   "results": []
 }
+```
+`
 ### Primitives
 ##### creating a new graph
 To create a graph named "myGraph", use:
