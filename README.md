@@ -1,7 +1,6 @@
 # OnlineGraph
-OnlineGraph is a cloud graph library. 
-OnlineGraph comes in the form of a server that exposes a set of Web services for the storage and manipulation of graphs.
-It relies on Idawi.
+OnlineGraph is a ***cloud graph library***. 
+It consists of an ***HTTP server*** which exposes a set of Web services for the ***storage***, the ***manipulation*** and the ***graphical*** rendering of graphs.
 
 OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Université Côte d'Azur. Its development team is composed of:
 - Luc Hogie (project leader)
