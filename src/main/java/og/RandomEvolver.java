@@ -56,8 +56,6 @@ public class RandomEvolver {
 			if (Math.random() < pp)
 				p.put(VertexProperties.fillColor.getName(), VertexProperties.fillColor.random());
 			if (Math.random() < pp)
-				p.put(VertexProperties.hidden.getName(), VertexProperties.hidden.random());
-			if (Math.random() < pp)
 				p.put(VertexProperties.labelColor.getName(), VertexProperties.labelColor.random());
 			if (Math.random() < pp)
 				p.put(VertexProperties.label.getName(), VertexProperties.label.random());

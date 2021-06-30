@@ -112,25 +112,11 @@ public class VertexProperties {
 			return "";
 		}
 	};
-	public static Property hidden = new BooleanProperty() {
-
-		@Override
-		public String getName() {
-			return "hidden";
-		}
-
-		@Override
-		public String getDefaultValue() {
-			return "false";
-		}
-
-	};
 
 	public static void forEach(Consumer<Property> p) {
 		p.accept(borderColor);
 		p.accept(borderWidth);
 		p.accept(fillColor);
-		p.accept(hidden);
 		p.accept(label);
 		p.accept(labelColor);
 		p.accept(shape);

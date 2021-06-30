@@ -10,8 +10,7 @@ public abstract class ColorProperty extends Property {
 	
 	@Override
 	public String toGraphviz(String value) {
-		var c = Color.decode(value);
-		return "#" + Integer.toHexString(c.getRGB());
+		return value;
 	}
 
 	@Override

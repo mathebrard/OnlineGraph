@@ -1,5 +1,8 @@
 package og;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
@@ -36,6 +39,23 @@ public abstract class ElementSet {
 	public abstract <E> E get(long id, String key, Supplier<E> defaultValueSupplier);
 
 	public abstract void set(long id, String key, Object content);
+
+	public byte[] ids() {
+		var bos = new ByteArrayOutputStream();
+		var dos = new DataOutputStream(bos);
+
+		forEach(u -> {
+			try {
+				dos.writeLong(u);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+
+			return true;
+		});
+
+		return bos.toByteArray();
+	}
 
 	public <E> E alter(long id, String key, Supplier<E> defaultValueSupplier, Consumer<E> modificationCode) {
 		var data = get(id, key, defaultValueSupplier);

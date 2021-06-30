@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +27,14 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import og.algo.BFS;
 import og.algo.CC;
+import og.algo.GNM;
 import og.algo.RandomWalk;
 import toools.gui.GraphViz;
 import toools.gui.GraphViz.COMMAND;
 import toools.gui.GraphViz.OUTPUT_FORMAT;
 import toools.io.Cout;
 import toools.io.file.Directory;
+import toools.reflect.Clazz;
 import toools.thread.Threads;
 
 public class GraphService extends Service {
@@ -43,6 +44,8 @@ public class GraphService extends Service {
 	static {
 		baseDirectory.ensureExists();
 	}
+
+	Map<String, Graph> m = new HashMap<>();
 
 	public GraphService(Component component) {
 		super(component);
@@ -63,12 +66,12 @@ public class GraphService extends Service {
 		{
 			var p = new TreeMap<String, String>();
 			p.put("background color", "dark grey");
-	
-			VertexProperties.forEach(pa ->  {
+
+			VertexProperties.forEach(pa -> {
 				p.put("default vertex " + pa.getName(), pa.getDefaultValue());
 			});
 
-			EdgeProperties.forEach(pa ->  {
+			EdgeProperties.forEach(pa -> {
 				p.put("default edge " + pa.getName(), pa.getDefaultValue());
 			});
 
@@ -80,22 +83,13 @@ public class GraphService extends Service {
 		});
 	}
 
-	private void gnm(Graph g, int n, int m) {
-		for (int i = 0; i < n; ++i) {
-			g.vertices.add();
-		}
-
-		for (int i = 0; i < m; ++i) {
-			var u = g.vertices.random();
-			var v = g.vertices.random();
-			g.edges.add(u, v);
-		}
-	}
-
-	Map<String, Graph> m = new HashMap<>();
-
 	public Graph getGraph(String graphID) {
 		return m.get(graphID);
+	}
+
+	@IdawiOperation
+	public void gnm(String graphID, int n, int m) {
+		GNM.gnm(getGraph(graphID), n, m);
 	}
 
 	@IdawiOperation
@@ -113,6 +107,17 @@ public class GraphService extends Service {
 	@IdawiOperation
 	public void addVertex(String graphID, long u) {
 		getGraph(graphID).vertices.add(u);
+	}
+
+	@IdawiOperation
+	public String getVertexProperty(String graphID, String name, String value, long u) {
+		return getGraph(graphID).vertices.get(u, "properties", () -> new HashMap<String, String>()).get(name);
+	}
+
+	@IdawiOperation
+	public void setVertexProperty(String graphID, String name, String value, long u) {
+		getGraph(graphID).vertices.alter(u, "properties", () -> new HashMap<String, String>(),
+				(Map<String, String> p) -> p.put(name, value));
 	}
 
 	@IdawiOperation
@@ -182,6 +187,19 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
+	public byte[] verticesIDsRAW(String gid) throws IOException {
+		var g = getGraph(gid);
+		return g.vertices.ids();
+
+	}
+
+	@IdawiOperation
+	public byte[] edgesIDsRAW(String gid) throws IOException {
+		var g = getGraph(gid);
+		return g.edges.ids();
+	}
+
+	@IdawiOperation
 	public List<VertexInfo> vertices(String gid) {
 		var g = getGraph(gid);
 		List<VertexInfo> vertices = new ArrayList<>();
@@ -208,8 +226,6 @@ public class GraphService extends Service {
 		return gi;
 	}
 
-	private static final List<String> dotNodeProperties = Arrays.asList(new String[] { "" });
-
 	@IdawiOperation
 	public String toDOT(String gid) {
 		return og.algo.io.GraphViz.toDOT(getGraph(gid));
@@ -219,8 +235,6 @@ public class GraphService extends Service {
 	public byte[] graphviz(String gid, String command, String outputFormat) {
 		return GraphViz.toBytes(COMMAND.valueOf(command), toDOT(gid), OUTPUT_FORMAT.valueOf(outputFormat));
 	}
-
-
 
 	@IdawiOperation
 	public Map getGraphInfo(String gid) {
@@ -233,9 +247,24 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public void create(String gid) {
-		var g = new FlatOnDiskDiskGraph(new Directory(baseDirectory, gid));
-		g.create();
+	public void create(String gid, String className) throws NoSuchMethodException, SecurityException {
+		Class<? extends Graph> c = Clazz.findClass(className);
+
+		if (c == null)
+			throw new IllegalArgumentException("can't get class " + className);
+
+		Graph g = null;
+
+		if (DiskGraph.class.isAssignableFrom(c)) {
+			var cc = c.getConstructor(Directory.class);
+			var dg = (DiskGraph) Clazz.makeInstance(cc, new Directory(baseDirectory, gid));
+			dg.create();
+			g = dg;
+		} else {
+			g = Clazz.makeInstance(c);
+		}
+
+		m.put(gid, g);
 	}
 
 	@IdawiOperation

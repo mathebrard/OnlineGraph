@@ -61,7 +61,7 @@ public class GraphViz {
 			if (label != null) {
 				gvp.put("label", VertexProperties.label.toGraphviz(label));
 			}
-			var hidden = p.get(VertexProperties.hidden.getName());
+
 			var scale = p.get(VertexProperties.scale.getName());
 
 			if (scale != null) {

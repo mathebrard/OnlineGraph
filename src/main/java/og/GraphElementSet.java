@@ -36,7 +36,7 @@ public abstract class GraphElementSet extends ElementSet {
 	}
 
 	@Override
-	public void forEach(Long2BooleanFunction c) {
+	public void forEach(Long2BooleanFunction c)  {
 		impl.forEach(c);
 	}
 
