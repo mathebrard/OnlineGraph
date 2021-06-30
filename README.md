@@ -12,6 +12,8 @@ OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Universit√
 Use the following command to start the server: 
 java og.RunServer
 
+## Viewing graphs
+http://localhost:8081/web/og/display/graph.html?gid=myGraph
 
 ## Graph model
 A graph is defined as a set of vertices relating to each other through links. Each of these elements (vertices and links) exhibit the following properties:
@@ -32,6 +34,7 @@ Where:
 ### Primitives
 ##### creating a new graph
 To create a graph named "myGraph", use:
+
 http://localhost:8081/api/og/og.GraphService/create/myGraph
 
 #### Topology
