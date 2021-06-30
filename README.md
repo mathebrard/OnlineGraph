@@ -23,6 +23,7 @@ A graph is defined as a set of vertices relating to each other through links. Ea
 In the rest of this article, vertices and edges will be referred to as their ID.
 
 ## API
+### Requests
 The API is composed of a set of web services whose the URL is formed against the following pattern:
 http://***server***:***port***/api/og/og.GraphService/***operation***/***parameters***
 Where:
@@ -30,10 +31,14 @@ Where:
 - ***port*** is the TCP port the server is listening to requests ;
 - ***operation*** is the name of the web service offered to users ;
 - ***parameters*** is the sequence of parameters passed to the operation. Parameters are delimited by the "/" character.
-
+### Results
+{
+  "errors": [],
+  "results": []
+}
 ### Primitives
 ##### creating a new graph
-To create a graph named "myGraph", uses:
+To create a graph named "myGraph", use:
 
 http://localhost:8081/api/og/og.GraphService/create/myGraph
 
