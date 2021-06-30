@@ -11,8 +11,10 @@ OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Universit√
 You don't need to install anything is you want to start using/evaluating OnlineGraph. A demo server is running in our lab and we made it accessible to anyone on the Internet. Please feel free to play with it
 [here](http://138.96.16.35:8081/web/og/display/graph.html?gid=myGraph).
 
-Use the following command to start the server: 
+But you may be more likely willing to install your own instance. To do that, you can download the last version [here](http://138.96.16.35:8081/web/og/display/graph.html?gid=myGraph), and execute the following command:
+```bash
 java og.RunServer
+````
 
 ## Viewing graphs
 http://localhost:8081/web/og/display/graph.html?gid=myGraph
