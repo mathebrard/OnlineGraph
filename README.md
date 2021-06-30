@@ -33,7 +33,7 @@ Where:
 
 ### Primitives
 ##### creating a new graph
-To create a graph named "myGraph", use:
+To create a graph named "myGraph", uses:
 
 http://localhost:8081/api/og/og.GraphService/create/myGraph
 
