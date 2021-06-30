@@ -1,6 +1,6 @@
 # OnlineGraph
 OnlineGraph is a ***cloud graph library***. 
-It consists of an ***HTTP server*** which exposes a set of Web services for the ***storage***, the ***manipulation*** and the ***graphical*** rendering of graphs.
+It consists of an (HTTP) server which exposes a set of (Web) services for the ***storage***, the ***manipulation*** and the ***graphical*** rendering of graphs.
 
 OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Université Côte d'Azur. Its development team is composed of:
 - Luc Hogie (project leader)
@@ -8,6 +8,9 @@ OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Universit�
 - Antonin Lacomme (Master's degree intern)
 
 ## Installation
+You don't need to install anything is you want to start using/evaluating OnlineGraph. A demo server is running in our lab and we made it accessible to anyone on the Internet. Please feel free to play with it at:
+[http://138.96.16.35:8081/web/og/display/graph.html?gid=myGraph]
+
 Use the following command to start the server: 
 java og.RunServer
 
