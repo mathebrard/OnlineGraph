@@ -203,6 +203,8 @@ class Node {
 
     setShape(visnetwork, shape) {
         this.shape = shape;
+		if (this.shape=="rectangle")
+			this.shape = "box"
         try {
 
             visnetwork.body.data.nodes.updateOnly({
@@ -765,7 +767,7 @@ function setColorNodeNetwork(network, idNode, backgroundColor, borderColor) {
         let lastColorBorder = node.options.color.border;
         let lastColorBackground = node.options.color.background;
         node.options.color = {
-            border: lastColorBorder,            // ces deux paramÃ¨tres gÃ¨rent les couleurs des liens dÃ©pendants du noeud
+            border: lastColorBorder,            // ces deux paramètres gèrent les couleurs des liens dépendants du noeud
             background: lastColorBackground,
 
             highlight: {
@@ -782,7 +784,7 @@ function setColorNodeNetwork(network, idNode, backgroundColor, borderColor) {
 function generateNetwork(nodes, edges) {
 
     let network = new Network();
-    /*// crÃ©ation du graphique network Ã  partir du JSON
+    /*// création du graphique network à partir du JSON
     nodes.knownComponents.forEach((n) => {
         network.addNode (n.friendlyName, n);
     });
@@ -801,7 +803,7 @@ function generateNetwork(nodes, edges) {
     return network;
 }
 
-// attention, main doit Ãªtre un composant html natif, pas un composant jQuery
+// attention, main doit être un composant html natif, pas un composant jQuery
 function createNetwork(container, network, options = {}, width = 600, height = 600) {
     let main = document.createElement("div");
     main.style.width = width + "px";

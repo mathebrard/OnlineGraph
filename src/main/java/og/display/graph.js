@@ -7,12 +7,12 @@ let lastChangesAskedTime;
 $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	lastChangesAskedTime = new Date().getTime();
     // create an array with nodes
-    var nodes = new vis.DataSet(json['vertices']);
+    var nodes = new vis.DataSet(json['results'][0]['vertices']);
 
     // create an array with edges
-    var edges = new vis.DataSet(json['edges']);
+    var edges = new vis.DataSet(json['results'][0]['edges']);
     // defaults props
-    var props = json['properties'];
+    var props = json['results'][0]['properties'];
     // create a network
     var container = document.getElementById("mynetwork");
     var data = {
@@ -79,6 +79,8 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     if (props["default vertex shape"] in shapeAllowedNode){
     	options["nodes"]["shape"] = props["default vertex shape"];
     }
+	else if (props["default vertex shape"]=="rectangle")
+	    	options["nodes"]["shape"] = "box";
     if (props["default vertex mass"]){
     	options["nodes"]["mass"] = parseInt(props["default vertex mass"]);
     }
@@ -376,10 +378,10 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     hotbar.addPanelChangeLabel(network, visnetwork, allprops);
     hotbar.addStats(visnetwork);
 
-    /*hotbar.addEntry("SÃ©lection Simple", (e) => {
+    /*hotbar.addEntry("Sélection Simple", (e) => {
         TYPESELECTION = "simple";
     });
-    hotbar.addEntry("SÃ©lection Multiple", (e) => {
+    hotbar.addEntry("Sélection Multiple", (e) => {
         TYPESELECTION = "multiple";
     });*/
 
@@ -393,9 +395,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	doAjax();
 	fitWindow(visnetwork);
 	function doAjax() {
-	    $.getJSON("/api/og/og.GraphService/changes/" + gid + "," + lastChangesAskedTime, function (json1) {
+	    $.getJSON("/api/og/og.GraphService/changes/" + gid + "/" + lastChangesAskedTime, function (json1) {
 	    	lastChangesAskedTime = new Date().getTime()/1000;
-		    processChanges(json1, network, visnetwork, props)
+		    processChanges(json1['results'][0], network, visnetwork, props)
 		    setTimeout(doAjax, refreshRate);
 		});
 	}
@@ -476,13 +478,13 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 				if (json[change]['name'] ==  "properties"){
 					$.getJSON("/api/og/og.GraphService/get/" + gid, function (jsoncomplet) {
 							//recuperer noeud
+							console.log(JSON.stringify(json))
 							var n = network.getEdge(json[change]['id'])
 							//recuperer properties
 							if (n!=undefined){
-								for (let a in jsoncomplet["edges"]){
-									if (jsoncomplet["edges"][a]["id"]==json[change]['id']){
-										n.params = jsoncomplet["edges"][a]["properties"]
-										console.log("aaaaaa" + a + jsoncomplet["edges"][a]["properties"]);
+								for (let a in jsoncomplet['results'][0]["edges"]){
+									if (jsoncomplet['results'][0]["edges"][a]["id"]==json[change]['id']){
+										n.params = jsoncomplet['results'][0]["edges"][a]["properties"]
 	        							n.processParams(visnetwork,network)
 									}
 								}
@@ -496,14 +498,11 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 					$.getJSON("/api/og/og.GraphService/get/" + gid, function (jsoncomplet) {
 							//recuperer noeud
 							var n = network.getNode(json[change]['id'])
-							console.log(json[change]['id'])
-							console.log(n)
 							//recuperer properties
 							if (n!=undefined){
-								for (let a in jsoncomplet["vertices"]){
-									if (jsoncomplet["vertices"][a]["id"]==json[change]['id']){
-										n.params = jsoncomplet["vertices"][a]["properties"]
-										console.log("aaaaaa" + a + jsoncomplet["vertices"][a]["properties"])
+								for (let a in jsoncomplet['results'][0]["vertices"]){
+									if (jsoncomplet['results'][0]["vertices"][a]["id"]==json[change]['id']){
+										n.params = jsoncomplet['results'][0]["vertices"][a]["properties"]
 	        							n.processParams(visnetwork,network)
 									}
 								}
@@ -543,4 +542,12 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         });
 	}
 
-});
+}).fail(function() { 
+	console.log("error"); 
+	document.getElementById("mynetwork").remove();
+	document.body.appendChild( document.createTextNode("The specified graph does not exists .") );
+	var element = document.createElement('a');
+	element.text = "Click to access the list of graphs"
+	element.href = "/api/og/og.GraphService/listGraphs"
+	document.body.appendChild( element );
+	});
