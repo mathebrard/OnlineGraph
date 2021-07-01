@@ -29,8 +29,8 @@ public class HashElementSet extends ElementSet {
 
 	@Override
 	public void remove(long id) {
-		if (m.containsKey(id))
-			throw new IllegalArgumentException("no such vertex " + id);
+		if (!m.containsKey(id))
+			throw new IllegalArgumentException("no such element " + id);
 
 		m.remove(id);
 	}

@@ -7,7 +7,7 @@
 	<artifactId>onlinegraph</artifactId>
 	<version>0.0.1</version>
 	<name>Online Graph</name>
-	<description>A web distributed graph librarie</description>
+	<description>A cloud graph library</description>
 	<url>https://github.com/lhogie/onlinegraph</url>
 	<properties>
 		<maven.compiler.target>14</maven.compiler.target>
