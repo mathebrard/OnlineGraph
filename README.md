@@ -11,20 +11,38 @@ OnlineGraph is developped at Inria/I3S Computer Science Laboratory of UniversitÃ
 You don't need to install anything is you want to start using/evaluating OnlineGraph. A demo server is running in our lab and we made it accessible to anyone on the Internet. Please feel free to play with it
 [here](http://138.96.16.35:8081/web/og/display/graph.html?gid=myGraph).
 
-But you may be more likely willing to install your own instance. To do that, you can download the last version [here](http://138.96.16.35:8081/web/og/display/graph.html?gid=myGraph), and execute the following command:
+But you may be more likely willing to install your own instance. To do that, please (download)[https://www.i3s.unice.fr/~hogie/software/onlineGraph/onlineGraph.tgz] the tarball and unpack it in a directory of your choice. Then go to that directory and execute the following command to start the server:
 ```bash
-java og.RunServer
+java -cp $(find . -name '*.jar' | tr '\n' :) og.RunServer 8080
 ````
 
 ## Viewing graphs
 http://localhost:8081/web/og/display/graph.html?gid=myGraph
 
 ## Graph model
-A graph is defined as a set of vertices relating to each other through links. Each of these elements (vertices and links) exhibit the following properties:
-- they are identified by a 64-bit integer
-- they are associated to named data chunks (this data chunks can be retrieved independantly)
+A graph is defined as a set of vertices relating to each other through links. These elements (vertices and links) are identified by a 64-bit integer, and they are associated to named data chunks (this data chunks can be retrieved independantly).
+Every element have predefined data called ***propoerties***, which is a set any *key->value* pair. This set hold certain informations which useful to graph rendering.
 
-In the rest of this article, vertices and edges will be referred to as their ID.
+Vertex properties:
+- shape (point, circle, square, triangle, rectangle)
+- fill color
+- label
+- label color
+- scale
+- border color
+- bolder width
+- hidden
+
+Edge properties:
+- style (solid, dashed)
+- color
+- width
+- label
+- arrow shape (none, normal, diamond)
+- arrow size
+- directed
+
+In the following, vertices and edges will be referred to as their ID.
 
 ## API
 ### Requests
@@ -131,24 +149,6 @@ returns the list of changes that occured on the given graph from the given momen
 
 ## Display
 
-Vertex properties:
-- shape (point, circle, square, triangle, rectangle)
-- fill color
-- label
-- label color
-- scale
-- border color
-- bolder width
-- hidden
-
-Edge properties:
-- style (solid, dashed)
-- color
-- width
-- label
-- arrow shape (none, normal, diamond)
-- arrow size
-- directed
 
 ### Dynamic view
 The dynamic view for displaying graphs relies on the [Vis]https://visjs.org/ JavaScript framework.

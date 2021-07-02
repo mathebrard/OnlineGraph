@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
@@ -31,13 +30,15 @@ import og.algo.BFS;
 import og.algo.CC;
 import og.algo.GNM;
 import og.algo.RandomWalk;
+import og.dynamics.GridEvolver;
+import og.dynamics.RandomEvolver;
+import og.dynamics.TreeEvolver;
 import toools.gui.GraphViz;
 import toools.gui.GraphViz.COMMAND;
 import toools.gui.GraphViz.OUTPUT_FORMAT;
 import toools.io.Cout;
 import toools.io.file.Directory;
 import toools.reflect.Clazz;
-import toools.thread.Threads;
 
 public class GraphService extends Service {
 
@@ -56,33 +57,18 @@ public class GraphService extends Service {
 			m.put(d.getName(), new FlatOnDiskDiskGraph(d));
 		});
 
-		/*
-		 * var g = new FlatOnDiskDiskGraph(new Directory(baseDirectory, "demo_graph"));
-		 * if (g.exists()) { Cout.debug("clearing demo graph"); g.clear(); } else {
-		 * Cout.debug("creating demo graph"); g.create(); }
-		 */
+		var randomGraph = new HashGraph();
+		new RandomEvolver(randomGraph);
+		m.put("randomGraph", randomGraph);
 
-		var g = new HashGraph();
-		m.put("demo_graph", g);
+		var grid = new HashGraph();
+		new GridEvolver(grid, 10, 10, 1);
+		m.put("grid", grid);
 
-		{
-			var p = new TreeMap<String, String>();
-			p.put("background color", "dark grey");
+		var tree = new HashGraph();
+		new TreeEvolver(tree);
+		m.put("tree", tree);
 
-			VertexProperties.forEach(pa -> {
-				p.put("default vertex " + pa.getName(), pa.getDefaultValue());
-			});
-
-			EdgeProperties.forEach(pa -> {
-				p.put("default edge " + pa.getName(), pa.getDefaultValue());
-			});
-
-			g.setProperties(p);
-		}
-
-		Threads.newThread_loop(1000, () -> true, () -> {
-			RandomEvolver.apply(g);
-		});
 	}
 
 	public Graph getGraph(String gid) {
@@ -115,12 +101,12 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public String getVertexProperty(String graphID, String name, String value, long u) {
+	public String getVertexProperty(String graphID, long u, String name) {
 		return getGraph(graphID).vertices.get(u, "properties", () -> new HashMap<String, String>()).get(name);
 	}
 
 	@IdawiOperation
-	public void setVertexProperty(String graphID, String name, String value, long u) {
+	public void setVertexProperty(String graphID, long u, String name, String value) {
 		getGraph(graphID).vertices.alter(u, "properties", () -> new HashMap<String, String>(),
 				(Map<String, String> p) -> p.put(name, value));
 	}

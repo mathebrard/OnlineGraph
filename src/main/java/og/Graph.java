@@ -2,6 +2,7 @@ package og;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class Graph {
 	public final VertexSet vertices;
@@ -10,6 +11,19 @@ public abstract class Graph {
 	public Graph(ElementSet vertices, ElementSet edges) {
 		this.vertices = new VertexSet(vertices, this);
 		this.edges = new EdgeSet(edges, this);
+		
+		var p = new TreeMap<String, String>();
+		p.put("background color", "dark grey");
+
+		VertexProperties.forEach(pa -> {
+			p.put("default vertex " + pa.getName(), pa.getDefaultValue());
+		});
+
+		EdgeProperties.forEach(pa -> {
+			p.put("default edge " + pa.getName(), pa.getDefaultValue());
+		});
+
+		setProperties(p);
 	}
 
 	// graph-related methods

@@ -1,11 +1,20 @@
-package og;
+package og.dynamics;
 
 import java.util.HashMap;
 
-public class RandomEvolver {
+import og.EdgeProperties;
+import og.Graph;
+import og.GraphDynamics;
+import og.VertexProperties;
 
-	public static void apply(HashGraph g) {
-		g.check();
+public class RandomEvolver extends GraphDynamics {
+
+	public RandomEvolver(Graph g) {
+		super(g);
+		new Thread(() -> apply(g)).start();
+	}
+
+	public void apply(Graph g) {
 		double targetN = 50;
 		double targetD = 3;
 		double nbVertices = g.vertices.nbEntries();
@@ -93,5 +102,4 @@ public class RandomEvolver {
 			g.edges.set(e, "properties", p);
 		}
 	}
-
 }

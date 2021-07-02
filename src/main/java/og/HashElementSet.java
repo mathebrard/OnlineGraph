@@ -35,19 +35,6 @@ public class HashElementSet extends ElementSet {
 		m.remove(id);
 	}
 
-	@Override
-	public long random() {
-		if (nbEntries() == 0)
-			throw new IllegalArgumentException("set is empty");
-
-		var it = m.keySet().iterator();
-
-		for (long i = ThreadLocalRandom.current().nextLong(nbEntries()); i > 0; --i) {
-			it.nextLong();
-		}
-
-		return it.nextLong();
-	}
 
 	@Override
 	public void forEach(Long2BooleanFunction c) {

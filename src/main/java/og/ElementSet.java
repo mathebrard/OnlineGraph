@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -16,7 +17,25 @@ public abstract class ElementSet {
 
 	public abstract long nbEntries();
 
-	public abstract long random();
+	public long random() {
+		if (nbEntries() == 0)
+			throw new IllegalArgumentException("set is empty");
+
+		long jump = ThreadLocalRandom.current().nextLong(nbEntries());
+		AtomicLong i = new AtomicLong();
+		AtomicLong r = new AtomicLong();
+
+		forEach(e -> {
+			if (i.getAndIncrement() == jump) {
+				r.set(e);
+				return false;
+			} else {
+				return true;
+			}
+		});
+
+		return r.get();
+	}
 
 	public long add() {
 		long u = ThreadLocalRandom.current().nextLong();
