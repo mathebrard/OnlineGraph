@@ -21,8 +21,8 @@ public class RandomWalk {
 			l.add(source);
 			var succ = new LongArrayList();
 
-			for (var e : g.vertices.outEdges(source)) {
-				var s = g.edges.destination(e);
+			for (var e : g.vertices.outArcs(source)) {
+				var s = g.arcs.destination(e);
 
 				if (!l.contains(s)) {
 					succ.add(s);

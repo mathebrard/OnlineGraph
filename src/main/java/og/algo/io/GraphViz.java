@@ -5,7 +5,9 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import og.ArcProperties;
 import og.EdgeProperties;
+import og.ElementProperties;
 import og.Graph;
 import og.VertexProperties;
 
@@ -13,9 +15,19 @@ public class GraphViz {
 	public static String toDOT(Graph g) {
 		var bos = new ByteArrayOutputStream();
 		var out = new PrintStream(bos);
-		out.println("# graph \"" + g + "\" has " + g.vertices.nbEntries() + " vertices and " + g.edges.nbEntries()
+		out.println("# graph \"" + g + "\" has " + g.vertices.nbEntries() + " vertices and " + g.arcs.nbEntries()
 				+ " edges");
-		out.println("digraph {");
+
+		if (g.edges.nbEntries() > 0 && g.arcs.nbEntries() > 0)
+			throw new IllegalArgumentException("graph is a mixed one, which are not supported by graphviz");
+
+		boolean digraph = g.arcs.nbEntries() > 0;
+
+		if (digraph) {
+			out.print("di");
+		}
+
+		out.println("graph {");
 
 		out.print("node ");
 		var m = new HashMap<String, String>();
@@ -40,10 +52,10 @@ public class GraphViz {
 				gvp.put("shape", VertexProperties.shape.toGraphviz(shape));
 			}
 
-			var borderColor = p.get(VertexProperties.borderColor.getName());
+			var borderColor = p.get(ElementProperties.color.getName());
 
 			if (borderColor != null) {
-				gvp.put("color", VertexProperties.borderColor.toGraphviz(borderColor));
+				gvp.put("color", ElementProperties.color.toGraphviz(borderColor));
 			}
 
 			var fillColor = p.get(VertexProperties.fillColor.getName());
@@ -53,13 +65,13 @@ public class GraphViz {
 				gvp.put("fillcolor", VertexProperties.fillColor.toGraphviz(fillColor));
 			}
 
-			var borderWidth = p.get(VertexProperties.borderWidth.getName());
+			var borderWidth = p.get(ElementProperties.width.getName());
 			gvp.put("penwidth", borderWidth == null ? "1" : "" + borderWidth);
 
-			var label = p.get(VertexProperties.label.getName());
+			var label = p.get(ElementProperties.label.getName());
 
 			if (label != null) {
-				gvp.put("label", VertexProperties.label.toGraphviz(label));
+				gvp.put("label", ElementProperties.label.toGraphviz(label));
 			}
 
 			var scale = p.get(VertexProperties.scale.getName());
@@ -76,16 +88,18 @@ public class GraphViz {
 			return true;
 		});
 
-		g.edges.forEach(e -> {
-			var ends = g.edges.ends(e);
-			out.print("\t" + ends[0] + " -> " + ends[1]);
-			var p = g.edges.get(e, "properties", () -> new HashMap<String, String>());
+		var edge = digraph ? " -> " : " -- ";
+
+		g.arcs.forEach(e -> {
+			var ends = g.arcs.ends(e);
+			out.print("\t" + ends[0] + edge + ends[1]);
+			var p = g.arcs.get(e, "properties", () -> new HashMap<String, String>());
 			var gvp = new HashMap<String, String>();
 
-			var arrowShape = p.get(EdgeProperties.arrowShape.getName());
+			var arrowShape = p.get(ArcProperties.arrowShape.getName());
 
 			if (arrowShape != null) {
-				gvp.put("arrowhead", EdgeProperties.arrowShape.toGraphviz(arrowShape));
+				gvp.put("arrowhead", ArcProperties.arrowShape.toGraphviz(arrowShape));
 			}
 
 			var style = p.get(EdgeProperties.style.getName());

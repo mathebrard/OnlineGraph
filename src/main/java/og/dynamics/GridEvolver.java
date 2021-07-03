@@ -27,8 +27,8 @@ public class GridEvolver extends GraphDynamics {
 				}
 			}
 
-			while (g.edges.nbEntries() > 0) {
-				g.edges.remove(g.edges.random());
+			while (g.arcs.nbEntries() > 0) {
+				g.arcs.remove(g.arcs.random());
 				Threads.sleepMs((int) (pause * 1000));
 			}
 		}
@@ -49,7 +49,7 @@ public class GridEvolver extends GraphDynamics {
 				g.vertices.alter(v, "properties", () -> new HashMap<>(), m -> m.put("label", i2+ "," + j2));
 			}
 
-			g.edges.add(u, v);
+			g.arcs.add(u, v);
 			Threads.sleepMs((int) (pause * 1000));
 		}
 	}

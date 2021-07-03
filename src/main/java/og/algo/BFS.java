@@ -58,8 +58,8 @@ public class BFS {
 			var d = r.distances.get(v);
 
 			if (d <= maxDistance) {
-				for (var e : g.vertices.outEdges(v)) {
-					var n = g.edges.destination(e);
+				for (var e : g.vertices.outArcs(v)) {
+					var n = g.arcs.destination(e);
 
 					if (!r.distances.containsKey(n)) {
 						r.distances.put(n, d + 1);

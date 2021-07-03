@@ -13,8 +13,8 @@ import toools.util.Date;
 public class DiskGraph<V, E> extends Graph {
 	final Directory d;
 
-	public DiskGraph(Directory d, ElementSet v, ElementSet e) {
-		super(v, e);
+	public DiskGraph(Directory d, ElementSet v, ElementSet e, ElementSet a) {
+		super(v, e, a);
 		this.d = d;
 	}
 
@@ -43,7 +43,7 @@ public class DiskGraph<V, E> extends Graph {
 	}
 
 	@Override
-	public synchronized List<Change> getHistory() {
+	public synchronized List<Change> allChanges() {
 		var f = new RegularFile(d, "history.ser");
 
 		if (f.exists()) {
@@ -54,7 +54,7 @@ public class DiskGraph<V, E> extends Graph {
 	}
 
 	@Override
-	public synchronized void addChange(Change c) {
+	public synchronized void commitNewChange(Change c) {
 		Cout.debugSuperVisible(c);
 		var f = new RegularFile(d, "history.ser");
 		List<Change> l = null;

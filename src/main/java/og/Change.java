@@ -2,6 +2,7 @@ package og;
 
 import java.io.Serializable;
 
+import og.GraphService.ArcInfo;
 import og.GraphService.EdgeInfo;
 import og.GraphService.VertexInfo;
 import toools.util.Date;
@@ -37,6 +38,19 @@ public class Change implements Serializable {
 		}
 	}
 
+	public static class AddArc extends Change {
+		public final ArcInfo edgeInfo;
+
+		public AddArc(ArcInfo i) {
+			this.edgeInfo = i;
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + edgeInfo.id;
+		}
+	}
+	
 	public static class AddEdge extends Change {
 		public final EdgeInfo edgeInfo;
 
@@ -71,6 +85,12 @@ public class Change implements Serializable {
 		}
 	}
 
+	public static class RemoveArc extends Remove {
+
+		public RemoveArc(long edgeID) {
+			super(edgeID);
+		}
+	}
 	public static class RemoveEdge extends Remove {
 
 		public RemoveEdge(long edgeID) {
@@ -101,10 +121,21 @@ public class Change implements Serializable {
 		}
 	}
 
+	public static class ArcDataChange extends DataChange {
+
+		public ArcDataChange(long id, String key) {
+			super(id, key);
+		}
+	}
+	
 	public static class EdgeDataChange extends DataChange {
 
 		public EdgeDataChange(long id, String key) {
 			super(id, key);
 		}
 	}
+	
+	public static class GraphPropertiesChange extends Change {
+	}
+
 }

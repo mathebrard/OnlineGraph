@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.lhogie</groupId>
 	<artifactId>onlinegraph</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Online Graph</name>
 	<description>A cloud graph library</description>
 	<url>https://github.com/lhogie/onlinegraph</url>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>io.github.lhogie</groupId>
 			<artifactId>idawi</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.paypal.digraph</groupId>

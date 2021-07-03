@@ -54,28 +54,8 @@ public class VertexProperties {
 		}
 
 	};
-	public static Property borderColor = new ColorProperty() {
-		@Override
-		public String getName() {
-			return "borderColor";
-		}
 
-		@Override
-		public String getDefaultValue() {
-			return "black";
-		}
-	};
-	public static Property labelColor = new ColorProperty() {
-		@Override
-		public String getName() {
-			return "labelColor";
-		}
 
-		@Override
-		public String getDefaultValue() {
-			return "black";
-		}
-	};
 	public static Property scale = new DoubleProperty(0.1, 2) {
 
 		@Override
@@ -89,36 +69,11 @@ public class VertexProperties {
 		}
 
 	};
-	public static Property borderWidth = new IntProperty(10) {
-		@Override
-		public String getName() {
-			return "borderWidth";
-		}
 
-		@Override
-		public String getDefaultValue() {
-			return "1";
-		}
-	};
-	public static Property label = new LabelProperty() {
-
-		@Override
-		public String getName() {
-			return "label";
-		}
-
-		@Override
-		public String getDefaultValue() {
-			return "";
-		}
-	};
 
 	public static void forEach(Consumer<Property> p) {
-		p.accept(borderColor);
-		p.accept(borderWidth);
+		ElementProperties.forEach(p);
 		p.accept(fillColor);
-		p.accept(label);
-		p.accept(labelColor);
 		p.accept(shape);
 		p.accept(scale);
 	}

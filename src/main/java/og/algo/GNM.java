@@ -11,7 +11,7 @@ public class GNM {
 		for (int i = 0; i < m; ++i) {
 			var u = g.vertices.random();
 			var v = g.vertices.random();
-			g.edges.add(u, v);
+			g.arcs.add(u, v);
 		}
 	}
 

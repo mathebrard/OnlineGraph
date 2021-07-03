@@ -37,6 +37,7 @@ public abstract class ElementSet {
 		return r.get();
 	}
 
+	
 	public long add() {
 		long u = ThreadLocalRandom.current().nextLong();
 		add(u);

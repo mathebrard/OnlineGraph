@@ -13,58 +13,62 @@ public class VertexSet extends GraphElementSet {
 	@Override
 	public void add(long u) {
 		impl.add(u);
-		set(u, "outEdges", new LongArrayList());
-		set(u, "inEdges", new LongArrayList());
+		set(u, "outArcs", new LongArrayList());
+		set(u, "inArcs", new LongArrayList());
 		set(u, "outVertices", new LongArrayList());
 		var i = new VertexInfo();
 		i.id = u;
-		graph.addChange(new Change.AddVertex(i));
+		graph.commitNewChange(new Change.AddVertex(i));
 	}
 
 	@Override
 	public void remove(long u) {
-		for (var e : new LongArrayList(outEdges(u))) {
-			graph.edges.remove(e);
+		for (var e : new LongArrayList(outArcs(u))) {
+			graph.arcs.remove(e);
 		}
 
-		for (var e : new LongArrayList(inEdges(u))) {
-			graph.edges.remove(e);
+		for (var e : new LongArrayList(inArcs(u))) {
+			graph.arcs.remove(e);
 		}
 
 		impl.remove(u);
-		graph.addChange(new Change.RemoveVertex(u));
+		graph.commitNewChange(new Change.RemoveVertex(u));
 	}
 
-	public LongList inEdges(long v) {
-		return get(v, "inEdges", () -> emptyList);
+	public LongList inArcs(long v) {
+		return get(v, "inArcs", () -> emptyList);
 	}
 
 	public final LongList emptyList = new LongArrayList();
 
-	public LongList outEdges(long v) {
-		return get(v, "outEdges", () -> emptyList);
+	public LongList outArcs(long v) {
+		return get(v, "outArcs", () -> emptyList);
+	}
+	
+	public LongList edges(long v) {
+		return get(v, "edges", () -> emptyList);
 	}
 
 	public boolean isIsolated(long u) {
-		return outEdges(u).isEmpty() && inEdges(u).isEmpty();
+		return outArcs(u).isEmpty() && inArcs(u).isEmpty();
 	}
 
 	public boolean isSink(long u) {
-		return outEdges(u).isEmpty();
+		return outArcs(u).isEmpty();
 	}
 
 
 	@Override
 	public void clear() {
 		impl.clear();
-		graph.edges.impl.clear();
-		graph.addChange(new Change.Clear());
+		graph.arcs.impl.clear();
+		graph.commitNewChange(new Change.Clear());
 	}
 	
 	@Override
 	public void set(long id, String key, Object content) {
 		super.set(id, key, content);
-		graph.addChange(new Change.VertexDataChange(id, key));
+		graph.commitNewChange(new Change.VertexDataChange(id, key));
 	}
 
 }

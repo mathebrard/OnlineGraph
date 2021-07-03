@@ -2,8 +2,9 @@ package og;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import og.GraphService.EdgeInfo;
 
 public class EdgeSet extends GraphElementSet {
@@ -14,59 +15,70 @@ public class EdgeSet extends GraphElementSet {
 
 	@Override
 	public void add(long e) {
-		throw new IllegalStateException("you must use add(from, to)");
+		throw new IllegalStateException("you must use add(incidentVertices)");
 	}
 
-	public long add(long from, long to) {
+	public long add(LongSet ends) {
 		long e = ThreadLocalRandom.current().nextLong();
 		impl.add(e);
-		impl.set(e, "ends", new long[] { from, to });
-		graph.vertices.alter(from, "outEdges", () -> new LongArrayList(), (LongList outs) -> outs.add(e));
-		graph.vertices.alter(to, "inEdges", () -> new LongArrayList(), (LongList ins) -> ins.add(e));
+		impl.set(e, "ends", ends);
+
+		for (var u : ends) {
+			graph.vertices.alter(u, "edges", () -> new LongOpenHashSet(), (LongSet outs) -> outs.add(e));
+		}
+
 //		vertices.alter(from, "outVertices", null, (LongList outs) -> outs.add(to));
 		var i = new EdgeInfo();
 		i.id = e;
-		i.from = from;
-		i.to = to;
-		graph.addChange(new Change.AddEdge(i));
+		i.ends = ends;
+		graph.commitNewChange(new Change.AddEdge(i));
 		return e;
+	}
+
+	public boolean isLoop(long e) {
+		return ends(e).size() == 1;
+	}
+
+	public boolean isHyperEdge(long e) {
+		return ends(e).size() > 2;
 	}
 
 	@Override
 	public void remove(long e) {
-		var ends = ends(e);
-		var from = ends[0];
-		var to = ends[1];
-		graph.vertices.alter(from, "outEdges", null, (LongList set) -> set.removeLong(set.indexOf(e)));
-		graph.vertices.alter(to, "inEdges", null, (LongList set) -> set.removeLong(set.indexOf(e)));
+		for (var u : ends(e)) {
+			graph.vertices.alter(u, "edges", null, (LongList set) -> set.removeLong(set.indexOf(e)));
+		}
+
 //		vertices.alter(from, "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(to)));
 		impl.remove(e);
-		graph.addChange(new Change.RemoveEdge(e));
+		graph.commitNewChange(new Change.RemoveEdge(e));
 	}
 
-	public long[] ends(long e) {
-		return (long[]) get(e, "ends", null);
-	}
-
-	public long source(long e) {
-		return ends(e)[0];
-	}
-
-	public long destination(long e) {
-		return ends(e)[1];
+	public LongSet ends(long e) {
+		return (LongSet) get(e, "ends", null);
 	}
 
 	@Override
 	public void clear() {
 		impl.clear();
 		graph.vertices.impl.clear();
-		graph.addChange(new Change.Clear());
+		graph.commitNewChange(new Change.Clear());
 	}
 
 	@Override
 	public void set(long id, String key, Object content) {
 		super.set(id, key, content);
-		graph.addChange(new Change.EdgeDataChange(id, key));
+		graph.commitNewChange(new Change.EdgeDataChange(id, key));
+	}
+
+	public void add(long... vertices) {
+		var ends = new LongOpenHashSet(vertices.length);
+
+		for (var u : vertices) {
+			ends.add(u);
+		}
+
+		add(ends);
 	}
 
 }

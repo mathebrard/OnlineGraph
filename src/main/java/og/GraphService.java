@@ -68,7 +68,10 @@ public class GraphService extends Service {
 		var tree = new HashGraph();
 		new TreeEvolver(tree);
 		m.put("tree", tree);
-
+		
+		for (var g : m.values()) {
+			g.setProperties(g.defaultProperties());
+		}
 	}
 
 	public Graph getGraph(String gid) {
@@ -122,7 +125,9 @@ public class GraphService extends Service {
 
 	@IdawiOperation
 	public long addEdge(String graphID, long from, long to) {
-		return getGraph(graphID).edges.add(from, to);
+		var e = getGraph(graphID).arcs.add(from, to);
+//		Thread
+		return e;
 	}
 
 	@IdawiOperation
@@ -130,8 +135,27 @@ public class GraphService extends Service {
 		var g = getGraph(graphID);
 
 		while (!e.isEmpty()) {
-			g.edges.remove(e.removeLong(e.size() - 1));
+			g.arcs.remove(e.removeLong(e.size() - 1));
 		}
+	}
+
+	@IdawiOperation
+	public List<ArcInfo> arcs(String gid) {
+		var g = getGraph(gid);
+		List<ArcInfo> edges = new ArrayList<>();
+
+		g.arcs.forEach(e -> {
+			var i = new ArcInfo();
+			i.id = e;
+			var ends = g.arcs.ends(e);
+			i.from = ends[0];
+			i.to = ends[1];
+			i.properties = g.arcs.get(e, "properties", () -> null);
+			edges.add(i);
+			return true;
+		});
+
+		return edges;
 	}
 
 	@IdawiOperation
@@ -142,10 +166,8 @@ public class GraphService extends Service {
 		g.edges.forEach(e -> {
 			var i = new EdgeInfo();
 			i.id = e;
-			var ends = g.edges.ends(e);
-			i.from = ends[0];
-			i.to = ends[1];
-			i.properties = g.edges.get(e, "properties", () -> new HashMap<String, String>());
+			i.ends = g.edges.ends(e);
+			i.properties = g.edges.get(e, "properties", () -> null);
 			edges.add(i);
 			return true;
 		});
@@ -158,8 +180,12 @@ public class GraphService extends Service {
 		Map<String, String> properties;
 	}
 
-	public static class EdgeInfo extends Info {
+	public static class ArcInfo extends Info {
 		public long from, to;
+	}
+
+	public static class EdgeInfo extends Info {
+		public LongSet ends;
 	}
 
 	public static class VertexInfo extends Info {
@@ -169,6 +195,7 @@ public class GraphService extends Service {
 		public String name;
 		Map<String, String> properties;
 		List<VertexInfo> vertices;
+		List<ArcInfo> arcs;
 		List<EdgeInfo> edges;
 	}
 
@@ -195,7 +222,7 @@ public class GraphService extends Service {
 	@IdawiOperation
 	public byte[] edgesIDsRAW(String gid) throws IOException {
 		var g = getGraph(gid);
-		return g.edges.ids();
+		return g.arcs.ids();
 	}
 
 	@IdawiOperation
@@ -206,7 +233,7 @@ public class GraphService extends Service {
 		g.vertices.forEach(v -> {
 			var e = new VertexInfo();
 			e.id = v;
-			e.properties = g.vertices.get(v, "properties", () -> new HashMap<String, String>());
+			e.properties = g.vertices.get(v, "properties", () -> null);
 			vertices.add(e);
 			return true;
 
@@ -219,9 +246,11 @@ public class GraphService extends Service {
 	public GraphInfo get(String gid) {
 		var g = getGraph(gid);
 		var gi = new GraphInfo();
+		gi.arcs = arcs(gid);
 		gi.edges = edges(gid);
 		gi.vertices = vertices(gid);
 		gi.properties = g.getProperties();
+		Cout.debugSuperVisible(gi.properties);
 		return gi;
 	}
 
@@ -241,7 +270,7 @@ public class GraphService extends Service {
 		var m = new HashMap<>();
 		m.put("id", gid);
 		m.put("nbVertices", g.vertices.nbEntries());
-		m.put("nbEdges", g.edges.nbEntries());
+		m.put("nbEdges", g.arcs.nbEntries());
 		return m;
 	}
 
@@ -295,7 +324,7 @@ public class GraphService extends Service {
 		var g = getGraph(gid);
 
 		while (s.size() < n) {
-			s.add(g.edges.random());
+			s.add(g.arcs.random());
 		}
 
 		return s;
@@ -303,13 +332,13 @@ public class GraphService extends Service {
 
 	@IdawiOperation
 	public List<Change> changes(String gid, double since) {
-		return getGraph(gid).getHistory().stream().filter(c -> c.date >= since).collect(Collectors.toList());
+		return getGraph(gid).allChanges().stream().filter(c -> c.date >= since).collect(Collectors.toList());
 	}
 
 	@IdawiOperation
 	public List<Change> history(String gid) {
 		var g = getGraph(gid);
-		return g.getHistory();
+		return g.allChanges();
 	}
 
 	/*
@@ -339,7 +368,7 @@ public class GraphService extends Service {
 			var t = newLine.trim().split("[^0-9]+");
 			long src = Long.valueOf(t[0]);
 			long dest = Long.valueOf(t[1]);
-			g.edges.add(src, dest);
+			g.arcs.add(src, dest);
 		});
 
 		return "ok";
@@ -355,7 +384,7 @@ public class GraphService extends Service {
 
 			for (int i = 1; i < t.length; ++i) {
 				long dest = Long.valueOf(t[i]);
-				g.edges.add(src, dest);
+				g.arcs.add(src, dest);
 				nbEdges.incrementAndGet();
 			}
 		});

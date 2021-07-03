@@ -3,6 +3,7 @@ package og.dynamics;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import og.Graph;
 import og.GraphDynamics;
+import toools.io.Cout;
 import toools.thread.Threads;
 
 public class TreeEvolver extends GraphDynamics {
@@ -17,16 +18,17 @@ public class TreeEvolver extends GraphDynamics {
 		l.add(g.vertices.add());
 
 		while (true) {
-			while (g.vertices.nbEntries() < 100) {
+			while (g.vertices.nbEntries() < 100) {	
+
 				var u = g.vertices.random();
 				var v = g.vertices.add();
 				l.add(v);
-				g.edges.add(u, v);
+				g.arcs.add(u, v);
 				Threads.sleepMs(500);
 			}
 
-			while (g.vertices.nbEntries() > 0) {
-				g.vertices.remove(g.vertices.random());
+			while (l.size() > 1) {
+				g.vertices.remove(l.removeLong(l.size() - 1));
 				Threads.sleepMs(500);
 			}
 		}

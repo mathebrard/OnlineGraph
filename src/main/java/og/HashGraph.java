@@ -5,34 +5,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import toools.io.Cout;
+
 public class HashGraph extends Graph {
 	private Map<String, String> props = new HashMap<>();
 	private List<Change> changes = new ArrayList<>();
 
 	public HashGraph() {
-		super(new HashElementSet(), new HashElementSet());
+		super(new HashElementSet(), new HashElementSet(), new HashElementSet());
 	}
 
 	@Override
-	public List<Change> getHistory() {
+	public List<Change> allChanges() {
 		return changes;
 	}
 
 	@Override
-	public void addChange(Change c) {
-//		Cout.debug(c);
+	public void commitNewChange(Change c) {
 		changes.add(c);
 	}
 
 	@Override
 	public Map<String, String> getProperties() {
-		return props;
+		return this.props;
 	}
 
 	@Override
 	public void setProperties(Map<String, String> m) {
 		this.props = m;
 	}
-
 
 }

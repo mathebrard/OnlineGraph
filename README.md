@@ -20,27 +20,32 @@ java -cp $(find . -name '*.jar' | tr '\n' :) og.RunServer 8080
 http://localhost:8081/web/og/display/graph.html?gid=myGraph
 
 ## Graph model
-A graph is defined as a set of vertices relating to each other through links. These elements (vertices and links) are identified by a 64-bit integer, and they are associated to named data chunks (this data chunks can be retrieved independantly).
-Every element have predefined data called ***propoerties***, which is a set any *key->value* pair. This set hold certain informations which useful to graph rendering.
+A *graph* is defined as the aggregation of 3 correlated sets of elements called *vertices*, *edges* and *arcs*.
+Vertices are connected to one another through either edges or arcs.
+Arcs have one *source* vertex and one *destination* vertex. Edges have *two or more ends*. When an edge has more than two ends, it is called an *hyperedge*.
+Within its respective sets, each of these animals is identified by a 64-bit integer, and is associated to a  (key, value) mapping, whose the key is the name of some value that can be anything. A particular entry of this map is named *properties* and stores the following information, useful to graph rendering.
 
-Vertex properties:
-- shape (point, circle, square, triangle, rectangle)
+Common properties:
+- color
+- width
 - fill color
 - label
 - label color
-- scale
-- border color
-- bolder width
-- hidden
 
-Edge properties:
+Vertex-specific properties:
+- shape (point, circle, square, triangle, rectangle)
+- scale
+
+Properties for all edges/arcs:
 - style (solid, dashed)
 - color
 - width
 - label
+
+Arcs add these properties:
 - arrow shape (none, normal, diamond)
 - arrow size
-- directed
+
 
 In the following, vertices and edges will be referred to as their ID.
 
