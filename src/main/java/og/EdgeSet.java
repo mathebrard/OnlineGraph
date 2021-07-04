@@ -2,9 +2,10 @@ package og;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import it.unimi.dsi.fastutil.longs.LongList;
+import org.eclipse.collections.api.list.primitive.LongList;
+import org.eclipse.collections.api.set.primitive.LongSet;
+
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
 import og.GraphService.EdgeInfo;
 
 public class EdgeSet extends GraphElementSet {
