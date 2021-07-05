@@ -11,10 +11,21 @@ OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Universit√
 You don't need to install anything is you want to start using/evaluating OnlineGraph. A demo server is running in our lab and we made it accessible to anyone on the Internet. Please feel free to play with it
 [here](http://138.96.16.35:8081/web/og/display/graph.html?gid=myGraph).
 
-But you may be more likely willing to install your own instance. To do that, please [download an archive containing the latest binaries](https://www.i3s.unice.fr/~hogie/software/onlineGraph/onlineGraph.tgz) and unpack it in a directory of your choice. Then go to that directory and execute the following command to start the server:
+But you may be more likely willing to install your own instance. To do that, please [download an archive containing the latest binaries](https://www.i3s.unice.fr/~hogie/software/onlineGraph/onlinegraph-jars.tgz) and unpack it in a directory of your choice. Then go to that directory and execute the following command to start the server:
 ```bash
-java -cp $(find . -name '*.jar' | tr '\n' :) og.RunServer 8080
+java -cp $(ls *.jar | tr '\n' :) og.RunServer 8080
 ````
+
+You can also copy/paste this code to your Linux terminal. It will download and run the last version.
+```bash
+wget https://www.i3s.unice.fr/~hogie/software/onlineGraph/onlinegraph-jars.tgz && \
+tar xzvf onlinegraph-jars.tgz && \
+rm -f onlinegraph-jars.tgz && \
+java -cp $(ls onlinegraph-jars/*.jar | tr '\n' :) og.RunServer 8080
+````
+
+echo oi && \
+echo oi
 
 ## Viewing graphs
 http://localhost:8081/web/og/display/graph.html?gid=myGraph
