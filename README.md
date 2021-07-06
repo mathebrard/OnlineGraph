@@ -24,9 +24,6 @@ rm -f onlinegraph-jars.tgz && \
 java -cp $(ls onlinegraph-jars/*.jar | tr '\n' :) og.RunServer 8080
 ````
 
-echo oi && \
-echo oi
-
 ## Viewing graphs
 http://localhost:8081/web/og/display/graph.html?gid=myGraph
 
