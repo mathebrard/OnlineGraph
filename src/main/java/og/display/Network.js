@@ -629,10 +629,16 @@ class Network {
         let ID;
         ID = params['id'];
         let newNode = new Node(ID, params, defaultparams);
-        visNetwork.body.data.nodes.add([{id: ID, props: params}])
+		try{
+        	visNetwork.body.data.nodes.add([{id: ID, props: params}])
+
         this.listNodes.push(newNode);
         newNode.processDefaultParams(visNetwork,this,defaultparams)
         newNode.processParams(visNetwork,this,params)
+		}
+		catch(error){
+			console.log(error)
+		}
         return newNode;
     }
     removeVertex(visNetwork, ID) {
@@ -655,10 +661,16 @@ class Network {
         let from = params['from'];
         let to = params['to'];
         let newNode = new Link(from,to,ID, params, defaultparams);
-        visNetwork.body.data.edges.add([{id: ID,from : from,to : to, props: params}])
-        this.listEdges.push(newNode);
-        newNode.processDefaultParams(visNetwork,this,defaultparams)
-        newNode.processParams(visNetwork,this,params)
+		try{
+        	visNetwork.body.data.edges.add([{id: ID,from : from,to : to, props: params}])
+	        this.listEdges.push(newNode);
+	        newNode.processDefaultParams(visNetwork,this,defaultparams)
+	        newNode.processParams(visNetwork,this,params)
+		}
+		catch(error){
+			console.log(error)
+		}        
+
         return newNode;
     }
 

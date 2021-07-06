@@ -5,7 +5,7 @@ const refreshRate = parseInt("refresh") ? refreshRate : 1000;
 let lastChangesAskedTime;
 
 $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
-	lastChangesAskedTime = new Date().getTime();
+	lastChangesAskedTime = 0;
     // create an array with nodes
     var nodes = new vis.DataSet(json['results'][0]['vertices']);
 
@@ -598,8 +598,9 @@ console.log(network.getListEdges());
 	doAjax();
 	fitWindow(visnetwork);
 	function doAjax() {
+		console.log(lastChangesAskedTime)
+
 	    $.getJSON("/api/og/og.GraphService/changes/" + gid + "/" + lastChangesAskedTime, function (json1) {
-	    	lastChangesAskedTime = new Date().getTime()/1000;
 		    processChanges(json1['results'][0], network, visnetwork, props)
 		    setTimeout(doAjax, refreshRate);
 		});
@@ -615,6 +616,7 @@ console.log(network.getListEdges());
 	    setTimeout(function(){fitWindow(visnetwork)}, 50);
 	}
 	function processChanges(json, network, visnetwork, defaultProps) {
+		let last=0;
 	    for (let change in json) {
 	        if (json[change]['type'] == "AddVertex") {
 	            network.addVertex(visnetwork, defaultProps, json[change]['vertexInfo'])
@@ -758,10 +760,14 @@ console.log(network.getListEdges());
 						});
 				}
 	        }
-			  
+			  last=change;
 	    }
 	    //document.getElementById("stats").textContent = "Number of vertices : " + network.listNodes.length +" , number of edges : " + network.listEdges.length ;         // Create a text node
 	    document.getElementById("stats").textContent = "Number of vertices : " + visnetwork.body.data.nodes.length +" , number of edges : " + visnetwork.body.data.edges.length ;         // Create a text node
+    		console.log(lastChangesAskedTime)
+		console.log(last)
+	
+	lastChangesAskedTime = parseInt(lastChangesAskedTime, 10) +  parseInt(last, 10) +1;
 
 	}
 	
