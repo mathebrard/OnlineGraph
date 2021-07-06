@@ -37,7 +37,7 @@ public abstract class Graph implements Serializable {
 
 	// graph-related methods
 
-	public abstract void changes(int i, Consumer<Change> c);
+	public abstract void forEachChange(int startIndex, Consumer<Change> c);
 
 	public abstract void commitNewChange(Change c);
 

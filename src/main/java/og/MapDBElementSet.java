@@ -7,17 +7,18 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
 import toools.io.file.Directory;
+import toools.io.file.RegularFile;
 //https://stackoverflow.com/questions/1536953/recommend-a-fast-scalable-persistent-map-java
 
 public class MapDBElementSet extends Hash2ElementSet {
 
-	MapDBElementSet(Directory d) {
-		super((Map<Long, Set<String>>) createMapDBMap(new Directory(d, "m")),
-				(Map<String, Object>) createMapDBMap(new Directory(d, "m2")));
+	public MapDBElementSet(Directory d) {
+		super((Map<Long, Set<String>>) createOrOpenDBMap(new RegularFile(d, "m")),
+				(Map<String, Object>) createOrOpenDBMap(new RegularFile(d, "m2")));
 	}
 
-	public static Map createMapDBMap(Directory d) {
-		d.ensureExists();
+	public static Map createOrOpenDBMap(RegularFile d) {
+		d.getParent().ensureExists();
 		DB db = DBMaker.fileDB(d.javaFile).make();
 		return db.hashMap("map").createOrOpen();
 	}

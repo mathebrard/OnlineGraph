@@ -13,6 +13,7 @@ public class PersistentChanges {
 
 	public PersistentChanges(Directory d) {
 		this.d = d;
+		d.ensureExists();
 	}
 
 	public <E> void start(int i, Consumer<E> c) {

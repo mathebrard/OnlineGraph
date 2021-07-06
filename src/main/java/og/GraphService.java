@@ -13,8 +13,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
@@ -59,7 +57,8 @@ public class GraphService extends Service {
 		});
 
 		var d = new Directory(baseDirectory, "randomPersistentGraph");
-		var randomGraph = new HashGraph();//new MapDBGraph(d);
+		var randomGraph = new MapDBGraph(d);
+//		var randomGraph = new HashGraph();
 		new RandomEvolver(randomGraph);
 		m.put("randomGraph", randomGraph);
 
@@ -70,7 +69,7 @@ public class GraphService extends Service {
 		var tree = new HashGraph();
 		new TreeEvolver(tree);
 		m.put("tree", tree);
-		
+
 		for (var g : m.values()) {
 			g.setProperties(g.defaultProperties());
 		}
@@ -257,6 +256,16 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
+	public void check(String gid) {
+		getGraph(gid).check();
+	}
+	
+	@IdawiOperation
+	public boolean containsVertex(String gid, long u) {
+		return getGraph(gid).vertices.contains(u);
+	}
+
+	@IdawiOperation
 	public String toDOT(String gid) {
 		return og.algo.io.GraphViz.toDOT(getGraph(gid));
 	}
@@ -335,7 +344,7 @@ public class GraphService extends Service {
 	@IdawiOperation
 	public List<Change> changes(String gid, int since) {
 		List<Change> l = new ArrayList<>();
-		getGraph(gid).changes( since, c -> l.add(c));
+		getGraph(gid).forEachChange(since, c -> l.add(c));
 		return l;
 	}
 

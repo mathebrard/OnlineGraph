@@ -48,7 +48,7 @@ public class DiskGraph<V, E> extends Graph {
 	}
 
 	@Override
-	public void changes(int since, Consumer<Change> c) {
+	public void forEachChange(int since, Consumer<Change> c) {
 		changes.start(since, c);
 	}
 

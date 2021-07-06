@@ -30,7 +30,7 @@ public class HashGraph extends Graph {
 	}
 
 	@Override
-	public void changes(int since, Consumer<Change> c) {
+	public void forEachChange(int since, Consumer<Change> c) {
 		changes.subList(since, changes.size()).forEach(c);
 	}
 }

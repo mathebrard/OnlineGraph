@@ -13,6 +13,7 @@ public class Change implements Serializable {
 	}
 
 	public final double date = Date.time();
+	public  long index;
 	public final String type;
 
 	public Change() {

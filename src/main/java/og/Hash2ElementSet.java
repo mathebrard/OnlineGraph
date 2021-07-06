@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 
 public class Hash2ElementSet extends ElementSet {
-
 	private final Map<Long, Set<String>> m;
 	private final Map<String, Object> m2;
 
@@ -56,10 +55,10 @@ public class Hash2ElementSet extends ElementSet {
 		if (!m.containsKey(id))
 			throw new IllegalArgumentException("no such element: " + id);
 
-		var e = m.get(id);
+		var dataNames = m.get(id);
 
-		if (e.contains(ext)) {
-			return (E) m2.get(e + "/" + ext);
+		if (dataNames.contains(ext)) {
+			return (E) m2.get(id + "/" + ext);
 		} else if (defaultValueSupplier != null) {
 			return defaultValueSupplier.get();
 		} else {
