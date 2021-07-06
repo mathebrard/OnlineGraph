@@ -7,6 +7,7 @@ class Hotbar {
             });
         this.main = $("<div></div>").css({
             display: "none",
+			width: "50%"
         });
         this.mainChangeGraph = $("<div></div>").css({
             display: "none",
@@ -93,8 +94,14 @@ class Hotbar {
                         display: "none"
                     })
                     this.main.css({
-                        display: "inherit"
+                        display: "inherit",
+						width: "60%",
+						float : "right"
+
                     })
+					$( "#mynetwork" ).css( "width", "40%" );
+					$( "#mynetwork" ).css( "width", "40%" )
+
                     changerC.css({
                         "background-color": "LightGray",
                     })
@@ -107,6 +114,8 @@ class Hotbar {
                     this.main.css({
                         display: "none"
                     })
+					$( "#mynetwork" ).css( "width", "80%" );
+
                     resizerC.css({
                         "background-color": "LightGray",
                     })
@@ -159,7 +168,7 @@ class Hotbar {
         this.mainContainer.append(container);
     }
 
-    addPanelLinkPropertiesToFunction(attributes, properties) {
+    addPanelLinkPropertiesToFunction(attributes, propertiesNode,propertiesEdge) {
         function applyColorModification(attribut, myselect, inputmin, inputmax, input1, input2) {
             let min = parseInt(inputmin.val()), max = parseInt(inputmax.val());
             if (!isNaN(min) && !isNaN(max)) {
@@ -193,7 +202,7 @@ class Hotbar {
             }
         }
 
-        function createSelect(properties, inputmin, inputmax, inputfx, input1, input2, attribut) {
+        function createSelect(propertiesNode,propertiesEdge, inputmin, inputmax, inputfx, input1, input2, attribut) {
             let myselect = $("<select></select>")
                 .addClass("select-propertie-value")
                 .change(function (ev) {
@@ -207,17 +216,6 @@ class Hotbar {
                             });
                         });
                     }
-
-                    $(".select-propertie-value").each((index, select) => {
-                        if (this.value != "") {
-                            /*// on supprime l'option pour les autres listes
-                            $(select.options).each ((index, option) => {
-                                if (option.value == valeur) {
-                                    $(option).css({display: "none"});
-                                }
-                            });*/
-                        }
-                    });
                     myselect.currentValue = valeur;
 
                     if (valeur != "") {
@@ -235,7 +233,12 @@ class Hotbar {
                         }
                     }
                 });
+console.log(attribut)
 
+			if (attribut.includes("Node"))
+				myselect.addClass("node-select")
+			else if (attribut.includes("Edge"))
+				myselect.addClass("edge-select")
             if (attributes[attribut].type == "color") {
                 inputfx.append($("<button></button>")
                     .text("Appliquer")
@@ -252,9 +255,9 @@ class Hotbar {
                     }
                 });
             }
-
             myselect.append($("<option></option>").text(""));
-            $.each(properties, (key, value) => {
+			if (attribut.includes("Node")){
+				$.each(propertiesNode, (key, value) => {
                 myselect.append($("<option></option>")
                     .text(key)
                     .attr({
@@ -262,6 +265,18 @@ class Hotbar {
                     })
                 )
             });
+				}
+			else if (attribut.includes("Edge")){
+				$.each(propertiesEdge, (key, value) => {
+                myselect.append($("<option></option>")
+                    .text(key)
+                    .attr({
+                        value: key
+                    })
+                )
+            });
+			}
+
             return myselect;
         }
 
@@ -318,7 +333,7 @@ class Hotbar {
                 .append($("<td></td>")
                     .text(attribut))
                 .append($("<td></td>").append($("<div class='select-style'></div>")
-                    .append(createSelect(properties, inputmin, inputmax, inputfunction, input1, input2, attribut))
+                    .append(createSelect(propertiesNode,propertiesEdge, inputmin, inputmax, inputfunction, input1, input2, attribut))
                 ))
                 /*.append($("<td></td>")
                     .append($("<table></table>")
@@ -333,7 +348,7 @@ class Hotbar {
                 .append($("<td></td>")
                     .append(inputfunction));
 
-            table.append(line);
+            table.append(line)
         });
 
         this.main.append(table);
@@ -357,10 +372,9 @@ class Hotbar {
         }
     }
 
-    addPanelChangeLabel(network, visnetwork, listProperties) {
-        console.log(listProperties);
+    addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) {
         let conteneur = $("<div></div>");
-        let select = $("<select></select>").change((ev) => {
+        let selectNode = $("<select></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
             console.log(text)
@@ -368,28 +382,39 @@ class Hotbar {
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
             });
+            visnetwork.redraw();
+        });
+        Object.keys(listPropertiesNode).forEach(function (k) {
+            console.log(k + ' - ' + k);
+            selectNode.append($("<option></option>").text(k));
+        });
+        selectNode.val("label");
+
+        let selectEdge = $("<select></select>").change((ev) => {
+            var text = $(ev.target).find("option:selected").text(); //only time the find is required
+            var name = $(ev.target).attr('name');
+            console.log(text)
             network.getListEdges().forEach((node) => {
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
             });
             visnetwork.redraw();
         });
-        /*listProperties.forEach ((element) => {
-            select.append($("<option></option>").text(element));
-        });*/
-        Object.keys(listProperties).forEach(function (k) {
+        Object.keys(listPropertiesEdge).forEach(function (k) {
             console.log(k + ' - ' + k);
-            select.append($("<option></option>").text(k));
+            selectEdge.append($("<option></option>").text(k));
         });
-        select.val("label");
+        selectEdge.val("label");
 
         conteneur.append($("<table></table>")
             .append($("<tr></tr>")
-                .append($("<td></td>").text("Label"))
-                .append($("<td></td>").append(select))
+                .append($("<td></td>").text("Node label"))
+                .append($("<td></td>").append(selectNode))
+                .append($("<td></td>").text("Edge label"))
+                .append($("<td></td>").append(selectEdge))
             )
         );
-        this.main.append(conteneur);
+        this.main.append(conteneur)
     }
 
     addPanelLinkChangeGraph(attributes, visnetwork) {
@@ -480,44 +505,49 @@ class Hotbar {
         }
     }
 
-    addPanelChangeLabel(network, visnetwork, listProperties) {
-        console.log(listProperties);
+addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) {
         let conteneur = $("<div></div>");
-        let select = $("<select id='select-label'></select>").change((ev) => {
+        let selectNode = $("<select></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
+            console.log(text)
             network.getListNodes().forEach((node) => {
-                console.log(node);
-                console.log(node.params[text])
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
-                else if(node.defaultparams[text])
-                    node.setLabel(visnetwork, node.defaultparams[text]);
-            });
-            network.getListEdges().forEach((node) => {
-                if (node.params[text])
-                    node.setLabel(visnetwork, node.params[text]);
-                else if(node.defaultparams[text])
-                    node.setLabel(visnetwork, node.defaultparams[text]);
             });
             visnetwork.redraw();
         });
-        /*listProperties.forEach ((element) => {
-            select.append($("<option></option>").text(element));
-        });*/
-        Object.keys(listProperties).forEach(function (k) {
+        Object.keys(listPropertiesNode).forEach(function (k) {
             console.log(k + ' - ' + k);
-            select.append($("<option></option>").text(k));
+            selectNode.append($("<option></option>").text(k));
         });
-        select.val("label");
+        selectNode.val("label");
+
+        let selectEdge = $("<select></select>").change((ev) => {
+            var text = $(ev.target).find("option:selected").text(); //only time the find is required
+            var name = $(ev.target).attr('name');
+            console.log(text)
+            network.getListEdges().forEach((node) => {
+                if (node.params[text])
+                    node.setLabel(visnetwork, node.params[text]);
+            });
+            visnetwork.redraw();
+        });
+        Object.keys(listPropertiesEdge).forEach(function (k) {
+            console.log(k + ' - ' + k);
+            selectEdge.append($("<option></option>").text(k));
+        });
+        selectEdge.val("label");
 
         conteneur.append($("<table></table>")
             .append($("<tr></tr>")
-                .append($("<td></td>").text("Label"))
-                .append($("<td></td>").append(select))
+                .append($("<td></td>").text("Node label"))
+                .append($("<td></td>").append(selectNode))
+                .append($("<td></td>").text("Edge label"))
+                .append($("<td></td>").append(selectEdge))
             )
         );
-        this.main.append(conteneur);
+        this.main.append(conteneur)
     }
 
     addPanelFonctionNodes(properties, toDoFunctionCallback) {

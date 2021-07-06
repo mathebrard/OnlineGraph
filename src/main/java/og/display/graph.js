@@ -10,7 +10,18 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     var nodes = new vis.DataSet(json['results'][0]['vertices']);
 
     // create an array with edges
-    var edges = new vis.DataSet(json['results'][0]['edges']);
+	var arc = json['results'][0]['arcs']
+	for (let i=0; i<arc.length;i++){
+		arc[i]["properties"] = {};
+		arc[i]["properties"]["directed"] = true
+	}
+	var edge = json['results'][0]['edges']
+	for (let i=0; i<edge.length;i++){
+		edge[i]["properties"] = {};
+		edge[i]["from"] = edge[i]["ends"][0];
+		edge[i]["to"] = edge[i]["ends"][edge[i]["ends"].length-1];
+	}
+    var edges = new vis.DataSet($.extend(arc, edge));
     // defaults props
     var props = json['results'][0]['properties'];
     // create a network
@@ -24,7 +35,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         container.style.backgroundColor = props["background color"];
     }
     var shapeAllowedNode = ["ellipse", "circle", "database", "box", "text","image", "circularImage", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square","icon"]
-    var shapeAllowedEdge = ["arrow", "bar", "box", "circle", "crow", "curve", "diamond", "image", "inv_curve", "inv_triangle", "triangle", "vee"]
+    var shapeAllowedEdge = ["arrow", "bar", "box", "circle", "crow", "curve", "diamond", "image", "inv_curve", "inv_triangle", "triangle", "vee"];
     // options pour l'initialisation de visnetwork TODO unkonwn property
     let options = {
         nodes: {
@@ -37,6 +48,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     return 0.05 * value;
                 }
             },
+			font:{},
             hidden: (props["default vertex hidden"] === 'true'),
             //title: htmlTitle("<ul><li>Hello World</li></ul>")
         },
@@ -107,6 +119,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     if (props["default vertex size"]){
     	options["nodes"]["size"] = parseInt(props["default vertex size"]);
     }
+    if (props["default vertex labelColor"]){
+    	options["nodes"]["font"]["color"] = props["default vertex labelColor"];
+    }
     if (props["default edge directed"]){
     	options["edges"]["arrows"]["to"]["enabled"] = (props["default edge directed"] === "true");
     }
@@ -123,13 +138,13 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     	options["edges"]["width"] =parseInt(props["default edge width"]);
     }
     if (props["default edge color"]){
-    	options["edges"]["color"] = props["default edge arrowShape"];
+    	options["edges"]["color"] = props["default edge color"];
     }
     if (props["default edge dashes"]){
     	options["edges"]["dashes"] =(props["default edge dashes"] === 'true');
     }
     if (props["default edge label"]){
-    	options["edges"]["label"] = props["default edge arrowShape"];
+    	options["edges"]["label"] = props["default edge label"];
     }
     var visnetwork = new vis.Network(container, data, options);
     let network = generateNetwork(nodes, edges)
@@ -143,16 +158,18 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         	console.log(error)
         }
     });
-    network.getListEdges().forEach((node) => {
+console.log(network.getListNodes());
+console.log(network.getListEdges());
+
+    network.getListEdges().forEach((edge) => {
         try{
-	        node.processDefaultParams(visnetwork, network, props);
-	        node.processParams(visnetwork, network);
+	        edge.processDefaultParams(visnetwork, network, props);
+	        edge.processParams(visnetwork, network);
         }
         catch(error){
         	console.log(error)
         }
     });
-	console.log(network.allProps)
 
     let unknownprops = {}
     for (let prop in network.unknowProps) {
@@ -160,12 +177,20 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
             "name": network.unknowProps[prop]
         }
     }
-    let allprops = {}
-    for (let prop in network.allProps) {
-        allprops[network.allProps[prop]] = {
-            "name": network.allProps[prop]
+    let allpropsNodes = {}
+    for (let prop in network.allPropsNodes) {
+        allpropsNodes[network.allPropsNodes[prop]] = {
+            "name": network.allPropsNodes[prop]
         }
     }
+    let allpropsEdges = {}
+	console.log(network.allPropsEdges.toString())
+    for (let prop in network.allPropsEdges) {
+        allpropsEdges[network.allPropsEdges[prop]] = {
+            "name": network.allPropsEdges[prop]
+        }
+    }
+
     let attributes = {
         "Node color": {
             type: "color",
@@ -193,7 +218,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
             }
         },
 
-        "Border color": {
+        "Node Border color": {
             type: "color",
             functionApply: (key, fx) => {
                 if (key != "") {
@@ -255,7 +280,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                 visnetwork.redraw();
             }
         },
-        "Border size": {
+        "Node Border size": {
             type: "function",
             function: "0",
             dftfunction: "0",
@@ -285,7 +310,185 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 
                 visnetwork.redraw();
             }
+        },
+        "Node Label color": {
+            type: "color",
+            functionApply: (key, fx) => {
+
+                if (key != undefined && key != "") {
+                    try {
+                        network.getListNodes().forEach((node) => {
+                            if (node.params[key])
+                                node.setLabelColor(visnetwork, fx.getcolor(node.params[key]));
+                            else if (node.defaultparams[key])
+                                node.setLabelColor(visnetwork, fx.getcolor(node.defaultparams[key]));
+                        });	
+                    } 
+                    catch (error) {
+                    	  console.log(error);
+                    }
+
+                } else {
+                    /*network.getListNodes().forEach((node) => {
+                        node.setDefaultBackgroundColor(visnetwork);
+                    });*/
+                }
+                visnetwork.redraw();
+            }
+        },
+        "Edge color": {
+            type: "color",
+            functionApply: (key, fx) => {
+
+                if (key != undefined && key != "") {
+                    try {
+                        network.getListEdges().forEach((node) => {
+                            if (node.params[key])
+                                node.setColor(visnetwork, fx.getcolor(node.params[key]));
+                            else if (node.defaultparams[key])
+                                node.setColor(visnetwork, fx.getcolor(node.defaultparams[key]));
+                        });	
+                    } 
+                    catch (error) {
+                    	  console.log(error);
+                    }
+
+                } else {
+                    /*network.getListNodes().forEach((node) => {
+                        node.setDefaultBackgroundColor(visnetwork);
+                    });*/
+                }
+                visnetwork.redraw();
+            }
+        },
+        "Edge label color": {
+            type: "color",
+            functionApply: (key, fx) => {
+
+                if (key != undefined && key != "") {
+                    try {
+                        network.getListEdges().forEach((node) => {
+                            if (node.params[key])
+                                node.setLabelColor(visnetwork, fx.getcolor(node.params[key]));
+                            else if (node.defaultparams[key])
+                                node.setLabelColor(visnetwork, fx.getcolor(node.defaultparams[key]));
+                        });	
+                    } 
+                    catch (error) {
+                    	  console.log(error);
+                    }
+
+                } else {
+                    /*network.getListNodes().forEach((node) => {
+                        node.setDefaultBackgroundColor(visnetwork);
+                    });*/
+                }
+                visnetwork.redraw();
+            }
+        },
+        "Edge width": {
+            type: "function",
+            function: "0",
+            dftfunction: "0",
+            functionApply: (key, fx) => {
+                var newFX = new Function("x", "return " + fx);
+                try {
+                    network.getListEdges().forEach((node) => {
+                        if (node.params[key]) {
+                            let newSize = newFX(node.params[key]);
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                width: newSize
+                            });
+                        }
+                        else if (node.defaultparams[key]){
+                        	let newSize = newFX(node.defaultparams[key]);
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                width: newSize
+                            });
+                        }
+                    });
+                } 
+                catch (error) {
+                	  console.log(error);
+                }
+
+                visnetwork.redraw();
+            }
+        },
+        "Edge arrow size": {
+            type: "function",
+            function: "0",
+            dftfunction: "0",
+            functionApply: (key, fx) => {
+                var newFX = new Function("x", "return " + fx);
+                try {
+                    network.getListEdges().forEach((node) => {
+                        if (node.params[key]) {
+                            let newSize = newFX(node.params[key]);
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                arrows: {
+									middle : {
+										scaleFactor : newSize
+									}
+								}
+                            });
+                        }
+                        else if (node.defaultparams[key]){
+                        	let newSize = newFX(node.defaultparams[key]);
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                arrows: {
+									middle : {
+										scaleFactor : newSize
+									}
+								}
+                            });
+                        }
+                    });
+                } 
+                catch (error) {
+                	  console.log(error);
+                }
+
+                visnetwork.redraw();
+            }
+        },
+        "Edge dashed": {
+            type: "function",
+            function: "0",
+            dftfunction: "0",
+            functionApply: (key, fx) => {
+                var newFX = new Function("x", "return " + fx);
+                try {
+                    network.getListEdges().forEach((node) => {
+                        if (node.params[key]) {
+                            let newSize = newFX(node.params[key]);
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                dashes : [newSize,newSize]
+                            });
+                        }
+                        else if (node.defaultparams[key]){
+                        	let newSize = newFX(node.defaultparams[key]);
+                            visnetwork.body.data.nodes.updateOnly({
+                                id: node.id,
+                                dashes : [newSize,newSize]
+
+                            });
+                        }
+                    });
+                } 
+                catch (error) {
+                	  console.log(error);
+                }
+
+                visnetwork.redraw();
+            }
         }
+
 
     };
     let attributesChangeGraph = {
@@ -373,15 +576,15 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     };
 // CREATION DU MENU DE CHOIX
     hotbar = new Hotbar();
-    hotbar.addPanelLinkPropertiesToFunction(attributes, allprops);
-    //hotbar.addPanelLinkChangeGraph(attributesChangeGraph, visnetwork, json);
-    hotbar.addPanelChangeLabel(network, visnetwork, allprops);
+    hotbar.addPanelLinkPropertiesToFunction(attributes, allpropsNodes,allpropsEdges)
+    //hotbar.addPanelLinkChangeGraph(attributesChangeGraph, visnetwork, json)
+    hotbar.addPanelChangeLabel(network, visnetwork, allpropsNodes,allpropsEdges);
     hotbar.addStats(visnetwork);
 
-    /*hotbar.addEntry("Sélection Simple", (e) => {
+    /*hotbar.addEntry("Sï¿½lection Simple", (e) => {
         TYPESELECTION = "simple";
     });
-    hotbar.addEntry("Sélection Multiple", (e) => {
+    hotbar.addEntry("Sï¿½lection Multiple", (e) => {
         TYPESELECTION = "multiple";
     });*/
 
@@ -451,7 +654,11 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	    			  }
 	    			});
 	        } else if (json[change]['type'] == "AddEdge") {
-	            network.addEdge(visnetwork, defaultProps, json[change]['edgeInfo'])
+				let jsoncorrect = json[change]['edgeInfo'];
+				jsoncorrect["from"]=jsoncorrect["ends"][0]
+				jsoncorrect["to"]=jsoncorrect["ends"][jsoncorrect["ends"].length-1]
+				console.log(jsoncorrect)
+	            network.addEdge(visnetwork, defaultProps, jsoncorrect)
 	            refreshSelects();
 	            var select = document.getElementById("select-label");
 	            try {
@@ -478,13 +685,54 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 				if (json[change]['name'] ==  "properties"){
 					$.getJSON("/api/og/og.GraphService/get/" + gid, function (jsoncomplet) {
 							//recuperer noeud
-							console.log(JSON.stringify(json))
 							var n = network.getEdge(json[change]['id'])
 							//recuperer properties
 							if (n!=undefined){
 								for (let a in jsoncomplet['results'][0]["edges"]){
 									if (jsoncomplet['results'][0]["edges"][a]["id"]==json[change]['id']){
 										n.params = jsoncomplet['results'][0]["edges"][a]["properties"]
+	        							n.processParams(visnetwork,network)
+									}
+								}
+							}
+						});
+				}
+	        } else if (json[change]['type'] == "AddArc") {
+				let jsoncorrect = json[change]['edgeInfo'];
+				jsoncorrect["directed"]=true;
+	            network.addEdge(visnetwork, defaultProps, jsoncorrect)
+	            refreshSelects();
+	            var select = document.getElementById("select-label");
+	            try {
+		            var text = select.options[select.selectedIndex].text;
+	            }
+	            catch(error){
+	            	var text = "label";
+	            }
+	            network.getListEdges().forEach((node) => {
+	            try{
+	                if (node.params[text])
+	                    node.setLabel(visnetwork, node.params[text]);
+	                else if(node.defaultparams[text])
+	                    node.setLabel(visnetwork, node.defaultparams[text]);
+	            }
+	            catch(error){
+	            	console.log(error);
+	            }
+	            });
+	        } else if (json[change]['type'] == "RemoveArc") {
+	            network.removeEdge(visnetwork, json[change]['elementID'])
+	        }
+	         else if (json[change]['type'] == "ArcDataChange") {
+				if (json[change]['name'] ==  "properties"){
+					$.getJSON("/api/og/og.GraphService/get/" + gid, function (jsoncomplet) {
+							//recuperer noeud
+							var n = network.getEdge(json[change]['id'])
+							//recuperer properties
+							if (n!=undefined){
+								for (let a in jsoncomplet['results'][0]["arcs"]){
+									if (jsoncomplet['results'][0]["arcs"][a]["id"]==json[change]['id']){
+										n.params = jsoncomplet['results'][0]["arcs"][a]["properties"]
 	        							n.processParams(visnetwork,network)
 									}
 								}
@@ -519,24 +767,48 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 	
 	function refreshSelects(){
 		$(".select-propertie-value").each((index, select) => {
-			let values = [];
-		    for (let prop in network.allProps) {
-		        allprops[network.allProps[prop]] = {
-		            "name": network.allProps[prop]
-		        }
-		    }
-			for (let i=0;i<select.options.length;i++)
-				values.push(select.options[i].value);
-			for (let i=0;i<allprops.length;i++){
-				if (!allprops[i] in values){
-					// create new option element
-					var opt = document.createElement('option');
-					// create text node to add to option element (opt)
-					opt.appendChild( document.createTextNode(allprops[i]) );
-					// set value property of opt
-					opt.value = allprops[i];
-					// add opt to end of select box (sel)
-					sel.appendChild(opt); 
+			if (select.classList.contains("node-select")){
+				let values = [];
+			    for (let prop in network.allPropsNodes) {
+			        allpropsNodes[network.allPropsNodes[prop]] = {
+			            "name": network.allPropsNodes[prop]
+			        }
+			    }
+				for (let i=0;i<select.options.length;i++)
+					values.push(select.options[i].value);
+				for (let i=0;i<allpropsNodes.length;i++){
+					if (!allpropsNodes[i] in values){
+						// create new option element
+						var opt = document.createElement('option');
+						// create text node to add to option element (opt)
+						opt.appendChild( document.createTextNode(allpropsNodes[i]) );
+						// set value property of opt
+						opt.value = allpropsNodes[i];
+						// add opt to end of select box (sel)
+						sel.appendChild(opt); 
+					}
+				}
+			}
+			else if (select.classList.contains("edge-select")){
+				let values = [];
+			    for (let prop in network.allPropsEdges) {
+			        allpropsEdges[network.allPropsEdges[prop]] = {
+			            "name": network.allPropsEdges[prop]
+			        }
+			    }
+				for (let i=0;i<select.options.length;i++)
+					values.push(select.options[i].value);
+				for (let i=0;i<allpropsEdges.length;i++){
+					if (!allpropsEdges[i] in values){
+						// create new option element
+						var opt = document.createElement('option');
+						// create text node to add to option element (opt)
+						opt.appendChild( document.createTextNode(allpropsEdges[i]) );
+						// set value property of opt
+						opt.value = allpropsEdges[i];
+						// add opt to end of select box (sel)
+						sel.appendChild(opt); 
+					}
 				}
 			}
         });

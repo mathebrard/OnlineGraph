@@ -18,13 +18,15 @@ class Node {
         this.mass = 1;
         this.label = undefined
         this.defaultparams = {}
+		this.labelColor="#000000";
     }
 
 
     processParams(visnetwork, network) {
         let currentNode = this;
         Object.keys(this.params).forEach(function (key) {
-            network.allProps.push(key)
+
+            network.allPropsNodes.push(key)
             if (key == 'fillColor') {
                 currentNode.setColor(visnetwork, currentNode.params[key]);
             } else if (key == 'borderColor') {
@@ -43,7 +45,11 @@ class Node {
                 currentNode.setShape(visnetwork, currentNode.params[key]);
             } else if (key == 'size') {
                 currentNode.setSize(visnetwork, currentNode.params[key]);
-            } else {
+            }
+			  else if (key == 'labelColor') {
+                currentNode.setLabelColor(visnetwork, currentNode.params[key]);
+            }
+			 else {
                 network.unknowProps.push(key);
             }
         })
@@ -72,6 +78,8 @@ class Node {
                 currentNode.setImage(visnetwork, props[key]);
             } else if (key == 'default vertex size') {
                 currentNode.setSize(visnetwork, props[key]);
+            } else if (key == 'default vertex labelColor') {
+                currentNode.setLabelColor(visnetwork, props[key]);
             } else {
                 network.unknowProps.push(key);
             }
@@ -135,6 +143,16 @@ class Node {
             id: this.id,
             color: {
                 border: this.colorborder
+            }
+        });
+    }
+
+    setLabelColor(visnetwork,labelcolor) {
+        this.labelColor = labelcolor;
+        visnetwork.body.data.nodes.updateOnly({
+            id: this.id,
+            font: {
+                color: this.labelColor
             }
         });
     }
@@ -319,7 +337,7 @@ class Node {
                 from: this.id,
                 to: contact.id,
                 arrows: {
-                    to: {
+                    middle: {
                         type: "arrow",
                         enabled: true
                     }
@@ -370,13 +388,13 @@ class Link {
     processParams(visnetwork, network) {
         let currentEdge = this;
         Object.keys(this.params).forEach(function (key) {
-            network.allProps.push(key);
-
+            network.allPropsEdges.push(key);
             if (key == 'arrowShape') {
                 currentEdge.setArrowType(visnetwork, currentEdge.params[key]);
             } else if (key == 'dashes') {
                 currentEdge.setDashes(visnetwork, currentEdge.params[key]);
             } else if (key == 'directed') {
+				console.log("AHAHAHAAHAHAHAHAAHAH")
                 currentEdge.setDirected(visnetwork, currentEdge.params[key]);
             } else if (key == 'color') {
                 currentEdge.setColor(visnetwork, currentEdge.params[key]);
@@ -431,7 +449,7 @@ class Link {
             visnetwork.body.data.edges.updateOnly({
                 id: this.id,
                 arrows: {
-                    to: {
+                    middle: {
                         type: this.arrowtype
                     }
                 }
@@ -467,12 +485,15 @@ class Link {
 
     setDirected(visnetwork, directed) {
         this.directed = directed;
+	console.log(this.directed)
+	console.log((this.directed + "") == 'true')
+
         try {
             visnetwork.body.data.edges.updateOnly({
                 id: this.id,
                 arrows: {
-                    to: {
-                        enabled: (this.directed === 'true')
+                    middle: {
+                        enabled: ((this.directed + "") == 'true')
                     }
                 }
             });
@@ -503,7 +524,7 @@ class Link {
             visnetwork.body.data.edges.updateOnly({
                 id: this.id,
                 arrows: {
-                    to: {
+                    middle: {
                         src: this.arrowImage,
                         type: 'image',
                         imageHeight: this.width * 40,
@@ -588,7 +609,9 @@ class Network {
         this.visEdges = null;
         this.visNodes = null;
         this.unknowProps = [];
-        this.allProps = [];
+        this.allPropsNodes = [];
+        this.allPropsEdges = [];
+
     }
 
 
@@ -639,10 +662,15 @@ class Network {
         return newNode;
     }
 
-    linkNode(from, to, idd, params) {
-        from.linkTo(to);
-        let newLink = new Link(from, to, idd, idd, params);
-        this.listEdges.push(newLink);
+    linkNode(from, to, idd, params,defaultparams) {
+		try{
+	        from.linkTo(to);
+	        let newLink = new Link(from, to, idd, params, defaultparams);
+	        this.listEdges.push(newLink);
+		}
+		catch(e){
+			console.log(e)
+		}
     }
 
     getNode(ID) {
@@ -767,7 +795,7 @@ function setColorNodeNetwork(network, idNode, backgroundColor, borderColor) {
         let lastColorBorder = node.options.color.border;
         let lastColorBackground = node.options.color.background;
         node.options.color = {
-            border: lastColorBorder,            // ces deux paramètres gèrent les couleurs des liens dépendants du noeud
+            border: lastColorBorder,            // ces deux paramï¿½tres gï¿½rent les couleurs des liens dï¿½pendants du noeud
             background: lastColorBackground,
 
             highlight: {
@@ -784,7 +812,7 @@ function setColorNodeNetwork(network, idNode, backgroundColor, borderColor) {
 function generateNetwork(nodes, edges) {
 
     let network = new Network();
-    /*// création du graphique network à partir du JSON
+    /*// crï¿½ation du graphique network ï¿½ partir du JSON
     nodes.knownComponents.forEach((n) => {
         network.addNode (n.friendlyName, n);
     });
@@ -798,12 +826,12 @@ function generateNetwork(nodes, edges) {
         network.addNode(n.id, n['properties']);
     });
     edges.forEach((e) => {
-        network.linkNode(network.getNode(e['from']), network.getNode(e['to']), e.id, e['properties']);
+        network.linkNode(network.getNode(e['from']), network.getNode(e['to']), e.id, e['properties'],e['properties']);
     });
     return network;
 }
 
-// attention, main doit être un composant html natif, pas un composant jQuery
+// attention, main doit ï¿½tre un composant html natif, pas un composant jQuery
 function createNetwork(container, network, options = {}, width = 600, height = 600) {
     let main = document.createElement("div");
     main.style.width = width + "px";

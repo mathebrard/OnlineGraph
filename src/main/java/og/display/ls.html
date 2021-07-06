@@ -22,7 +22,7 @@
 	</ul>
 	<script>
 
-$.getJSON("/api/og/og.GraphStorageService/listGraphs", function (json) {
+$.getJSON("/api/og/og.GraphService/listGraphs", function (json) {
 	json['value'].forEach((graph) => {
 		var ul = document.getElementById("graphList");
 		var li = document.createElement("li");
