@@ -60,6 +60,13 @@ Arcs add these properties:
 
 In the following, vertices and edges will be referred to as their ID.
 
+## Graph data structures
+OnlineGraph feature several data structures for storing graph.
+The default one relies on [MapDB](https://mapdb.org/) to bring persistence and high scalabilty. This allows graphs to remain on the disk when the server shuts down and to be reloader at next startup.
+
+Another implementation is based on hash-maps in memory. It does not offer persistence, but as it does not involve access to the disk, it is much quicker!
+
+
 ## API
 ### Requests
 The API is composed of a set of web services whose the URL is formed against the following pattern:
