@@ -1,21 +1,21 @@
 package og;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
-import toools.io.Cout;
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
-import toools.util.Date;
 
 public class DiskGraph<V, E> extends Graph {
 	final Directory d;
+	private final PersistentChanges changes;
 
 	public DiskGraph(Directory d, ElementSet v, ElementSet e, ElementSet a) {
 		super(v, e, a);
 		this.d = d;
+		this.changes = new PersistentChanges(new Directory(d, "changes"));
+
 	}
 
 	public void create() {
@@ -25,12 +25,12 @@ public class DiskGraph<V, E> extends Graph {
 
 	@Override
 	public Map<String, String> getProperties() {
-		return (Map<String, String>) new RegularFile(d, "properties.ser").getContentAsJavaObject();
+		return new RegularFile(d, "properties.txt").getContentAsJavaProperties();
 	}
 
 	@Override
 	public void setProperties(Map<String, String> m) {
-		new RegularFile(d, "properties.ser").setContentAsJavaObject(m);
+		new RegularFile(d, "properties.txt").setContentAsJavaProperties(m);
 	}
 
 	@Override
@@ -43,38 +43,13 @@ public class DiskGraph<V, E> extends Graph {
 	}
 
 	@Override
-	public synchronized List<Change> allChanges() {
-		var f = new RegularFile(d, "history.ser");
-
-		if (f.exists()) {
-			return (List<Change>) f.getContentAsJavaObject();
-		} else {
-			return new ArrayList<>();
-		}
+	public void commitNewChange(Change c) {
+		changes.add(c);
 	}
 
 	@Override
-	public synchronized void commitNewChange(Change c) {
-		Cout.debugSuperVisible(c);
-		var f = new RegularFile(d, "history.ser");
-		List<Change> l = null;
-
-		if (f.exists()) {
-			l = (List<Change>) f.getContentAsJavaObject();
-
-			var i = l.iterator();
-			var now = Date.time();
-
-			while (i.hasNext() && i.next().date < now - 5) {
-				i.remove();
-			}
-
-		} else {
-			l = new ArrayList<>();
-		}
-
-		l.add(c);
-		f.setContentAsJavaObject(l);
+	public void changes(int since, Consumer<Change> c) {
+		changes.start(since, c);
 	}
 
 }

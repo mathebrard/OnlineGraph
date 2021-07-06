@@ -1,9 +1,9 @@
 package og;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 public abstract class Graph implements Serializable {
 	public final VertexSet vertices;
@@ -37,7 +37,7 @@ public abstract class Graph implements Serializable {
 
 	// graph-related methods
 
-	public abstract List<Change> allChanges();
+	public abstract void changes(int i, Consumer<Change> c);
 
 	public abstract void commitNewChange(Change c);
 

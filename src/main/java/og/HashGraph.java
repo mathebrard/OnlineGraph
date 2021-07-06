@@ -4,20 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import toools.io.Cout;
+import java.util.function.Consumer;
 
 public class HashGraph extends Graph {
 	private Map<String, String> props = new HashMap<>();
-	private List<Change> changes = new ArrayList<>();
+	private final List<Change> changes = new ArrayList<>();
 
 	public HashGraph() {
 		super(new HashElementSet(), new HashElementSet(), new HashElementSet());
-	}
-
-	@Override
-	public List<Change> allChanges() {
-		return changes;
 	}
 
 	@Override
@@ -35,4 +29,8 @@ public class HashGraph extends Graph {
 		this.props = m;
 	}
 
+	@Override
+	public void changes(int since, Consumer<Change> c) {
+		changes.subList(since, changes.size()).forEach(c);
+	}
 }

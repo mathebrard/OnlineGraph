@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.paypal.digraph.parser.GraphEdge;
@@ -57,7 +58,8 @@ public class GraphService extends Service {
 			m.put(d.getName(), new FlatOnDiskDiskGraph(d));
 		});
 
-		var randomGraph = new HashGraph();
+		var d = new Directory(baseDirectory, "randomPersistentGraph");
+		var randomGraph = new HashGraph();//new MapDBGraph(d);
 		new RandomEvolver(randomGraph);
 		m.put("randomGraph", randomGraph);
 
@@ -331,14 +333,15 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public List<Change> changes(String gid, double since) {
-		return getGraph(gid).allChanges().stream().filter(c -> c.date >= since).collect(Collectors.toList());
+	public List<Change> changes(String gid, int since) {
+		List<Change> l = new ArrayList<>();
+		getGraph(gid).changes( since, c -> l.add(c));
+		return l;
 	}
 
 	@IdawiOperation
 	public List<Change> history(String gid) {
-		var g = getGraph(gid);
-		return g.allChanges();
+		return changes(gid, 0);
 	}
 
 	/*

@@ -19,6 +19,10 @@ public class EdgeSet extends GraphElementSet {
 	}
 
 	public long add(LongSet ends) {
+		for (var u : ends)
+			if (!graph.vertices.contains(u))
+				throw new IllegalArgumentException("incident vertex does not exist : " + u);
+
 		long e = ThreadLocalRandom.current().nextLong();
 		impl.add(e);
 		impl.set(e, "ends", ends);
