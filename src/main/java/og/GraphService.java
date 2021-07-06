@@ -56,11 +56,14 @@ public class GraphService extends Service {
 			m.put(d.getName(), new FlatOnDiskDiskGraph(d));
 		});
 
-		var d = new Directory(baseDirectory, "randomPersistentGraph");
-		var randomGraph = new MapDBGraph(d);
-//		var randomGraph = new HashGraph();
+		var randomGraph = new HashGraph();
 		new RandomEvolver(randomGraph);
 		m.put("randomGraph", randomGraph);
+
+		var d = new Directory(baseDirectory, "randomPersistentGraph");
+		var randomPersistentGraph = new MapDBGraph(d);
+		new RandomEvolver(randomPersistentGraph);
+		m.put("randomPersistentGraph", randomPersistentGraph);
 
 		var grid = new HashGraph();
 		new GridEvolver(grid, 10, 10, 1);
