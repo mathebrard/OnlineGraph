@@ -23,11 +23,16 @@
 	<script>
 
 $.getJSON("/api/og/og.GraphService/listGraphs", function (json) {
-	json['value'].forEach((graph) => {
+	json['results'][0].forEach((graph) => {
 		var ul = document.getElementById("graphList");
 		var li = document.createElement("li");
+		var element = document.createElement('a');
+		element.text = graph
+		element.href = "graph.html?gid=" + graph
+		li.appendChild( element );
 		ul.appendChild(li);
-		document.write(graph.link('graph.html?' + graph));
+
+
     });
 })
 

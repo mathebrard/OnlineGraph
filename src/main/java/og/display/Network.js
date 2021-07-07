@@ -394,7 +394,6 @@ class Link {
             } else if (key == 'dashes') {
                 currentEdge.setDashes(visnetwork, currentEdge.params[key]);
             } else if (key == 'directed') {
-				console.log("AHAHAHAAHAHAHAHAAHAH")
                 currentEdge.setDirected(visnetwork, currentEdge.params[key]);
             } else if (key == 'color') {
                 currentEdge.setColor(visnetwork, currentEdge.params[key]);
@@ -485,8 +484,6 @@ class Link {
 
     setDirected(visnetwork, directed) {
         this.directed = directed;
-	console.log(this.directed)
-	console.log((this.directed + "") == 'true')
 
         try {
             visnetwork.body.data.edges.updateOnly({
@@ -838,7 +835,6 @@ function generateNetwork(nodes, edges) {
         network.addNode(n.id, n['properties']);
     });
     edges.forEach((e) => {
-		console.log(e)
         network.linkNode(network.getNode(e['from']), network.getNode(e['to']), e.id, e['properties'],e['properties']);
     });
     return network;

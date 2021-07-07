@@ -251,7 +251,6 @@ class Hotbar {
 			}
 
                 });
-console.log(attribut)
 
 			if (attribut.includes("Node")){
 				myselect.addClass("node-select")
@@ -373,15 +372,11 @@ console.log(attribut)
 
         this.main.append(table);
         let input = document.getElementsByClassName('parameters-values-borders'); // get the input element
-        console.log("ah")
-        console.log(input)
-        console.log(input.length)
-        console.log(Array.from(input))
+
         //TODO size textboxinput
         Array.from(document.getElementsByClassName('parameters-values-borders')).forEach.call(input, function (el) {
             // Do stuff here
-            console.log(el)
-            console.log("ah")
+
             el.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
             resizeInput.call(el); // immediately call the function
         });
@@ -397,7 +392,6 @@ console.log(attribut)
         let selectNode = $("<select></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
-            console.log(text)
             network.getListNodes().forEach((node) => {
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
@@ -405,7 +399,6 @@ console.log(attribut)
             visnetwork.redraw();
         });
         Object.keys(listPropertiesNode).forEach(function (k) {
-            console.log(k + ' - ' + k);
             selectNode.append($("<option></option>").text(k));
         });
         selectNode.val("label");
@@ -413,7 +406,6 @@ console.log(attribut)
         let selectEdge = $("<select></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
-            console.log(text)
             network.getListEdges().forEach((node) => {
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
@@ -421,7 +413,6 @@ console.log(attribut)
             visnetwork.redraw();
         });
         Object.keys(listPropertiesEdge).forEach(function (k) {
-            console.log(k + ' - ' + k);
             selectEdge.append($("<option></option>").text(k));
         });
         selectEdge.val("label");
@@ -506,15 +497,11 @@ console.log(attribut)
 
         this.mainChangeGraph.append(table);
         let input = document.getElementsByClassName('parameters-values-borders'); // get the input element
-        console.log("ah")
-        console.log(input)
-        console.log(input.length)
-        console.log(Array.from(input))
+
         //TODO size textboxinput
         Array.from(document.getElementsByClassName('parameters-values-borders')).forEach.call(input, function (el) {
             // Do stuff here
-            console.log(el)
-            console.log("ah")
+
             el.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
             resizeInput.call(el); // immediately call the function
         });
@@ -530,7 +517,6 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
         let selectNode = $("<select class = 'select-propertie-value node-select'></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
-            console.log(text)
             network.getListNodes().forEach((node) => {
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
@@ -538,7 +524,6 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
             visnetwork.redraw();
         });
         Object.keys(listPropertiesNode).forEach(function (k) {
-            console.log(k + ' - ' + k);
             selectNode.append($("<option></option>").text(k));
         });
         selectNode.val("label");
@@ -546,7 +531,6 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
         let selectEdge = $("<select class = 'select-propertie-value edge-select'></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
-            console.log(text)
             network.getListEdges().forEach((node) => {
                 if (node.params[text])
                     node.setLabel(visnetwork, node.params[text]);
@@ -554,7 +538,6 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
             visnetwork.redraw();
         });
         Object.keys(listPropertiesEdge).forEach(function (k) {
-            console.log(k + ' - ' + k);
             selectEdge.append($("<option></option>").text(k));
         });
         selectEdge.val("label");
@@ -593,8 +576,6 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
         let fonction_sort_node = "20";
 
         let select = $("<select></select>").change(function (ev) {
-            console.log(ev);
-            console.log(this.value);
             $("#valeur-min-select").val(properties[this.value].valeur_min);
             $("#valeur-max-select").val(properties[this.value].valeur_max);
             $("#fonction-select").val(properties[this.value].fonction);
@@ -621,7 +602,6 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
                 .text("Valider")
                 .click((ev) => {
                     properties[select.val()].fonction = $("#fonction-select").val();
-                    console.log(select, properties);
                     toDoFunctionCallback(
                         select.val(),
                         properties[select.val()].fonction);
@@ -677,7 +657,6 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
 
         }
 
-        console.log(properties);
         let select = $("<select></select>");
         $.each(properties, (key, value) => {
             select.append($("<option></option>")
