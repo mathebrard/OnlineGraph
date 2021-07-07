@@ -418,7 +418,7 @@ class Link {
         Object.keys(props).forEach(function (key) {
             //network.allProps.push(key)
             if (key.includes("edge"))
-            	currentEdge.defaultparams[key]=props[key];
+            	//currentEdge.defaultparams[key]=props[key];
             if (key == 'default edge arrowShape') {
                 currentEdge.setArrowType(visnetwork, props[key]);
             } else if (key == 'default edge dashes') {
@@ -838,6 +838,7 @@ function generateNetwork(nodes, edges) {
         network.addNode(n.id, n['properties']);
     });
     edges.forEach((e) => {
+		console.log(e)
         network.linkNode(network.getNode(e['from']), network.getNode(e['to']), e.id, e['properties'],e['properties']);
     });
     return network;

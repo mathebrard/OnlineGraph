@@ -217,10 +217,10 @@ class Hotbar {
                         });
                     }
                     myselect.currentValue = valeur;
-
+			if (attribut.includes("Node")){
                     if (valeur != "") {
-                        inputmin.val(properties[valeur].valeur_min);
-                        inputmax.val(properties[valeur].valeur_max);
+                        inputmin.val(propertiesNode[valeur].valeur_min);
+                        inputmax.val(propertiesNode[valeur].valeur_max);
                     } else {
                         inputmin.val("");
                         inputmax.val("");
@@ -232,13 +232,33 @@ class Hotbar {
                             attributes[attribut].functionApply(myselect.currentValue);
                         }
                     }
+			}
+			else if (attribut.includes("Edge")){
+                    if (valeur != "") {
+                        inputmin.val(propertiesEdge[valeur].valeur_min);
+                        inputmax.val(propertiesEdge[valeur].valeur_max);
+                    } else {
+                        inputmin.val("");
+                        inputmax.val("");
+
+                        if (attributes[attribut].type == "function" && valeur == "") {
+                            attributes[attribut].functionApply(myselect.currentValue, new Function(attributes[attribut].dftfunction));
+                        }
+                        if (attributes[attribut].type == "color" && valeur == "") {
+                            attributes[attribut].functionApply(myselect.currentValue);
+                        }
+                    }
+			}
+
                 });
 console.log(attribut)
 
-			if (attribut.includes("Node"))
+			if (attribut.includes("Node")){
 				myselect.addClass("node-select")
-			else if (attribut.includes("Edge"))
+			}
+			else if (attribut.includes("Edge")){
 				myselect.addClass("edge-select")
+			}
             if (attributes[attribut].type == "color") {
                 inputfx.append($("<button></button>")
                     .text("Appliquer")
@@ -507,7 +527,7 @@ console.log(attribut)
 
 addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) {
         let conteneur = $("<div></div>");
-        let selectNode = $("<select></select>").change((ev) => {
+        let selectNode = $("<select class = 'select-propertie-value node-select'></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
             console.log(text)
@@ -523,7 +543,7 @@ addPanelChangeLabel(network, visnetwork, listPropertiesNode,listPropertiesEdge) 
         });
         selectNode.val("label");
 
-        let selectEdge = $("<select></select>").change((ev) => {
+        let selectEdge = $("<select class = 'select-propertie-value edge-select'></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
             console.log(text)
