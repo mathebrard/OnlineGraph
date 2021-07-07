@@ -22,7 +22,7 @@ public class ArcSet extends GraphElementSet {
 			throw new IllegalArgumentException("source vertex does not exist : " + from);
 
 		if (!graph.vertices.contains(to))
-			throw new IllegalArgumentException("destination vertex does not exist : " + from);
+			throw new IllegalArgumentException("destination vertex does not exist : " + to);
 
 		long e = ThreadLocalRandom.current().nextLong();
 		impl.add(e);

@@ -9,4 +9,11 @@ public class MapDBGraph extends DiskGraph {
 				new MapDBElementSet(new Directory(d, "edges")));
 	}
 
+	@Override
+	public void cleanClose() {
+		((MapDBElementSet) arcs.impl).cleanClose();
+		((MapDBElementSet) vertices.impl).cleanClose();
+		((MapDBElementSet) edges.impl).cleanClose();
+	}
+
 }

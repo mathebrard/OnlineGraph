@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import toools.io.file.Directory;
 import toools.io.file.RegularFile;
 
-public class DiskGraph<V, E> extends Graph {
+public abstract class DiskGraph<V, E> extends Graph {
 	final Directory d;
 	private final PersistentChanges changes;
 
@@ -52,4 +52,5 @@ public class DiskGraph<V, E> extends Graph {
 		changes.start(since, c);
 	}
 
+	public abstract void cleanClose();
 }

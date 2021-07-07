@@ -1,6 +1,8 @@
 package og;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
@@ -50,24 +52,27 @@ public abstract class Graph implements Serializable {
 		vertices.impl.clear();
 	}
 
-	public void check() {
-		arcs.forEach(e -> {
-			var ends = arcs.ends(e);
+
+	public List<String> listProblems() {
+		List<String> r = new ArrayList<>();
+		
+		arcs.forEach(a -> {
+			var ends = arcs.ends(a);
 			var from = ends[0];
 
 			if (!vertices.contains(from))
-				throw new IllegalStateException("unknown source : " + from);
+				r.add("arc source is not known: " + from);
 
-			if (!vertices.outArcs(from).contains(e))
-				throw new IllegalStateException();
+			if (!vertices.outArcs(from).contains(a))
+				r.add("OUT arc not known " + a);
 
 			var to = ends[1];
 
 			if (!vertices.contains(to))
-				throw new IllegalStateException("unknown destination : " + to);
+				r.add("arc destination is not known: " + to);
 
-			if (!vertices.inArcs(to).contains(e))
-				throw new IllegalStateException();
+			if (!vertices.inArcs(to).contains(a))
+				r.add("IN arc not known " + a);
 
 			return true;
 		});
@@ -77,28 +82,44 @@ public abstract class Graph implements Serializable {
 
 			for (var u : ends) {
 				if (!vertices.contains(u))
-					throw new IllegalStateException("unknown edge end : " + u);
+					r.add("edge incident vertex is not known: " + u);
 
 				if (!vertices.edges(u).contains(e))
-					throw new IllegalStateException();
+					r.add("edge not known " + e);
 			}
 
 			return true;
 		});
 
 		vertices.forEach(v -> {
-			for (var e : vertices.outArcs(v)) {
-				if (!arcs.contains(e))
-					throw new IllegalStateException("unknown out edge : " + e);
+			for (var a : vertices.outArcs(v)) {
+				if (!arcs.contains(a))
+					r.add("unknown OUT arc : " + a);
+
+				if (arcs.source(a) != v)
+					r.add("arc source is incorrect. Should be  " + v + " but found " + arcs.source(a));
 			}
 
-			for (var e : vertices.inArcs(v)) {
-				if (!arcs.contains(e))
-					throw new IllegalStateException("unknown in edge : " + e);
+			for (var a : vertices.inArcs(v)) {
+				if (!arcs.contains(a))
+					r.add("unknown IN arc : " + a);
+
+				if (arcs.destination(a) != v)
+					r.add("arc destination is incorrect. Should be  " + v + " but found " + arcs.destination(a));
+			}
+
+			for (var e : vertices.edges(v)) {
+				if (!edges.contains(e))
+					r.add("unknown edge " + e + " incident to vertex " + v);
+
+				if (!edges.ends(e).contains(v))
+					r.add("vertex " + v + " not founds in ends of edge " + e);
 			}
 
 			return true;
 		});
+		
+		return r;
 	}
 
 }

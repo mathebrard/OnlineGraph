@@ -36,6 +36,7 @@ import toools.gui.GraphViz;
 import toools.gui.GraphViz.COMMAND;
 import toools.gui.GraphViz.OUTPUT_FORMAT;
 import toools.io.Cout;
+import toools.io.JavaResource;
 import toools.io.file.Directory;
 import toools.reflect.Clazz;
 
@@ -60,10 +61,12 @@ public class GraphService extends Service {
 		new RandomEvolver(randomGraph);
 		m.put("randomGraph", randomGraph);
 
-		var d = new Directory(baseDirectory, "randomPersistentGraph");
-		var randomPersistentGraph = new MapDBGraph(d);
-		new RandomEvolver(randomPersistentGraph);
-		m.put("randomPersistentGraph", randomPersistentGraph);
+		if (false) {
+			var d = new Directory(baseDirectory, "randomPersistentGraph");
+			var randomPersistentGraph = new MapDBGraph(d);
+			new RandomEvolver(randomPersistentGraph);
+			m.put("randomPersistentGraph", randomPersistentGraph);
+		}
 
 		var grid = new HashGraph();
 		new GridEvolver(grid, 10, 10, 1);
@@ -141,6 +144,13 @@ public class GraphService extends Service {
 		while (!e.isEmpty()) {
 			g.arcs.remove(e.removeLong(e.size() - 1));
 		}
+	}
+
+	@IdawiOperation
+	public byte[] showInVis(String graphID) {
+		var g = getGraph(graphID);
+		var html = new JavaResource(getClass(), "display/graph.html").getByteArray();
+		return html;
 	}
 
 	@IdawiOperation
@@ -259,10 +269,10 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public void check(String gid) {
-		getGraph(gid).check();
+	public List<String> listProblems(String gid) {
+		return getGraph(gid).listProblems();
 	}
-	
+
 	@IdawiOperation
 	public boolean containsVertex(String gid, long u) {
 		return getGraph(gid).vertices.contains(u);
@@ -438,5 +448,13 @@ public class GraphService extends Service {
 	@IdawiOperation
 	public double clusteringCoefficient(String graphID, long v) {
 		return CC.clusteringCoefficient(getGraph(graphID), v);
+	}
+
+	public void close() {
+		for (var g : m.values()) {
+			if (g instanceof DiskGraph) {
+				((DiskGraph) g).cleanClose();
+			}
+		}
 	}
 }

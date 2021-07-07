@@ -2,6 +2,8 @@ package og;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import og.GraphService.VertexInfo;
 
 public class VertexSet extends GraphElementSet {
@@ -40,13 +42,14 @@ public class VertexSet extends GraphElementSet {
 	}
 
 	public final LongList emptyList = new LongArrayList();
+	public final LongSet emptySet = new LongOpenHashSet();
 
 	public LongList outArcs(long v) {
 		return get(v, "outArcs", () -> emptyList);
 	}
-	
-	public LongList edges(long v) {
-		return get(v, "edges", () -> emptyList);
+
+	public LongSet edges(long v) {
+		return get(v, "edges", () -> emptySet);
 	}
 
 	public boolean isIsolated(long u) {
@@ -57,14 +60,13 @@ public class VertexSet extends GraphElementSet {
 		return outArcs(u).isEmpty();
 	}
 
-
 	@Override
 	public void clear() {
 		impl.clear();
 		graph.arcs.impl.clear();
 		graph.commitNewChange(new Change.Clear());
 	}
-	
+
 	@Override
 	public void set(long id, String key, Object content) {
 		super.set(id, key, content);

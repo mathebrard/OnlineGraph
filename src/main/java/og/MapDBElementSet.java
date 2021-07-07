@@ -22,4 +22,9 @@ public class MapDBElementSet extends Hash2ElementSet {
 		DB db = DBMaker.fileDB(d.javaFile).make();
 		return db.hashMap("map").createOrOpen();
 	}
+
+	public void cleanClose() {
+		// TODO Auto-generated method stub
+
+	}
 }
