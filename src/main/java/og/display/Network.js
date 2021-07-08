@@ -1,6 +1,6 @@
 class Node {
 
-    constructor(id,params,defaultparams) {
+    constructor(id, params, defaultparams) {
         this.id = id;
         this.label = undefined;
         this.messageLabel = undefined;
@@ -18,7 +18,7 @@ class Node {
         this.mass = 1;
         this.label = undefined
         this.defaultparams = {}
-		this.labelColor="#000000";
+        this.labelColor = "#000000";
     }
 
 
@@ -45,21 +45,20 @@ class Node {
                 currentNode.setShape(visnetwork, currentNode.params[key]);
             } else if (key == 'size') {
                 currentNode.setSize(visnetwork, currentNode.params[key]);
-            }
-			  else if (key == 'labelColor') {
+            } else if (key == 'labelColor') {
                 currentNode.setLabelColor(visnetwork, currentNode.params[key]);
-            }
-			 else {
+            } else {
                 network.unknowProps.push(key);
             }
         })
     }
-    processDefaultParams(visnetwork, network,props) {
+
+    processDefaultParams(visnetwork, network, props) {
         let currentNode = this;
         Object.keys(props).forEach(function (key) {
             //network.allProps.push(key)
             if (key.includes("vertex"))
-                currentNode.defaultparams[key]=props[key]
+                currentNode.defaultparams[key] = props[key]
             if (key == 'default vertex fillColor') {
                 currentNode.setColor(visnetwork, props[key]);
             } else if (key == 'default vertex borderColor') {
@@ -86,68 +85,14 @@ class Node {
         })
     }
 
-    calcRandomColorByID() {
-        let hashCode = function (s) {
-            var h = 0, i = s.length;
-            while (i >= 0)
-                h = (h << 5) - h + (s.charCodeAt(--i) | 0);
-            return h;
-        };
-        let hashId = hashCode(this.id.toString() + this.label);
-
-        let c = {
-            r: (hashId & 255).toString(16),
-            g: ((hashId >> 8) & 255).toString(16),
-            b: ((hashId >> 16) & 255).toString(16),
-            getColor: function () {
-                return "#" + (this.r.length == 1 ? "0" + this.r : this.r) +
-                    (this.g.length == 1 ? "0" + this.g : this.g) +
-                    (this.b.length == 1 ? "0" + this.b : this.b);
-            }
-        }
-
-        return c.getColor();
-    }
-
 
     setColor(visnetwork, colorbg, colorborder) {
-        //this.colorbg = colorbg;
-        //this.colorborder = colorborder;
-        // console.log("hellloooo" , this.id, colorbg, colorborder);
-        //setColorNodeNetwork (visnetwork, this.id, this.colorbg, this.colorborder);
+
         this.setBackgroundColor(visnetwork, colorbg);
         this.setBorderColor(visnetwork, colorborder);
     }
 
-    setDefaultColor(visnetwork) {
-        this.colorbg = /*this.calcRandomColorByID()*/"#FFFFFF";
-        this.colorborder = "#648FC9";
-
-        this.setBackgroundColor(visnetwork, this.colorbg);
-        this.setBorderColor(visnetwork, this.colorborder);
-    }
-
-    setDefaultBackgroundColor(visnetwork) {
-        this.colorbg = this.calcRandomColorByID();
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            color: {
-                background: this.colorbg
-            }
-        });
-    }
-
-    setDefaultBorderColor(visnetwork) {
-        this.colorborder = this.dftColorborder;
-        visnetwork.body.data.nodes.updateOnly({
-            id: this.id,
-            color: {
-                border: this.colorborder
-            }
-        });
-    }
-
-    setLabelColor(visnetwork,labelcolor) {
+    setLabelColor(visnetwork, labelcolor) {
         this.labelColor = labelcolor;
         visnetwork.body.data.nodes.updateOnly({
             id: this.id,
@@ -173,17 +118,16 @@ class Node {
                             max: this.size
                         }
                     },
-                    value :1
+                    value: 1
                 });
             } else {
                 visnetwork.body.data.nodes.updateOnly({
                     id: this.id,
                     size: this.size
                 });
-            }       	
-        } 
-        catch (error) {
-        	  console.log(error);
+            }
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -194,12 +138,11 @@ class Node {
 
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
-                shape:image,
+                shape: image,
                 image: this.image
-            });	
-        } 
-        catch (error) {
-        	  console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -210,10 +153,9 @@ class Node {
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
                 hidden: this.hidden
-            });	
-        } 
-        catch (error) {
-        	  console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
         }
 
 
@@ -221,17 +163,16 @@ class Node {
 
     setShape(visnetwork, shape) {
         this.shape = shape;
-		if (this.shape=="rectangle")
-			this.shape = "box"
+        if (this.shape == "rectangle")
+            this.shape = "box"
         try {
 
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
                 shape: this.shape
-            });   	
-        } 
-        catch (error) {
-        	  console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -243,9 +184,8 @@ class Node {
                 id: this.id,
                 borderWidth: this.borderWidth
             });
-        } 
-        catch (error) {
-        	  console.log(error);
+        } catch (error) {
+            console.log(error);
         }
 
 
@@ -257,10 +197,9 @@ class Node {
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
                 mass: this.mass
-            });   	
-        } 
-        catch (error) {
-        	  console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -271,10 +210,9 @@ class Node {
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
                 label: this.label
-            });        	
-        } 
-        catch (error) {
-        	  console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -290,10 +228,9 @@ class Node {
                         background: color
                     }
                 });
-            }      	
-        } 
-        catch (error) {
-        	  console.log(error + "color");
+            }
+        } catch (error) {
+            console.log(error + "color");
         }
 
 
@@ -307,10 +244,9 @@ class Node {
                 color: {
                     border: color
                 }
-            });        	
-        } 
-        catch (error) {
-        	  console.log(error+ "color")
+            });
+        } catch (error) {
+            console.log(error + "color")
         }
 
     }
@@ -345,25 +281,6 @@ class Node {
             });
         });
         return res;
-    }
-
-    drawInformation(ctx, x, y, scale, color = "black") {
-        ctx.save();
-        ctx.fillStyle = color;
-        var visibleFontSize = 16 * scale;
-
-        // console.log(scale, visibleFontSize);
-        (visibleFontSize > 25) ? visibleFontSize = 25 / scale : visibleFontSize = 16;
-        ctx.font = visibleFontSize + "px Arial";
-
-        ctx.textBaseline = 'middle';
-        ctx.textAlign = "center";
-        ctx.fillText(this.messageLabel, x, y);
-
-        this.listPropertiesToDraw.forEach((property) => {
-            ctx.font = "italic" + visibleFontSize * 0.7 + "px Arial";
-        });
-        ctx.restore();
     }
 }
 
@@ -412,33 +329,32 @@ class Link {
             }
         })
     }
-    processDefaultParams(visnetwork, network,props) {
+
+    processDefaultParams(visnetwork, network, props) {
         let currentEdge = this;
         Object.keys(props).forEach(function (key) {
-            //network.allProps.push(key)
             if (key.includes("edge"))
-            	//currentEdge.defaultparams[key]=props[key];
-            if (key == 'default edge arrowShape') {
-                currentEdge.setArrowType(visnetwork, props[key]);
-            } else if (key == 'default edge dashes') {
-                currentEdge.setDashes(visnetwork, props[key]);
-            } else if (key == 'default edge directed') {
-                currentEdge.setDirected(visnetwork, props[key]);
-            } else if (key == 'default edge color') {
-                currentEdge.setColor(visnetwork, props[key]);
-            } else if (key == 'default edge arrowImage') {
-                currentEdge.setArrowImage(visnetwork, props[key]);
-            } /*else if (key == 'mass') {
+                if (key == 'default edge arrowShape') {
+                    currentEdge.setArrowType(visnetwork, props[key]);
+                } else if (key == 'default edge dashes') {
+                    currentEdge.setDashes(visnetwork, props[key]);
+                } else if (key == 'default edge directed') {
+                    currentEdge.setDirected(visnetwork, props[key]);
+                } else if (key == 'default edge color') {
+                    currentEdge.setColor(visnetwork, props[key]);
+                } else if (key == 'default edge arrowImage') {
+                    currentEdge.setArrowImage(visnetwork, props[key]);
+                } /*else if (key == 'mass') {
                 currentEdge.setMass(visnetwork, currentEdge.params[key]);
             }*/ else if (key == 'default edge label') {
-                currentEdge.setLabel(visnetwork, props[key]);
-            } else if (key == 'default edge arrowScale') {
-                currentEdge.setScale(visnetwork, props[key]);
-            } else if (key == 'default edge width') {
-                currentEdge.setWidth(visnetwork, props[key]);
-            } else {
-                //network.unknowProps.push(key);
-            }
+                    currentEdge.setLabel(visnetwork, props[key]);
+                } else if (key == 'default edge arrowScale') {
+                    currentEdge.setScale(visnetwork, props[key]);
+                } else if (key == 'default edge width') {
+                    currentEdge.setWidth(visnetwork, props[key]);
+                } else {
+                    //network.unknowProps.push(key);
+                }
         })
     }
 
@@ -453,9 +369,8 @@ class Link {
                     }
                 }
             });
-        } 
-        catch (error) {
-        	  console.log(error);
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -475,9 +390,8 @@ class Link {
                     dashes: this.dashes //TODO refaire
                 });
             }
-        } 
-        catch (error) {
-        	  console.log(error);
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -494,9 +408,8 @@ class Link {
                     }
                 }
             });
-        } 
-        catch (error) {
-        	  console.log(error);
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -508,9 +421,8 @@ class Link {
                 id: this.id,
                 color: this.color
             });
-        } 
-        catch (error) {
-        	  console.log(error + "color");
+        } catch (error) {
+            console.log(error + "color");
         }
 
     }
@@ -529,9 +441,8 @@ class Link {
                     }
                 }
             });
-        } 
-        catch (error) {
-        	  console.log(error);
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -551,9 +462,8 @@ class Link {
                 id: this.id,
                 label: this.label
             });
-        } 
-        catch (error) {
-        	  console.log(error);
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -576,10 +486,9 @@ class Link {
                     }
                 },
                 value: this.scale
-            });	
-        } 
-        catch (error) {
-        	  console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -591,9 +500,8 @@ class Link {
                 id: this.id,
                 width: this.width
             });
-        } 
-        catch (error) {
-        	  console.log(error);
+        } catch (error) {
+            console.log(error);
         }
 
     }
@@ -608,78 +516,77 @@ class Network {
         this.unknowProps = [];
         this.allPropsNodes = [];
         this.allPropsEdges = [];
-
+        this.nbArcs = 0;
+        this.nbEdges = 0;
     }
 
 
     addNode(label, params) {
         let ID;
-        //this.listNodes.length > 0 ? ID = this.listNodes[this.listNodes.length - 1].id + 1 : ID = 0;
         ID = label;
         let newNode = new Node(ID, params);
-        //newNode.processParams(this)
         this.listNodes.push(newNode);
         return newNode;
     }
 
-    addVertex(visNetwork,defaultparams, params) {
+    addVertex(visNetwork, defaultparams, params) {
         let ID;
         ID = params['id'];
         let newNode = new Node(ID, params, defaultparams);
-		try{
-        	visNetwork.body.data.nodes.add([{id: ID, props: params}])
+        try {
+            visNetwork.body.data.nodes.add([{id: ID, props: params}])
 
-        this.listNodes.push(newNode);
-        newNode.processDefaultParams(visNetwork,this,defaultparams)
-        newNode.processParams(visNetwork,this,params)
-		}
-		catch(error){
-			console.log(error)
-		}
+            this.listNodes.push(newNode);
+            newNode.processDefaultParams(visNetwork, this, defaultparams)
+            newNode.processParams(visNetwork, this, params)
+        } catch (error) {
+            console.log(error)
+        }
         return newNode;
     }
+
     removeVertex(visNetwork, ID) {
         visNetwork.body.data.nodes.remove([ID])
         var removeIndex = this.listNodes.map(item => item.id).indexOf(ID);
         ~removeIndex && this.listNodes.splice(removeIndex, 1);
         return true;
     }
+
     removeEdge(visNetwork, ID) {
         visNetwork.body.data.edges.remove([ID])
-        
+
         var removeIndex = this.listEdges.map(item => item.id).indexOf(ID);
         ~removeIndex && this.listEdges.splice(removeIndex, 1);
-        
+
         return true;
     }
-    addEdge(visNetwork,defaultparams, params) {
+
+    addEdge(visNetwork, defaultparams, params) {
         let ID;
         ID = params['id'];
         let from = params['from'];
         let to = params['to'];
-        let newNode = new Link(from,to,ID, params, defaultparams);
-		try{
-        	visNetwork.body.data.edges.add([{id: ID,from : from,to : to, props: params}])
-	        this.listEdges.push(newNode);
-	        newNode.processDefaultParams(visNetwork,this,defaultparams)
-	        newNode.processParams(visNetwork,this,params)
-		}
-		catch(error){
-			console.log(error)
-		}        
+        let newNode = new Link(from, to, ID, params, defaultparams);
+        try {
+            visNetwork.body.data.edges.add([{id: ID, from: from, to: to, props: params}])
+            this.listEdges.push(newNode);
+            newNode.processDefaultParams(visNetwork, this, defaultparams)
+            newNode.processParams(visNetwork, this, params)
+        } catch (error) {
+            console.log(error)
+        }
 
         return newNode;
     }
 
-    linkNode(from, to, idd, params,defaultparams) {
-		try{
-	        from.linkTo(to);
-	        let newLink = new Link(from, to, idd, params, defaultparams);
-	        this.listEdges.push(newLink);
-		}
-		catch(e){
-			console.log(e)
-		}
+    linkNode(from, to, idd, params, defaultparams) {
+        try {
+            from.linkTo(to);
+            let newLink = new Link(from, to, idd, params, defaultparams);
+            this.listEdges.push(newLink);
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     getNode(ID) {
@@ -701,27 +608,6 @@ class Network {
                 return;
             }
         })
-        return res;
-    }
-    getNodeFromLabel(label) {
-        let res = null;
-        this.listNodes.forEach((node) => {
-            if (node.label == label) {
-                res = node;
-                return;
-            }
-        })
-        return res;
-    }
-
-    getIdFromLabel(name) {
-        let res = null;
-        this.listNodes.forEach((node) => {
-            if (node.label == name) {
-                res = node;
-                return;
-            }
-        });
         return res;
     }
 
@@ -750,124 +636,17 @@ class Network {
     getListEdges() {
         return this.listEdges;
     }
-
-    getNodes() {
-        return this.visNodes;
-    }
-
-    getEdges() {
-        return this.visEdges;
-    }
-}
-
-class EventVisnetwork {
-    constructor(network, visnetwork, currentNode) {
-        this.network = network;
-        this.visnetwork = visnetwork;
-        this.currentNode = currentNode;
-        this.addEventSelectNode();
-        this.addEventSelectLink();
-        /*
-                this.addEvent ("deselectNode", () => {
-
-                });
-
-                this.addEvent("deselectEdge", () => {
-
-                });
-         */
-    }
-
-    addEventSelectNode() {
-        this.addEvent("selectNode", (params) => {
-            this.currentNode.evSelectNode(params);
-        });
-    }
-
-    addEventSelectLink() {
-        this.addEvent("selectEdge", (params) => {
-
-        });
-    }
-
-    addEvent(nameEvent, todo) {
-        this.visnetwork.addEventListener(nameEvent, (params) => {
-            console.log("EVENT " + nameEvent, params);
-            todo(params);
-        });
-    }
-}
-
-function setColorNodeNetwork(network, idNode, backgroundColor, borderColor) {
-    try {
-        let node = network.body.nodes[idNode];
-        let lastColorBorder = node.options.color.border;
-        let lastColorBackground = node.options.color.background;
-        node.options.color = {
-            border: lastColorBorder,            // ces deux param�tres g�rent les couleurs des liens d�pendants du noeud
-            background: lastColorBackground,
-
-            highlight: {
-                border: borderColor,
-                background: backgroundColor,
-            },
-            hover: {}
-        }
-    } catch (e) {
-        console.log(e);
-    }
 }
 
 function generateNetwork(nodes, edges) {
 
     let network = new Network();
-    /*// cr�ation du graphique network � partir du JSON
-    nodes.knownComponents.forEach((n) => {
-        network.addNode (n.friendlyName, n);
-    });
 
-    nodes.knownComponents.forEach((n) => {
-        n.neighbors.forEach((voisin) => {
-            network.linkNode (network.getIdFromLabel (n.friendlyName), network.getIdFromLabel (voisin));
-        });
-    });*/
     nodes.forEach((n) => {
         network.addNode(n.id, n['properties']);
     });
     edges.forEach((e) => {
-        network.linkNode(network.getNode(e['from']), network.getNode(e['to']), e.id, e['properties'],e['properties']);
+        network.linkNode(network.getNode(e['from']), network.getNode(e['to']), e.id, e['properties'], e['properties']);
     });
     return network;
-}
-
-// attention, main doit �tre un composant html natif, pas un composant jQuery
-function createNetwork(container, network, options = {}, width = 600, height = 600) {
-    let main = document.createElement("div");
-    main.style.width = width + "px";
-    main.style.height = height + "px";
-    container.appendChild(main);
-
-    let visnetwork = new vis.Network(main, network.getData(), options);
-
-    visnetwork.on("afterDrawing", function (ctx) {
-        network.getListNodes().forEach((node) => {
-            let nodePosition = visnetwork.getPositions([node.id]);
-            let colorGenerator = {
-                r: parseInt(node.colorbg.substr(1, 2), 16) > 120 ? "00" : "ff",
-                g: parseInt(node.colorbg.substr(3, 2), 16) > 120 ? "00" : "ff",
-                b: parseInt(node.colorbg.substr(5, 2), 16) > 120 ? "00" : "ff",
-
-                compute: function () {
-                    if (this.r == "00" || this.g == "00" || this.b == "00") {
-                        return "#000000";
-                    }
-                    return "#ffffff";
-                }
-            }
-
-            node.drawInformation(ctx, nodePosition[node.id].x, nodePosition[node.id].y, visnetwork.getScale(), colorGenerator.compute());
-        });
-    });
-
-    return visnetwork;
 }
