@@ -42,11 +42,13 @@ public class GridEvolver extends GraphDynamics {
 			if (!g.vertices.contains(u)) {
 				g.vertices.add(u);
 				g.vertices.alter(u, "properties", () -> new HashMap<>(), m -> m.put("label", i1+ "," + j1));
+				g.vertices.alter(u, "properties", () -> new HashMap<>(), m -> m.put("location", i1+ "," + j1));
 			}
 
 			if (!g.vertices.contains(v)) {
 				g.vertices.add(v);
 				g.vertices.alter(v, "properties", () -> new HashMap<>(), m -> m.put("label", i2+ "," + j2));
+				g.vertices.alter(v, "properties", () -> new HashMap<>(), m -> m.put("location", i2+ "," + j2));
 			}
 
 			g.arcs.add(u, v);

@@ -55,7 +55,6 @@ public class VertexProperties {
 
 	};
 
-
 	public static Property scale = new DoubleProperty(0.1, 2) {
 
 		@Override
@@ -70,13 +69,41 @@ public class VertexProperties {
 
 	};
 
+	public static Property location = new Property() {
+
+		@Override
+		public String getName() {
+			return "location";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return "";
+		}
+
+		@Override
+		public boolean accept(String value) {
+			return value.matches("[0-9]+,[0-9]+");
+		}
+
+		@Override
+		public String toGraphviz(String value) {
+			return value;
+		}
+
+		@Override
+		public String random() {
+			return Math.random() + "," + Math.random();
+		}
+
+	};
 
 	public static void forEach(Consumer<Property> p) {
 		ElementProperties.forEach(p);
 		p.accept(fillColor);
 		p.accept(shape);
 		p.accept(scale);
+		p.accept(location);
 	}
-	
 
 }
