@@ -10,45 +10,58 @@ public abstract class GraphElementSet extends ElementSet {
 	protected final ElementSet impl;
 	protected final Graph graph;
 
-	public GraphElementSet(ElementSet set, Graph g) {
-		this.impl = set;
+	public GraphElementSet(ElementSet impl, Graph g) {
+		this.impl = impl;
 		this.graph = g;
 	}
 
 	@Override
 	public long nbEntries() {
-		return impl.nbEntries();
+		synchronized (graph) {
+			return impl.nbEntries();
+		}
 	}
 
 	@Override
 	public long random() {
-		return impl.random();
+		synchronized (graph) {
+			return impl.random();
+		}
 	}
 
 	@Override
 	public boolean contains(long id) {
-		return impl.contains(id);
+		synchronized (graph) {
+			return impl.contains(id);
+		}
 	}
 
 	@Override
 	public Set<String> getKeys(long id) {
-		return impl.getKeys(id);
+		synchronized (graph) {
+			return impl.getKeys(id);
+		}
 	}
 
 	@Override
-	public void forEach(Long2BooleanFunction c)  {
-		impl.forEach(c);
+	public void forEach(Long2BooleanFunction c) {
+		synchronized (graph) {
+			impl.forEach(c);
+		}
 	}
 
 	@Override
 	public <E> E get(long id, String key, Supplier<E> defaultValueSupplier) {
-		return impl.get(id, key, defaultValueSupplier);
+		synchronized (graph) {
+			return impl.get(id, key, defaultValueSupplier);
+		}
 	}
 
 	@Override
 	public void set(long id, String key, Object content) {
-		impl.set(id, key, content);
+		synchronized (graph) {
+			impl.set(id, key, content);
+		}
 	}
-
 
 }

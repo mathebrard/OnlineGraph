@@ -13,7 +13,7 @@ public class Change implements Serializable {
 	}
 
 	public final double date = Date.time();
-	public  long index;
+	public long index;
 	public final String type;
 
 	public Change() {
@@ -35,7 +35,7 @@ public class Change implements Serializable {
 
 		@Override
 		public String toString() {
-			return super.toString() + vertexInfo.id;
+			return super.toString() + ", vertex=" + vertexInfo.id;
 		}
 	}
 
@@ -48,10 +48,10 @@ public class Change implements Serializable {
 
 		@Override
 		public String toString() {
-			return super.toString() + edgeInfo.id;
+			return super.toString() + ", arc=" + edgeInfo.id;
 		}
 	}
-	
+
 	public static class AddEdge extends Change {
 		public final EdgeInfo edgeInfo;
 
@@ -61,7 +61,7 @@ public class Change implements Serializable {
 
 		@Override
 		public String toString() {
-			return super.toString() + edgeInfo.id;
+			return super.toString() + ", edge=" + edgeInfo.id;
 		}
 	}
 
@@ -73,16 +73,17 @@ public class Change implements Serializable {
 			this.elementID = id;
 		}
 
-		@Override
-		public String toString() {
-			return super.toString() + elementID;
-		}
 	}
 
 	public static class RemoveVertex extends Remove {
 
 		public RemoveVertex(long vertexID) {
 			super(vertexID);
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + ", vertex=" + elementID;
 		}
 	}
 
@@ -91,11 +92,22 @@ public class Change implements Serializable {
 		public RemoveArc(long edgeID) {
 			super(edgeID);
 		}
+
+		@Override
+		public String toString() {
+			return super.toString() + ", arc=" + elementID;
+		}
 	}
+
 	public static class RemoveEdge extends Remove {
 
 		public RemoveEdge(long edgeID) {
 			super(edgeID);
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + ", edge=" + elementID;
 		}
 	}
 
@@ -109,16 +121,17 @@ public class Change implements Serializable {
 			this.name = key;
 		}
 
-		@Override
-		public String toString() {
-			return super.toString() + id;
-		}
 	}
 
 	public static class VertexDataChange extends DataChange {
 
 		public VertexDataChange(long u, String key) {
 			super(u, key);
+		}
+
+		@Override
+		public String toString() {
+			return super.toString() + ", vertex=" + id;
 		}
 	}
 
@@ -127,16 +140,27 @@ public class Change implements Serializable {
 		public ArcDataChange(long id, String key) {
 			super(id, key);
 		}
+
+		@Override
+		public String toString() {
+			return super.toString() + ", arc=" + id;
+		}
 	}
-	
+
 	public static class EdgeDataChange extends DataChange {
 
 		public EdgeDataChange(long id, String key) {
 			super(id, key);
 		}
+
+		@Override
+		public String toString() {
+			return super.toString() + ", edge=" + id;
+		}
 	}
-	
+
 	public static class GraphPropertiesChange extends Change {
+
 	}
 
 }

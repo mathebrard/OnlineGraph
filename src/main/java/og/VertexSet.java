@@ -15,7 +15,6 @@ public class VertexSet extends GraphElementSet {
 	@Override
 	public void add(long u) {
 		synchronized (graph) {
-
 			impl.add(u);
 			set(u, "outArcs", new LongOpenHashSet());
 			set(u, "inArcs", new LongOpenHashSet());
@@ -30,7 +29,6 @@ public class VertexSet extends GraphElementSet {
 	@Override
 	public void remove(long u) {
 		synchronized (graph) {
-
 			for (var e : new LongArrayList(outArcs(u))) {
 				graph.arcs.remove(e);
 			}
@@ -39,6 +37,10 @@ public class VertexSet extends GraphElementSet {
 				graph.arcs.remove(e);
 			}
 
+			for (var e : new LongArrayList(edges(u))) {
+				graph.edges.remove(e);
+			}
+			
 			impl.remove(u);
 			graph.commitNewChange(new Change.RemoveVertex(u));
 		}
@@ -70,7 +72,6 @@ public class VertexSet extends GraphElementSet {
 	@Override
 	public void clear() {
 		synchronized (graph) {
-
 			impl.clear();
 			graph.arcs.impl.clear();
 			graph.commitNewChange(new Change.Clear());

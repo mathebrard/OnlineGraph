@@ -15,27 +15,27 @@ public class HashGraph extends Graph {
 	}
 
 	@Override
-	public void commitNewChange(Change c) {
+	public synchronized void commitNewChange(Change c) {
 		changes.add(c);
 	}
 
 	@Override
-	public Map<String, String> getProperties() {
+	public synchronized Map<String, String> getProperties() {
 		return this.props;
 	}
 
 	@Override
-	public void setProperties(Map<String, String> m) {
+	public synchronized void setProperties(Map<String, String> m) {
 		this.props = m;
 	}
 
 	@Override
-	public void forEachChange(int since, Consumer<Change> c) {
+	public synchronized void forEachChange(int since, Consumer<Change> c) {
 		changes.subList(since, changes.size()).forEach(c);
 	}
 
 	@Override
-	public int nbChanges() {
+	public synchronized int nbChanges() {
 		return changes.size();
 	}
 }

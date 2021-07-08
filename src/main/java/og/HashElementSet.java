@@ -3,7 +3,6 @@ package og;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
@@ -34,7 +33,6 @@ public class HashElementSet extends ElementSet {
 
 		m.remove(id);
 	}
-
 
 	@Override
 	public void forEach(Long2BooleanFunction c) {

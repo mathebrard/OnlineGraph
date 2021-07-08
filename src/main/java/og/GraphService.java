@@ -70,17 +70,23 @@ public class GraphService extends Service {
 			m.put("randomPersistentGraph", randomPersistentGraph);
 		}
 
-		var grid = new HashGraph();
-		new GridEvolver(grid, 10, 10, 1);
-		m.put("grid", grid);
+		if (false) {
+			var grid = new HashGraph();
+			new GridEvolver(grid, 10, 10, 1);
+			m.put("grid", grid);
+		}
 
-		var growingGraph = new HashGraph();
-		new Grow(growingGraph, 1);
-		m.put("growingGraph", growingGraph);
+		if (false) {
+			var growingGraph = new HashGraph();
+			new Grow(growingGraph, 1);
+			m.put("growingGraph", growingGraph);
+		}
 
-		var tree = new HashGraph();
-		new TreeEvolver(tree);
-		m.put("tree", tree);
+		if (false) {
+			var tree = new HashGraph();
+			new TreeEvolver(tree);
+			m.put("tree", tree);
+		}
 
 		for (var g : m.values()) {
 			g.setProperties(g.defaultProperties());

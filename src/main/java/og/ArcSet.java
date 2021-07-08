@@ -2,8 +2,6 @@ package og;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import og.GraphService.ArcInfo;
@@ -45,7 +43,6 @@ public class ArcSet extends GraphElementSet {
 	@Override
 	public void remove(long e) {
 		synchronized (graph) {
-
 			var ends = ends(e);
 			var from = ends[0];
 			var to = ends[1];
@@ -72,7 +69,6 @@ public class ArcSet extends GraphElementSet {
 	@Override
 	public void clear() {
 		synchronized (graph) {
-
 			impl.clear();
 			graph.vertices.impl.clear();
 			graph.commitNewChange(new Change.Clear());
@@ -81,11 +77,8 @@ public class ArcSet extends GraphElementSet {
 
 	@Override
 	public void set(long id, String key, Object content) {
-		synchronized (graph) {
-
-			super.set(id, key, content);
-			graph.commitNewChange(new Change.ArcDataChange(id, key));
-		}
+		super.set(id, key, content);
+		graph.commitNewChange(new Change.ArcDataChange(id, key));
 	}
 
 }
