@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Title</title>
+<title>Graph list</title>
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript"
 	src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
 <style type="text/css">
 #mynetwork {
@@ -17,26 +18,28 @@
 </style>
 </head>
 <body>
-	<p>List available graphs</p>
+	<p id=list>List of available graphs</p>
 	<ul id="graphList">
 	</ul>
 	<script>
-
-$.getJSON("/api/og/og.GraphService/listGraphs", function (json) {
-	json['results'][0].forEach((graph) => {
-		var ul = document.getElementById("graphList");
-		var li = document.createElement("li");
-		var element = document.createElement('a');
-		element.text = graph
-		element.href = "graph.html?gid=" + graph
-		li.appendChild( element );
-		ul.appendChild(li);
-
-
-    });
-})
-
-</script>
+		$.getJSON("/api/og/og.GraphService/listGraphs", function (json) {
+			json['results'][0].forEach((graph) => {
+				var ul = document.getElementById("graphList");
+				ul.style.paddingLeft = "4em";
+				var list = document.getElementById("list");
+				list.style.paddingLeft = "1em";
+				list.style.paddingTop = ".8em";
+				list.style.fontSize = "22px";
+				var li = document.createElement("li");
+				var element = document.createElement('a');
+				element.text = graph
+				element.href = "graph.html?gid=" + graph
+				element.style.fontSize = "22px";
+				li.appendChild( element );
+				ul.appendChild(li);
+		    });
+		})
+	</script>
 
 </body>
 </html>
