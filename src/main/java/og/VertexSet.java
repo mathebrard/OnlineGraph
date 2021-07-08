@@ -14,38 +14,45 @@ public class VertexSet extends GraphElementSet {
 
 	@Override
 	public void add(long u) {
-		impl.add(u);
-		set(u, "outArcs", new LongArrayList());
-		set(u, "inArcs", new LongArrayList());
-		set(u, "outVertices", new LongArrayList());
-		var i = new VertexInfo();
-		i.id = u;
-		graph.commitNewChange(new Change.AddVertex(i));
+		synchronized (graph) {
+
+			impl.add(u);
+			set(u, "outArcs", new LongOpenHashSet());
+			set(u, "inArcs", new LongOpenHashSet());
+			set(u, "edges", new LongOpenHashSet());
+			set(u, "outVertices", new LongOpenHashSet());
+			var i = new VertexInfo();
+			i.id = u;
+			graph.commitNewChange(new Change.AddVertex(i));
+		}
 	}
 
 	@Override
 	public void remove(long u) {
-		for (var e : new LongArrayList(outArcs(u))) {
-			graph.arcs.remove(e);
-		}
+		synchronized (graph) {
 
-		for (var e : new LongArrayList(inArcs(u))) {
-			graph.arcs.remove(e);
-		}
+			for (var e : new LongArrayList(outArcs(u))) {
+				graph.arcs.remove(e);
+			}
 
-		impl.remove(u);
-		graph.commitNewChange(new Change.RemoveVertex(u));
+			for (var e : new LongArrayList(inArcs(u))) {
+				graph.arcs.remove(e);
+			}
+
+			impl.remove(u);
+			graph.commitNewChange(new Change.RemoveVertex(u));
+		}
 	}
 
-	public LongList inArcs(long v) {
-		return get(v, "inArcs", () -> emptyList);
+	public LongSet inArcs(long v) {
+		return get(v, "inArcs", () -> emptySet);
 	}
 
 	public final LongList emptyList = new LongArrayList();
 	public final LongSet emptySet = new LongOpenHashSet();
 
-	public LongList outArcs(long v) {
-		return get(v, "outArcs", () -> emptyList);
+	public LongSet outArcs(long v) {
+		return get(v, "outArcs", () -> emptySet);
 	}
 
 	public LongSet edges(long v) {
@@ -62,9 +69,12 @@ public class VertexSet extends GraphElementSet {
 
 	@Override
 	public void clear() {
-		impl.clear();
-		graph.arcs.impl.clear();
-		graph.commitNewChange(new Change.Clear());
+		synchronized (graph) {
+
+			impl.clear();
+			graph.arcs.impl.clear();
+			graph.commitNewChange(new Change.Clear());
+		}
 	}
 
 	@Override

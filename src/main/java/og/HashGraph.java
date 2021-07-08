@@ -33,4 +33,9 @@ public class HashGraph extends Graph {
 	public void forEachChange(int since, Consumer<Change> c) {
 		changes.subList(since, changes.size()).forEach(c);
 	}
+
+	@Override
+	public int nbChanges() {
+		return changes.size();
+	}
 }

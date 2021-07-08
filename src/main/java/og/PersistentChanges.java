@@ -9,7 +9,6 @@ import toools.io.file.RegularFile;
 
 public class PersistentChanges {
 	private final Directory d;
-	private int len = 0;
 
 	public PersistentChanges(Directory d) {
 		this.d = d;
@@ -35,6 +34,7 @@ public class PersistentChanges {
 	}
 
 	public void add(Object o) {
+		int len = size();
 		int bi = len / 1000;
 		List<Object> l;
 		var f = new RegularFile(d, bi + ".ser");
@@ -48,6 +48,10 @@ public class PersistentChanges {
 		l.add(o);
 		f.setContentAsJavaObject(l);
 
-		++len;
+		new RegularFile(d, "size.ser").setContentAsJavaObject(len + 1);
+	}
+
+	public int size() {
+		return (Integer) new RegularFile(d, "size.ser").getContentAsJavaObject();
 	}
 }

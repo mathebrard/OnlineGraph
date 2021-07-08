@@ -52,5 +52,10 @@ public abstract class DiskGraph<V, E> extends Graph {
 		changes.start(since, c);
 	}
 
+	@Override
+	public int nbChanges() {
+		return changes.size();
+	}
+
 	public abstract void cleanClose();
 }

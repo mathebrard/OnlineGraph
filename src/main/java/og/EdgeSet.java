@@ -2,7 +2,6 @@ package og;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import og.GraphService.EdgeInfo;
@@ -19,24 +18,27 @@ public class EdgeSet extends GraphElementSet {
 	}
 
 	public long add(LongSet ends) {
-		for (var u : ends)
-			if (!graph.vertices.contains(u))
-				throw new IllegalArgumentException("incident vertex does not exist : " + u);
+		synchronized (graph) {
 
-		long e = ThreadLocalRandom.current().nextLong();
-		impl.add(e);
-		impl.set(e, "ends", ends);
+			for (var u : ends)
+				if (!graph.vertices.contains(u))
+					throw new IllegalArgumentException("incident vertex does not exist : " + u);
 
-		for (var u : ends) {
-			graph.vertices.alter(u, "edges", () -> new LongOpenHashSet(), (LongSet outs) -> outs.add(e));
-		}
+			long e = ThreadLocalRandom.current().nextLong();
+			impl.add(e);
+			impl.set(e, "ends", ends);
+
+			for (var u : ends) {
+				graph.vertices.alter(u, "edges", () -> new LongOpenHashSet(), (LongSet outs) -> outs.add(e));
+			}
 
 //		vertices.alter(from, "outVertices", null, (LongList outs) -> outs.add(to));
-		var i = new EdgeInfo();
-		i.id = e;
-		i.ends = ends;
-		graph.commitNewChange(new Change.AddEdge(i));
-		return e;
+			var i = new EdgeInfo();
+			i.id = e;
+			i.ends = ends;
+			graph.commitNewChange(new Change.AddEdge(i));
+			return e;
+		}
 	}
 
 	public boolean isLoop(long e) {
@@ -49,13 +51,16 @@ public class EdgeSet extends GraphElementSet {
 
 	@Override
 	public void remove(long e) {
-		for (var u : ends(e)) {
-			graph.vertices.alter(u, "edges", null, (LongList set) -> set.removeLong(set.indexOf(e)));
-		}
+		synchronized (graph) {
+
+			for (var u : ends(e)) {
+				graph.vertices.alter(u, "edges", null, (LongSet set) -> set.remove(e));
+			}
 
 //		vertices.alter(from, "outVertices", null, (LongList set) -> set.removeLong(set.indexOf(to)));
-		impl.remove(e);
-		graph.commitNewChange(new Change.RemoveEdge(e));
+			impl.remove(e);
+			graph.commitNewChange(new Change.RemoveEdge(e));
+		}
 	}
 
 	public LongSet ends(long e) {
@@ -64,15 +69,21 @@ public class EdgeSet extends GraphElementSet {
 
 	@Override
 	public void clear() {
-		impl.clear();
-		graph.vertices.impl.clear();
-		graph.commitNewChange(new Change.Clear());
+		synchronized (graph) {
+
+			impl.clear();
+			graph.vertices.impl.clear();
+			graph.commitNewChange(new Change.Clear());
+		}
 	}
 
 	@Override
 	public void set(long id, String key, Object content) {
-		super.set(id, key, content);
-		graph.commitNewChange(new Change.EdgeDataChange(id, key));
+		synchronized (graph) {
+
+			super.set(id, key, content);
+			graph.commitNewChange(new Change.EdgeDataChange(id, key));
+		}
 	}
 
 	public void add(long... vertices) {

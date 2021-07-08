@@ -1,5 +1,8 @@
 package og;
 
+import java.util.Map;
+import java.util.function.Consumer;
+
 import toools.io.file.Directory;
 
 public class MapDBGraph extends DiskGraph {
@@ -15,5 +18,6 @@ public class MapDBGraph extends DiskGraph {
 		((MapDBElementSet) vertices.impl).cleanClose();
 		((MapDBElementSet) edges.impl).cleanClose();
 	}
+
 
 }

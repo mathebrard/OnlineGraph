@@ -211,6 +211,7 @@ public class GraphService extends Service {
 		List<VertexInfo> vertices;
 		List<ArcInfo> arcs;
 		List<EdgeInfo> edges;
+		int nbChanges;
 	}
 
 	@IdawiOperation
@@ -260,6 +261,7 @@ public class GraphService extends Service {
 	public GraphInfo get(String gid) {
 		var g = getGraph(gid);
 		var gi = new GraphInfo();
+		gi.nbChanges = g.nbChanges();
 		gi.arcs = arcs(gid);
 		gi.edges = edges(gid);
 		gi.vertices = vertices(gid);
@@ -298,7 +300,7 @@ public class GraphService extends Service {
 		return m;
 	}
 
-	@IdawiOperation
+	@IdawiOperation	
 	public void create(String gid) throws NoSuchMethodException, SecurityException {
 		create2(gid, HashGraph.class.getName());
 	}
