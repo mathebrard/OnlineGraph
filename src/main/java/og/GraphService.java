@@ -30,6 +30,7 @@ import og.algo.CC;
 import og.algo.GNM;
 import og.algo.RandomWalk;
 import og.dynamics.GridEvolver;
+import og.dynamics.Grow;
 import og.dynamics.RandomEvolver;
 import og.dynamics.TreeEvolver;
 import toools.gui.GraphViz;
@@ -71,6 +72,10 @@ public class GraphService extends Service {
 		var grid = new HashGraph();
 		new GridEvolver(grid, 10, 10, 1);
 		m.put("grid", grid);
+
+		var growingGraph = new HashGraph();
+		new Grow(growingGraph, 1);
+		m.put("growingGraph", growingGraph);
 
 		var tree = new HashGraph();
 		new TreeEvolver(tree);
