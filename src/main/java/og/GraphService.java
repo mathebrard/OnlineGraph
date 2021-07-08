@@ -21,6 +21,7 @@ import com.paypal.digraph.parser.GraphParser;
 import idawi.Component;
 import idawi.IdawiOperation;
 import idawi.Service;
+import it.unimi.dsi.fastutil.booleans.BooleanList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -281,8 +282,18 @@ public class GraphService extends Service {
 	}
 
 	@IdawiOperation
-	public boolean containsVertex(String gid, long u) {
-		return getGraph(gid).vertices.contains(u);
+	public BooleanList containsVertex(String gid, LongList s) {
+		return ElementSet.contains(getGraph(gid).vertices, s);
+	}
+
+	@IdawiOperation
+	public BooleanList containsEdges(String gid, LongList s) {
+		return ElementSet.contains(getGraph(gid).vertices, s);
+	}
+
+	@IdawiOperation
+	public BooleanList containsArcs(String gid, LongList s) {
+		return ElementSet.contains(getGraph(gid).arcs, s);
 	}
 
 	@IdawiOperation
@@ -305,7 +316,7 @@ public class GraphService extends Service {
 		return m;
 	}
 
-	@IdawiOperation	
+	@IdawiOperation
 	public void create(String gid) throws NoSuchMethodException, SecurityException {
 		create2(gid, HashGraph.class.getName());
 	}

@@ -8,7 +8,6 @@ import og.ElementProperties;
 import og.Graph;
 import og.GraphDynamics;
 import og.VertexProperties;
-import toools.io.Cout;
 import toools.thread.Threads;
 
 public class RandomEvolver extends GraphDynamics {
@@ -19,6 +18,10 @@ public class RandomEvolver extends GraphDynamics {
 	}
 
 	public void apply(Graph g) {
+		var pb = g.listProblems();
+
+		if (!pb.isEmpty())
+			throw new IllegalStateException(pb.toString());
 		double targetN = 50;
 		double targetD = 3;
 		double nbVertices = g.vertices.nbEntries();

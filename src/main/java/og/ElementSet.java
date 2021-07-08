@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
+import it.unimi.dsi.fastutil.booleans.BooleanList;
 import it.unimi.dsi.fastutil.longs.Long2BooleanFunction;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
@@ -105,6 +107,12 @@ public abstract class ElementSet {
 			}
 		}
 
+		return l;
+	}
+	
+	public static BooleanList contains(ElementSet s, LongList e) {
+		BooleanList l = new BooleanArrayList();
+		e.forEach((long u) -> l.add(s.contains(u)));
 		return l;
 	}
 }

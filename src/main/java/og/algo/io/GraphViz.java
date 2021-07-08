@@ -18,9 +18,6 @@ public class GraphViz {
 		out.println("# graph \"" + g + "\" has " + g.vertices.nbEntries() + " vertices and " + g.arcs.nbEntries()
 				+ " edges");
 
-		if (g.edges.nbEntries() > 0 && g.arcs.nbEntries() > 0)
-			throw new IllegalArgumentException("graph is a mixed one, which are not supported by graphviz");
-
 		boolean digraph = g.arcs.nbEntries() > 0;
 
 		if (digraph) {
@@ -110,6 +107,37 @@ public class GraphViz {
 
 			map2string(gvp, out);
 			out.println();
+			return true;
+
+		});
+
+		g.edges.forEach(e -> {
+			var ends = g.edges.ends(e);
+			var p = g.edges.get(e, "properties", () -> new HashMap<String, String>());
+			var gvp = new HashMap<String, String>();
+			gvp.put("arrowhead", "none");
+
+			var style = p.get(EdgeProperties.style.getName());
+
+			if (style != null) {
+				gvp.put("style", EdgeProperties.style.toGraphviz(style));
+			}
+
+			if (ends.size() == 1) {
+				var u = ends.iterator().nextLong();
+				out.print("\t" + u + edge + u);
+				map2string(gvp, out);
+				out.println();
+			} else {
+				for (var u : ends) {
+					for (var v : ends) {
+						out.print("\t" + u + edge + v);
+						map2string(gvp, out);
+						out.println();
+					}
+				}
+			}
+
 			return true;
 
 		});
