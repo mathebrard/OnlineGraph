@@ -20,11 +20,11 @@ java -cp $(ls *.jar | tr '\n' :) og.RunServer 8080
 You can also copy/paste this code to your Linux terminal. It will download and run the last version.
 ```bash
 if [ -d onlinegraph-jars ]; then rm -rf onlinegraph-jars; fi && \
+if [ -f onlinegraph-jars.tgz ]; then rm -f onlinegraph-jars.tgz; fi && \
 wget https://www.i3s.unice.fr/~hogie/software/onlineGraph/onlinegraph-jars.tgz && \
 tar xzvf onlinegraph-jars.tgz && \
-rm -f onlinegraph-jars.tgz && \
 java -cp $(ls onlinegraph-jars/*.jar | tr '\n' :) og.RunServer 8080
-````
+```
 
 ### As a Java library
 Just insert the following code in you Maven POM file:
