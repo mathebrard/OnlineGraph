@@ -65,18 +65,14 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<resources>
-
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**/*.java</include>
-					<include>**/*.js</include>
-					<include>**/*.html</include>
-				</includes>
-			</resource>
-		</resources>
-
+		<resource>
+			<directory>src/main/java</directory>
+			<includes>
+				<include>**/*.java</include>
+				<include>**/*.js</include>
+				<include>**/*.html</include>
+			</includes>
+		</resource>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -197,5 +193,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>
