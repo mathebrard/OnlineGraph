@@ -8,6 +8,7 @@ import og.ElementProperties;
 import og.Graph;
 import og.GraphDynamics;
 import og.VertexProperties;
+import toools.io.Cout;
 import toools.thread.Threads;
 
 public class RandomEvolver extends GraphDynamics {
@@ -22,6 +23,7 @@ public class RandomEvolver extends GraphDynamics {
 
 		if (!pb.isEmpty())
 			throw new IllegalStateException(pb.toString());
+		
 		double targetN = 50;
 		double targetD = 3;
 		double nbVertices = g.vertices.nbEntries();
@@ -72,6 +74,12 @@ public class RandomEvolver extends GraphDynamics {
 			var p = g.vertices.get(u, "properties", () -> new HashMap<String, String>());
 			double pp = 0.5;
 
+			if (Math.random() < 0.1) {
+				var l = VertexProperties.location.random();
+				Cout.debugSuperVisible("setting location " + l +  " to vertex " + u);
+				p.put(VertexProperties.location.getName(), VertexProperties.location.random());
+				
+			}
 			if (Math.random() < pp)
 				p.put(VertexProperties.scale.getName(), VertexProperties.scale.random());
 			if (Math.random() < pp)
@@ -95,24 +103,43 @@ public class RandomEvolver extends GraphDynamics {
 		}
 
 		if (Math.random() < 0.4 && g.arcs.nbEntries() > 0) {
-			var e = g.arcs.random();
-			var p = g.arcs.get(e, "properties", () -> new HashMap<String, String>());
+			var a = g.arcs.random();
+			var p = g.arcs.get(a, "properties", () -> new HashMap<String, String>());
 			double pp = 0.5;
 
+			if (Math.random() < pp)
+				p.put(ArcProperties.arrowLocation.getName(), ArcProperties.arrowLocation.random());
 			if (Math.random() < pp)
 				p.put(ArcProperties.arrowSize.getName(), ArcProperties.arrowShape.random());
 			if (Math.random() < pp)
 				p.put(ArcProperties.arrowShape.getName(), ArcProperties.arrowShape.random());
 			if (Math.random() < pp)
-				p.put(ElementProperties.color.getName(), ElementProperties.color.random());
-			if (Math.random() < pp)
 				p.put(EdgeProperties.style.getName(), EdgeProperties.style.random());
+			if (Math.random() < pp)
+				p.put(ElementProperties.color.getName(), ElementProperties.color.random());
 			if (Math.random() < pp)
 				p.put(ElementProperties.label.getName(), ElementProperties.label.random());
 			if (Math.random() < pp)
 				p.put(ElementProperties.width.getName(), ElementProperties.width.random());
 
-			g.arcs.set(e, "properties", p);
+			g.arcs.set(a, "properties", p);
+		}
+		
+		if (Math.random() < 0.4 && g.edges.nbEntries() > 0) {
+			var e = g.edges.random();
+			var p = g.edges.get(e, "properties", () -> new HashMap<String, String>());
+			double pp = 0.5;
+
+			if (Math.random() < pp)
+				p.put(EdgeProperties.style.getName(), EdgeProperties.style.random());
+			if (Math.random() < pp)
+				p.put(ElementProperties.color.getName(), ElementProperties.color.random());
+			if (Math.random() < pp)
+				p.put(ElementProperties.label.getName(), ElementProperties.label.random());
+			if (Math.random() < pp)
+				p.put(ElementProperties.width.getName(), ElementProperties.width.random());
+
+			g.edges.set(e, "properties", p);
 		}
 	}
 }

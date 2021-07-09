@@ -20,7 +20,7 @@ public abstract class Graph implements Serializable {
 
 	public Map<String, String> defaultProperties() {
 		var p = new TreeMap<String, String>();
-		p.put("background color", "dark grey");
+		p.put("background color", "grey");
 		p.put("brake", "0");
 
 		VertexProperties.forEach(pa -> {
