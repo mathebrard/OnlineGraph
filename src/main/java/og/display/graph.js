@@ -91,10 +91,10 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     }
                 },
             },
-            autoResize: true,
+            //autoResize: true,
             physics: {
                 //enabled: false
-                stabilization: true,
+                //stabilization: true,
                 //adaptiveTimestep: true,
                 //timestep: true,
                 barnesHut: {
@@ -485,7 +485,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         };
 
         // personalization menu creation
-        hotbar = new Hotbar();
+        hotbar = new Hotbar(visnetwork);
         hotbar.addPanelLinkPropertiesToFunction(attributes, allpropsNodes, allpropsEdges)
         hotbar.addPanelChangeLabel(network, visnetwork, allpropsNodes, allpropsEdges);
         hotbar.addStats(visnetwork, network);
@@ -496,7 +496,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         changesLoop();
 
         //fit graph in window
-        fitWindow(visnetwork);
+        //fitWindow(visnetwork);
 
         //check if there are errors
         errorTab();
@@ -556,12 +556,12 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     refreshSelects();
                 } else if (json[change]['type'] == "RemoveVertex") {
                     network.removeVertex(visnetwork, json[change]['elementID'])
-                    visnetwork.fit({
+                    /*visnetwork.fit({
                         animation: {
                             duration: 1000,
                             easingFunction: "linear"
                         }
-                    });
+                    });*/
                 } else if (json[change]['type'] == "AddEdge") {
                     //normalize ends to 'from' and 'to' to add edge
                     let jsoncorrect = json[change]['edgeInfo'];

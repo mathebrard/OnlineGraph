@@ -1,6 +1,6 @@
 class Hotbar {
 
-    constructor() {
+    constructor(visnetwork) {
         this.mainContainer = $("<div></div>")
             .attr({
                 id: "vis-network-hotbar"
@@ -9,7 +9,7 @@ class Hotbar {
             display: "none",
             width: "50%"
         });
-        this.addButtons();
+        this.addButtons(visnetwork);
         this.nbEntries = 0;
     }
 
@@ -28,10 +28,11 @@ class Hotbar {
     }
 
 	//add upper buttons
-    addButtons() {
+    addButtons(visnetwork) {
         let container = $("<div></div>");
 
         let resizerC = $("<div id='nav-personaliz'>Personalize your graph</div>");
+        let fitgraph = $("<div id='nav-personaliz-fitgraph'>Fit graph in window</div>");
         let github = $("<div id='nav-personaliz-github'>Go to Github page</div>");
 
         let githubCreation = () => {
@@ -49,6 +50,27 @@ class Hotbar {
             })
 
             return github;
+        }
+        let fitgraphCreation = () => {
+            fitgraph.css({
+                display: "inline-block",
+                padding: "10px",
+                "background-color": "LightGray",
+                width: "fit-content",
+                height: "fit-content",
+                border: "solid",
+                cursor: "pointer"
+            }).mouseup((ev) => {
+            visnetwork.fit({
+                //minZoomLevel: 0,
+                animation: {
+                    duration: 500,
+                    easingFunction: "linear"
+                }
+            });
+            })
+
+            return fitgraph;
         }
 
         let resizerCreation = () => {
@@ -95,6 +117,7 @@ class Hotbar {
             return resizerC;
         }
         container.append(resizerCreation());
+        container.append(fitgraphCreation());
         container.append(githubCreation());
         this.mainContainer.append(container);
     }
