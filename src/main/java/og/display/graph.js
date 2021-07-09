@@ -74,6 +74,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                 },
                 font: {},
                 hidden: (props["default vertex hidden"] === 'true'),
+				shapeProperties: {
+				    interpolation: false    // 'true' for intensive zooming
+				  }
             },
             edges: {
                 arrows: {
@@ -92,7 +95,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
             physics: {
                 //enabled: false
                 stabilization: true,
-                adaptiveTimestep: true,
+                //adaptiveTimestep: true,
                 //timestep: true,
                 barnesHut: {
                     //springLength: 200,
@@ -104,7 +107,8 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                 maxVelocity: 0.9
             },
             layout: {
-                improvedLayout: true,
+                randomSeed:0,
+				improvedLayout:false,
             }
         }
 
@@ -194,6 +198,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 
         //save all nodes props
         let allpropsNodes = {}
+		console.log(network.allPropsNodes)
         for (let prop in network.allPropsNodes) {
             allpropsNodes[network.allPropsNodes[prop]] = {
                 "name": network.allPropsNodes[prop]
@@ -486,6 +491,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         hotbar.addStats(visnetwork, network);
         $("#information-network").append(hotbar.generateHTML());
 
+
         //process graph changes
         changesLoop();
 
@@ -528,7 +534,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
             for (let change in json) {
                 if (json[change]['type'] == "AddVertex") {
                     //add vertex
-                    network.addVertex(visnetwork, defaultProps, json[change]['vertexInfo'])
+                    let newNode = network.addVertex(visnetwork, defaultProps, json[change]['vertexInfo'])
 
                     //change the label according to the user selection in the personalization menu
                     let select = document.getElementById("select-label");
@@ -537,16 +543,14 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     } catch (error) {
                         let text = "label";
                     }
-                    network.getListNodes().forEach((node) => {
-                        try {
-                            if (node.params[text])
-                                node.setLabel(visnetwork, node.params[text]);
-                            else if (node.defaultparams[text])
-                                node.setLabel(visnetwork, node.defaultparams[text]);
-                        } catch (error) {
-                            //console.log(error);
-                        }
-                    });
+                    try {
+                        if (newNode.params[text])
+                            newNode.setLabel(visnetwork, node.params[text]);
+                        else if (node.defaultparams[text])
+                            newNode.setLabel(visnetwork, node.defaultparams[text]);
+                    } catch (error) {
+                        //console.log(error);
+                    }
 
                     //refresh the selects in the personalization menu
                     refreshSelects();
@@ -563,32 +567,31 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     let jsoncorrect = json[change]['edgeInfo'];
                     jsoncorrect["from"] = jsoncorrect["ends"][0]
                     jsoncorrect["to"] = jsoncorrect["ends"][jsoncorrect["ends"].length - 1]
-                    network.addEdge(visnetwork, defaultProps, jsoncorrect)
-                    network.nbEdges++;
+                    let newEdge = network.addEdge(visnetwork, network, defaultProps, jsoncorrect,"edge")
 
                     //refresh the selects in the personalization menu
                     refreshSelects();
 
                     //change the label according to the user selection in the personalization menu
                     let select = document.getElementById("select-label");
-                    try {
-                        let text = select.options[select.selectedIndex].text;
+					let text                    
+					try {
+                        text = select.options[select.selectedIndex].text;
                     } catch (error) {
-                        let text = "label";
+                        text = "label";
                     }
-                    network.getListEdges().forEach((node) => {
-                        try {
-                            if (node.params[text])
-                                node.setLabel(visnetwork, node.params[text]);
-                            else if (node.defaultparams[text])
-                                node.setLabel(visnetwork, node.defaultparams[text]);
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    });
+                    try {
+						if (newEdge.params!=undefined){
+                            if (newEdge.params[text])
+                                newEdge.setLabel(visnetwork, newEdge.params[text]);
+                            else if (newEdge.defaultparams[text])
+                                newEdge.setLabel(visnetwork, newEdge.defaultparams[text]);
+						}
+                    } catch (error) {
+                        console.log(error);
+                    }
                 } else if (json[change]['type'] == "RemoveEdge") {
-                    network.removeEdge(visnetwork, json[change]['elementID'])
-                    network.nbEdges--;
+                    network.removeEdge(visnetwork,network, json[change]['elementID'],"edge")
 
                 } else if (json[change]['type'] == "EdgeDataChange") {
                     if (json[change]['name'] == "properties") {
@@ -610,8 +613,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     //normalize ends to 'from' and 'to' to add edge
                     let jsoncorrect = json[change]['edgeInfo'];
                     jsoncorrect["directed"] = true;
-                    network.addEdge(visnetwork, defaultProps, jsoncorrect)
-                    network.nbArcs++;
+                    let newArc = network.addEdge(visnetwork,network ,defaultProps, jsoncorrect,"arc")
 
                     //refresh the selects in the personalization menu
                     refreshSelects();
@@ -623,19 +625,16 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                     } catch (error) {
                         let text = "label";
                     }
-                    network.getListEdges().forEach((node) => {
-                        try {
-                            if (node.params[text])
-                                node.setLabel(visnetwork, node.params[text]);
-                            else if (node.defaultparams[text])
-                                node.setLabel(visnetwork, node.defaultparams[text]);
-                        } catch (error) {
-                            //console.log(error);
-                        }
-                    });
+                    try {
+                        if (newArc.params[text])
+                            newArc.setLabel(visnetwork, newArc.params[text]);
+                        else if (newArc.defaultparams[text])
+                            newArc.setLabel(visnetwork, newArc.defaultparams[text]);
+                    } catch (error) {
+                        //console.log(error);
+                    }
                 } else if (json[change]['type'] == "RemoveArc") {
-                    network.removeEdge(visnetwork, json[change]['elementID'])
-                    network.nbArcs--;
+                    network.removeEdge(visnetwork,network, json[change]['elementID'],"arc")
 
                 } else if (json[change]['type'] == "ArcDataChange") {
                     if (json[change]['name'] == "properties") {
@@ -677,7 +676,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
             //refresh stats
             document.getElementById("stats").textContent = "Number of vertices : " + visnetwork.body.data.nodes.length + " , number of edges : " + network.nbEdges + " , number of arcs : " + network.nbArcs;
             //save last change index
-			if (lastChangeIndex!=last)
+			if (lastChangeIndex!=last && last!=0)
             	lastChangeIndex = parseInt(lastChangeIndex, 10) + parseInt(last, 10) + 1;
             refreshSelects();
         }

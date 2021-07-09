@@ -19,70 +19,79 @@ class Node {
         this.label = undefined
         this.defaultparams = {}
         this.labelColor = "#000000";
+		this.x=undefined;
+		this.y=undefined
     }
 
 
     processParams(visnetwork, network) {
         let currentNode = this;
-        Object.keys(this.params).forEach(function (key) {
-
-            network.allPropsNodes.push(key)
-            if (key == 'fillColor') {
-                currentNode.setColor(visnetwork, currentNode.params[key]);
-            } else if (key == 'borderColor') {
-                currentNode.setBorderColor(visnetwork, currentNode.params[key]);
-            } else if (key == 'image') {
-                currentNode.setImage(visnetwork, currentNode.params[key]);
-            } else if (key == 'hidden') {
-                currentNode.setHidden(visnetwork, currentNode.params[key]);
-            } else if (key == 'borderWidth') {
-                currentNode.setBorderWitdh(visnetwork, currentNode.params[key]);
-            } else if (key == 'mass') {
-                currentNode.setMass(visnetwork, currentNode.params[key]);
-            } else if (key == 'label') {
-                currentNode.setLabel(visnetwork, currentNode.params[key]);
-            } else if (key == 'shape') {
-                currentNode.setShape(visnetwork, currentNode.params[key]);
-            } else if (key == 'size') {
-                currentNode.setSize(visnetwork, currentNode.params[key]);
-            } else if (key == 'labelColor') {
-                currentNode.setLabelColor(visnetwork, currentNode.params[key]);
-            } else {
-                network.unknowProps.push(key);
-            }
-        })
+		if (this.params!=null && this.params !=undefined){
+	        Object.keys(this.params).forEach(function (key) {
+				if (!network.allPropsNodes.includes(key))
+	            	network.allPropsNodes.push(key)
+	            if (key == 'fillColor') {
+	                currentNode.setColor(visnetwork, currentNode.params[key]);
+	            } else if (key == 'borderColor') {
+	                currentNode.setBorderColor(visnetwork, currentNode.params[key]);
+	            } else if (key == 'image') {
+	                currentNode.setImage(visnetwork, currentNode.params[key]);
+	            } else if (key == 'hidden') {
+	                currentNode.setHidden(visnetwork, currentNode.params[key]);
+	            } else if (key == 'borderWidth') {
+	                currentNode.setBorderWitdh(visnetwork, currentNode.params[key]);
+	            } else if (key == 'mass') {
+	                currentNode.setMass(visnetwork, currentNode.params[key]);
+	            } else if (key == 'label') {
+	                currentNode.setLabel(visnetwork, currentNode.params[key]);
+	            } else if (key == 'shape') {
+	                currentNode.setShape(visnetwork, currentNode.params[key]);
+	            } else if (key == 'size') {
+	                currentNode.setSize(visnetwork, currentNode.params[key]);
+	            } else if (key == 'labelColor') {
+	                currentNode.setLabelColor(visnetwork, currentNode.params[key]);
+	            } else if (key == 'location') {
+	                currentNode.setX(visnetwork, currentNode.params[key].split(",")[0]);
+	                currentNode.setY(visnetwork, currentNode.params[key].split(",")[1]);
+	            } else {
+	                network.unknowProps.push(key);
+	            }
+	        })
+		}
     }
 
     processDefaultParams(visnetwork, network, props) {
         let currentNode = this;
-        Object.keys(props).forEach(function (key) {
-            //network.allProps.push(key)
-            if (key.includes("vertex"))
-                currentNode.defaultparams[key] = props[key]
-            if (key == 'default vertex fillColor') {
-                currentNode.setColor(visnetwork, props[key]);
-            } else if (key == 'default vertex borderColor') {
-                currentNode.setBorderColor(visnetwork, props[key]);
-            } else if (key == 'default vertex hidden') {
-                currentNode.setHidden(visnetwork, props[key]);
-            } else if (key == 'default vertex borderWidth') {
-                currentNode.setBorderWitdh(visnetwork, props[key]);
-            } else if (key == 'default vertex mass') {
-                currentNode.setMass(visnetwork, props[key]);
-            } else if (key == 'default vertex label') {
-                currentNode.setLabel(visnetwork, props[key]);
-            } else if (key == 'default vertex shape') {
-                currentNode.setShape(visnetwork, props[key]);
-            } else if (key == 'default vertex image') {
-                currentNode.setImage(visnetwork, props[key]);
-            } else if (key == 'default vertex size') {
-                currentNode.setSize(visnetwork, props[key]);
-            } else if (key == 'default vertex labelColor') {
-                currentNode.setLabelColor(visnetwork, props[key]);
-            } else {
-                network.unknowProps.push(key);
-            }
-        })
+		if (props!=null && props !=undefined){
+	        Object.keys(props).forEach(function (key) {
+	            //network.allProps.push(key)
+	            if (key.includes("vertex"))
+	                currentNode.defaultparams[key] = props[key]
+	            if (key == 'default vertex fillColor') {
+	                currentNode.setColor(visnetwork, props[key]);
+	            } else if (key == 'default vertex borderColor') {
+	                currentNode.setBorderColor(visnetwork, props[key]);
+	            } else if (key == 'default vertex hidden') {
+	                currentNode.setHidden(visnetwork, props[key]);
+	            } else if (key == 'default vertex borderWidth') {
+	                currentNode.setBorderWitdh(visnetwork, props[key]);
+	            } else if (key == 'default vertex mass') {
+	                currentNode.setMass(visnetwork, props[key]);
+	            } else if (key == 'default vertex label') {
+	                currentNode.setLabel(visnetwork, props[key]);
+	            } else if (key == 'default vertex shape') {
+	                currentNode.setShape(visnetwork, props[key]);
+	            } else if (key == 'default vertex image') {
+	                currentNode.setImage(visnetwork, props[key]);
+	            } else if (key == 'default vertex size') {
+	                currentNode.setSize(visnetwork, props[key]);
+	            } else if (key == 'default vertex labelColor') {
+	                currentNode.setLabelColor(visnetwork, props[key]);
+	            } else {
+	                network.unknowProps.push(key);
+	            }
+	        })
+		}
     }
 
 
@@ -113,7 +122,7 @@ class Node {
                         min: this.size,
                         max: this.size,
                         label: {
-                            enabled: true,
+                            enabled: false,
                             min: this.size,
                             max: this.size
                         }
@@ -217,6 +226,35 @@ class Node {
 
     }
 
+    setX(visnetwork, x) {
+        this.x = x;
+		console.log(this.x*1000)
+        try {
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                fixed : true,
+				x: this.x*1000
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+    setY(visnetwork, y) {
+        this.y = y;
+		console.log(this.y*1000)
+        try {
+            visnetwork.body.data.nodes.updateOnly({
+                id: this.id,
+                fixed : true,
+				y: this.y*1000
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
 
     setBackgroundColor(visnetwork, color) {
         try {
@@ -299,76 +337,95 @@ class Link {
         this.label = undefined;
         this.scale = 1;
         this.width = 1;
+		this.arrowLocation = "middle";
         this.defaultparams = defaultparams;
     }
 
     processParams(visnetwork, network) {
         let currentEdge = this;
-        Object.keys(this.params).forEach(function (key) {
-            network.allPropsEdges.push(key);
-            if (key == 'arrowShape') {
-                currentEdge.setArrowType(visnetwork, currentEdge.params[key]);
-            } else if (key == 'dashes') {
-                currentEdge.setDashes(visnetwork, currentEdge.params[key]);
-            } else if (key == 'directed') {
-                currentEdge.setDirected(visnetwork, currentEdge.params[key]);
-            } else if (key == 'color') {
-                currentEdge.setColor(visnetwork, currentEdge.params[key]);
-            } else if (key == 'arrowImage') {
-                currentEdge.setArrowImage(visnetwork, currentEdge.params[key]);
-            } /*else if (key == 'mass') {
-                currentEdge.setMass(visnetwork, currentEdge.params[key]);
-            }*/ else if (key == 'label') {
-                currentEdge.setLabel(visnetwork, currentEdge.params[key]);
-            } else if (key == 'arrowScale') {
-                currentEdge.setScale(visnetwork, currentEdge.params[key]);
-            } else if (key == 'width') {
-                currentEdge.setWidth(visnetwork, currentEdge.params[key]);
-            } else {
-                network.unknowProps.push(key);
-            }
-        })
+		if (this.params!=null && this.params !=undefined){
+	        Object.keys(this.params).forEach(function (key) {
+				if (!network.allPropsNodes.includes(key))
+	            	network.allPropsEdges.push(key);
+	            if (key == 'arrowShape') {
+	                currentEdge.setArrowType(visnetwork, currentEdge.params[key]);
+	            } else if (key == 'dashes') {
+	                currentEdge.setDashes(visnetwork, currentEdge.params[key]);
+	            } else if (key == 'directed') {
+	                currentEdge.setDirected(visnetwork, currentEdge.params[key]);
+	            } else if (key == 'color') {
+	                currentEdge.setColor(visnetwork, currentEdge.params[key]);
+	            } else if (key == 'arrowImage') {
+	                currentEdge.setArrowImage(visnetwork, currentEdge.params[key]);
+	            } /*else if (key == 'mass') {
+	                currentEdge.setMass(visnetwork, currentEdge.params[key]);
+	            }*/ else if (key == 'label') {
+	                currentEdge.setLabel(visnetwork, currentEdge.params[key]);
+	            } else if (key == 'arrowScale') {
+	                currentEdge.setScale(visnetwork, currentEdge.params[key]);
+	            } else if (key == 'width') {
+	                currentEdge.setWidth(visnetwork, currentEdge.params[key]);
+	            } else if (key == 'arrowLocation') {
+	                currentEdge.setArrowLocation(visnetwork, currentEdge.params[key]);
+	            } else {
+	                network.unknowProps.push(key);
+	            }
+	        })
+		}
     }
 
     processDefaultParams(visnetwork, network, props) {
         let currentEdge = this;
-        Object.keys(props).forEach(function (key) {
-            if (key.includes("edge"))
-                if (key == 'default edge arrowShape') {
-                    currentEdge.setArrowType(visnetwork, props[key]);
-                } else if (key == 'default edge dashes') {
-                    currentEdge.setDashes(visnetwork, props[key]);
-                } else if (key == 'default edge directed') {
-                    currentEdge.setDirected(visnetwork, props[key]);
-                } else if (key == 'default edge color') {
-                    currentEdge.setColor(visnetwork, props[key]);
-                } else if (key == 'default edge arrowImage') {
-                    currentEdge.setArrowImage(visnetwork, props[key]);
-                } /*else if (key == 'mass') {
-                currentEdge.setMass(visnetwork, currentEdge.params[key]);
-            }*/ else if (key == 'default edge label') {
-                    currentEdge.setLabel(visnetwork, props[key]);
-                } else if (key == 'default edge arrowScale') {
-                    currentEdge.setScale(visnetwork, props[key]);
-                } else if (key == 'default edge width') {
-                    currentEdge.setWidth(visnetwork, props[key]);
-                } else {
-                    //network.unknowProps.push(key);
-                }
-        })
+		if (props!=null && props!=undefined){
+	        Object.keys(props).forEach(function (key) {
+	            if (key.includes("edge"))
+	                if (key == 'default edge arrowShape') {
+	                    currentEdge.setArrowType(visnetwork, props[key]);
+	                } else if (key == 'default edge dashes') {
+	                    currentEdge.setDashes(visnetwork, props[key]);
+	                } else if (key == 'default edge directed') {
+	                    currentEdge.setDirected(visnetwork, props[key]);
+	                } else if (key == 'default edge color') {
+	                    currentEdge.setColor(visnetwork, props[key]);
+	                } else if (key == 'default edge arrowImage') {
+	                    currentEdge.setArrowImage(visnetwork, props[key]);
+	                } /*else if (key == 'mass') {
+	                currentEdge.setMass(visnetwork, currentEdge.params[key]);
+	            }*/ else if (key == 'default edge label') {
+	                    currentEdge.setLabel(visnetwork, props[key]);
+	                } else if (key == 'default edge arrowScale') {
+	                    currentEdge.setScale(visnetwork, props[key]);
+	                } else if (key == 'default edge width') {
+	                    currentEdge.setWidth(visnetwork, props[key]);
+	                } else if (key == 'default edge arrowLocation') {
+	                    currentEdge.setArrowLocation(visnetwork, props[key]);
+	                } else {
+	                    //network.unknowProps.push(key);
+	                }
+	        })
+		}
     }
 
     setArrowType(visnetwork, arrowtype) {
         this.arrowtype = arrowtype;
         try {
-            visnetwork.body.data.edges.updateOnly({
-                id: this.id,
-                arrows: {
-                    middle: {
-                        type: this.arrowtype
-                    }
-                }
-            });
+			let json ={id: this.id, arrows : {}};
+			json["arrows"][this.arrowLocation]={};
+			json["arrows"][this.arrowLocation]["type"] = this.arrowtype;
+            visnetwork.body.data.edges.updateOnly(json);
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
+    setArrowLocation(visnetwork, arrowLocation) {
+        this.arrowLocation = arrowLocation;
+        try {
+			let json ={id: this.id, arrows : {}};
+			json["arrows"][this.arrowLocation]=true
+            visnetwork.body.data.edges.updateOnly(json);
         } catch (error) {
             console.log(error);
         }
@@ -400,14 +457,10 @@ class Link {
         this.directed = directed;
 
         try {
-            visnetwork.body.data.edges.updateOnly({
-                id: this.id,
-                arrows: {
-                    middle: {
-                        enabled: ((this.directed + "") == 'true')
-                    }
-                }
-            });
+			let json ={id: this.id, arrows : {}};
+			json["arrows"][this.arrowLocation]={};
+			json["arrows"][this.arrowLocation]["enabled"] = ((this.directed + "") == 'true');
+            visnetwork.body.data.edges.updateOnly(json);
         } catch (error) {
             console.log(error);
         }
@@ -552,26 +605,35 @@ class Network {
         return true;
     }
 
-    removeEdge(visNetwork, ID) {
+    removeEdge(visNetwork, network, ID,type) {
         visNetwork.body.data.edges.remove([ID])
 
         var removeIndex = this.listEdges.map(item => item.id).indexOf(ID);
         ~removeIndex && this.listEdges.splice(removeIndex, 1);
-
+		
+		if (type=="edge")
+        	network.nbEdges--;
+		else
+        	network.nbArcs--;
         return true;
     }
 
-    addEdge(visNetwork, defaultparams, params) {
+    addEdge(visNetwork, network, defaultparams, params,type) {
         let ID;
         ID = params['id'];
         let from = params['from'];
         let to = params['to'];
-        let newNode = new Link(from, to, ID, params, defaultparams);
+        
+		let newNode = new Link(from, to, ID, params, defaultparams);
         try {
-            visNetwork.body.data.edges.add([{id: ID, from: from, to: to, props: params}])
             this.listEdges.push(newNode);
+            visNetwork.body.data.edges.add([{id: ID, from: from, to:to, props: params}])
             newNode.processDefaultParams(visNetwork, this, defaultparams)
             newNode.processParams(visNetwork, this, params)
+			if (type=="edge")
+	        	network.nbEdges++;
+			else
+	        	network.nbArcs++;
         } catch (error) {
             console.log(error)
         }

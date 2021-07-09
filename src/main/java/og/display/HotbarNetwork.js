@@ -316,53 +316,20 @@ class Hotbar {
 
     addPanelChangeLabel(network, visnetwork, listPropertiesNode, listPropertiesEdge) {
         let conteneur = $("<div></div>");
-        let selectNode = $("<select></select>").change((ev) => {
-            var text = $(ev.target).find("option:selected").text(); //only time the find is required
-            var name = $(ev.target).attr('name');
-            network.getListNodes().forEach((node) => {
-                if (node.params[text])
-                    node.setLabel(visnetwork, node.params[text]);
-            });
-            visnetwork.redraw();
-        });
-        Object.keys(listPropertiesNode).forEach(function (k) {
-            selectNode.append($("<option></option>").text(k));
-        });
-        selectNode.val("label");
-
-        let selectEdge = $("<select></select>").change((ev) => {
-            var text = $(ev.target).find("option:selected").text(); //only time the find is required
-            var name = $(ev.target).attr('name');
-            network.getListEdges().forEach((node) => {
-                if (node.params[text])
-                    node.setLabel(visnetwork, node.params[text]);
-            });
-            visnetwork.redraw();
-        });
-        Object.keys(listPropertiesEdge).forEach(function (k) {
-            selectEdge.append($("<option></option>").text(k));
-        });
-        selectEdge.val("label");
-
-        conteneur.append($("<table></table>")
-            .append($("<tr></tr>")
-                .append($("<td></td>").text("Node label"))
-                .append($("<td></td>").append(selectNode))
-                .append($("<td></td>").text("Edge label"))
-                .append($("<td></td>").append(selectEdge))
-            )
-        );
-        this.main.append(conteneur);
-    }
-
-    addPanelChangeLabel(network, visnetwork, listPropertiesNode, listPropertiesEdge) {
-        let conteneur = $("<div></div>");
         let selectNode = $("<select class = 'select-propertie-value node-select'></select>").change((ev) => {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
             network.getListNodes().forEach((node) => {
-                if (node.params[text])
-                    node.setLabel(visnetwork, node.params[text]);
+				try{
+					console.log(text)
+	                if (text=="id")
+	                    node.setLabel(visnetwork, node.id);
+	                else if (node.params[text])
+	                    node.setLabel(visnetwork, node.params[text]);
+				}
+				catch(error){
+					console.log(error)
+				}
             });
             visnetwork.redraw();
         });
@@ -375,8 +342,14 @@ class Hotbar {
             var text = $(ev.target).find("option:selected").text(); //only time the find is required
             var name = $(ev.target).attr('name');
             network.getListEdges().forEach((node) => {
-                if (node.params[text])
-                    node.setLabel(visnetwork, node.params[text]);
+				try{
+	                if (node.params[text])
+	                    node.setLabel(visnetwork, node.params[text]);
+				}
+				catch(error){
+					console.log(error)
+				}
+
             });
             visnetwork.redraw();
         });
