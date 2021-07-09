@@ -2,8 +2,8 @@
 OnlineGraph is a ***cloud graph library***. 
 It consists of an (HTTP) server which exposes a set of (Web) services for the ***storage***, the ***manipulation*** and the ***graphical*** rendering of graphs.
 
-OnlineGraph is developped at Inria/I3S Computer Science Laboratory of Université Côte d'Azur. Its development team is composed of:
-- Luc Hogie (project leader)
+OnlineGraph is developed within the [COATI Research group](https://team.inria.fr/coati/) at [Inria/I3S Computer Science Laboratory of Université Côte d'Azur](https://www.i3s.unice.fr/). Its development team is composed of:
+- [Luc Hogie](https://www.i3s.unice.fr/~hogie/) (project leader)
 - Fedi Ghalloussi (Bachelor's degree intern)
 - Antonin Lacomme (Master's degree intern)
 

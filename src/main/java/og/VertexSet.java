@@ -40,7 +40,7 @@ public class VertexSet extends GraphElementSet {
 			for (var e : new LongArrayList(edges(u))) {
 				graph.edges.remove(e);
 			}
-			
+
 			impl.remove(u);
 			graph.commitNewChange(new Change.RemoveVertex(u));
 		}
