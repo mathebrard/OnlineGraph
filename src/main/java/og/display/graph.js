@@ -198,7 +198,6 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 
         //save all nodes props
         let allpropsNodes = {}
-		console.log(network.allPropsNodes)
         for (let prop in network.allPropsNodes) {
             allpropsNodes[network.allPropsNodes[prop]] = {
                 "name": network.allPropsNodes[prop]
@@ -495,7 +494,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         //process graph changes
         changesLoop();
 
-        //fit graph in window
+        //for automatic fit graph in window
         //fitWindow(visnetwork);
 
         //check if there are errors

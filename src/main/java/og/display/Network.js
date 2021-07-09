@@ -228,12 +228,11 @@ class Node {
 
     setX(visnetwork, x) {
         this.x = x;
-		console.log(this.x*1000)
         try {
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
                 fixed : true,
-				x: this.x*1000
+				x: this.x*500
             });
         } catch (error) {
             console.log(error);
@@ -242,12 +241,11 @@ class Node {
     }
     setY(visnetwork, y) {
         this.y = y;
-		console.log(this.y*1000)
         try {
             visnetwork.body.data.nodes.updateOnly({
                 id: this.id,
                 fixed : true,
-				y: this.y*1000
+				y: this.y*500
             });
         } catch (error) {
             console.log(error);
@@ -421,9 +419,15 @@ class Link {
     }
 
     setArrowLocation(visnetwork, arrowLocation) {
+		let json ={id: this.id, arrows : {"from":false,"middle":false,"to":false}};
+		if (arrowLocation=="source"){
+			arrowLocation="from"
+		}
+		else if (arrowLocation=="destination"){
+			arrowLocation="to"
+		}
         this.arrowLocation = arrowLocation;
         try {
-			let json ={id: this.id, arrows : {}};
 			json["arrows"][this.arrowLocation]=true
             visnetwork.body.data.edges.updateOnly(json);
         } catch (error) {
