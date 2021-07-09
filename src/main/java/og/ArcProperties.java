@@ -36,6 +36,38 @@ public class ArcProperties {
 		}
 	};
 
+	enum arrowLocations {
+		source, middle, destination;
+	}
+
+	public static Property arrowLocation = new Property() {
+
+		@Override
+		public String toGraphviz(String value) {
+			return value;
+		}
+
+		@Override
+		public String random() {
+			return arrowLocations.values()[new Random().nextInt(arrowLocations.values().length)].name();
+		}
+
+		@Override
+		public boolean accept(String value) {
+			return arrowLocations.valueOf(value) != null;
+		}
+
+		@Override
+		public String getName() {
+			return "arrowLocation";
+		}
+
+		@Override
+		public String getDefaultValue() {
+			return arrowLocations.middle.name();
+		}
+	};
+
 	public static Property arrowSize = new IntProperty(40) {
 
 		@Override
@@ -53,5 +85,6 @@ public class ArcProperties {
 		EdgeProperties.forEach(p);
 		p.accept(arrowShape);
 		p.accept(arrowSize);
+		p.accept(arrowLocation);
 	}
 }
