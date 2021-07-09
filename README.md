@@ -90,6 +90,7 @@ In response of calling a webservice, you get a chunk of JSON that follows the pa
 ```json
 {
   "errors": [],
+  "warnings": [],
   "results": []
 }
 ```
@@ -155,13 +156,12 @@ http://localhost:8081/api/og/og.GraphService/getVertexData/myGraph/45,56/foo
 
 #### Graph dynamics
 ```
-http://localhost:8081/api/og/og.GraphService/changes/myGraph/5567
+http://localhost:8081/api/og/og.GraphService/changes/myGraph/1
 ```
-returns the list of changes that occured on the given graph from the given moment in time.
+returns the list of changes that occured on the given graph from the given index
 
 ### Algorithms
 #### Traversal
-
 - BFS
 - Random walk
 
@@ -184,6 +184,14 @@ returns the list of changes that occured on the given graph from the given momen
 
 ### Dynamic view
 The dynamic view for displaying graphs relies on the [Vis]https://visjs.org/ JavaScript framework.
+````
+http://tranquility.inria.fr:8080/web/og/display/graph.html?gid=randomGraph
+```
+`
 
 ### Static view
 The static view for displaying graphs relies on GraphViz.
+````
+http://localhost:8081/api/og/og.GraphService/graphviz/myGraph/dot/png?format=bytes&only=results
+```
+`

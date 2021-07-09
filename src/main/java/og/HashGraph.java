@@ -31,7 +31,9 @@ public class HashGraph extends Graph {
 
 	@Override
 	public synchronized void forEachChange(int since, Consumer<Change> c) {
-		changes.subList(since, changes.size()).forEach(c);
+		if (since < changes.size()) {
+			changes.subList(since, changes.size()).forEach(c);
+		}			
 	}
 
 	@Override
