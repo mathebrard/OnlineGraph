@@ -12,7 +12,7 @@ public class RunServer {
 	public static void main(String[] args) throws IOException {
 		
 		
-		var port = args.length == 0 ? 8081 : Integer.parseInt(args[0]);
+		var port = args.length == 0 ? 8082 : Integer.parseInt(args[0]);
 		var descriptor = new ComponentDescriptor();
 		descriptor.friendlyName = "og";
 		Component c = new Component(descriptor);

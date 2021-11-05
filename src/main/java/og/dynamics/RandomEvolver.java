@@ -23,7 +23,7 @@ public class RandomEvolver extends GraphDynamics {
 
 		if (!pb.isEmpty())
 			throw new IllegalStateException(pb.toString());
-		
+
 		double targetN = 50;
 		double targetD = 3;
 		double nbVertices = g.vertices.nbEntries();
@@ -76,10 +76,10 @@ public class RandomEvolver extends GraphDynamics {
 
 			if (Math.random() < 0.1) {
 				var l = VertexProperties.location.random();
-				Cout.debugSuperVisible("setting location " + l +  " to vertex " + u);
+				Cout.debugSuperVisible("setting location " + l + " to vertex " + u);
 				p.put(VertexProperties.location.getName(), VertexProperties.location.random());
-				
 			}
+
 			if (Math.random() < pp)
 				p.put(VertexProperties.scale.getName(), VertexProperties.scale.random());
 			if (Math.random() < pp)
@@ -124,7 +124,7 @@ public class RandomEvolver extends GraphDynamics {
 
 			g.arcs.set(a, "properties", p);
 		}
-		
+
 		if (Math.random() < 0.4 && g.edges.nbEntries() > 0) {
 			var e = g.edges.random();
 			var p = g.edges.get(e, "properties", () -> new HashMap<String, String>());
