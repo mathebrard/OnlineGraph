@@ -281,6 +281,20 @@ public class GraphService extends Service {
 		Cout.debugSuperVisible(gi.properties);
 		return gi;
 	}
+	
+
+public static class GraphSize implements Serializable{
+	long nbVertices, nbArcs;
+}
+
+	@IdawiOperation
+	public GraphSize size(String gid) {
+		var g  = getGraph(gid);
+		var s = new GraphSize();
+		s.nbVertices = g.vertices.nbEntries();
+		s.nbArcs = g.edges.nbEntries();
+		return s;
+	}
 
 	@IdawiOperation
 	public List<String> listProblems(String gid) {
