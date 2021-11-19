@@ -13,13 +13,13 @@ let lastChangeIndex;
 $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     //if graph is known
     if (json['results'].length != 0) {
-        lastChangeIndex = json['results'][0]['nbChanges'];
+        lastChangeIndex = json['results'][0][0]['nbChanges'];
 
         // create vis dataset with json's vertices
-        let nodes = new vis.DataSet(json['results'][0]['vertices']);
+        let nodes = new vis.DataSet(json['results'][0][0]['vertices']);
 
         // set json's arcs to be directed
-        let arc = json['results'][0]['arcs']
+        let arc = json['results'][0][0]['arcs']
         for (let i = 0; i < arc.length; i++) {
             try {
                 arc[i]["properties"]["directed"] = true
@@ -30,7 +30,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         }
 
         // set json's edges from/to vertices
-        let edge = json['results'][0]['edges']
+        let edge = json['results'][0][0]['edges']
         for (let i = 0; i < edge.length; i++) {
             try {
                 edge[i]["from"] = edge[i]["ends"][0];
@@ -46,7 +46,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         let edges = new vis.DataSet($.extend(arc, edge));
 
         // defaults props
-        let props = json['results'][0]['properties'];
+        let props = json['results'][0][0]['properties'];
 
         // create a network
         let container = document.getElementById("mynetwork");
