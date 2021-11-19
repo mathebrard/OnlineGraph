@@ -7,7 +7,7 @@ import idawi.service.ServiceManager;
 import idawi.service.rest.RESTService;
 import toools.thread.Threads;
 
-public class RunServer {
+public class RunGraphServer {
 	public static void main(String[] args) throws IOException {
 		var port = args.length == 0 ? 8082 : Integer.parseInt(args[0]);
 		Component c = new Component();
