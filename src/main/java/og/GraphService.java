@@ -76,7 +76,7 @@ public class GraphService extends Service {
 			m.put("grid", grid);
 		}
 
-		if (true) {
+		if (false) {
 			var growingGraph = new HashGraph();
 			new Grow(growingGraph, 1.5, 3);
 			m.put("growingGraph", growingGraph);
