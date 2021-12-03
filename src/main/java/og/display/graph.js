@@ -62,6 +62,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 
         // options pour l'initialisation de visnetwork
         let options = {
+			autoResize: true,
+			height: '100%',
+  			width: '100%',
             nodes: {
                 color: {},
                 scaling: {
