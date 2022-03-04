@@ -19,8 +19,8 @@ import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 
 import idawi.Component;
-import idawi.TypedInnerOperation;
 import idawi.Service;
+import idawi.TypedInnerOperation;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
@@ -91,6 +91,40 @@ public class GraphService extends Service {
 		for (var g : m.values()) {
 			g.setProperties(g.defaultProperties());
 		}
+
+		registerOperation(new addEdge());
+		registerOperation(new addRandomVertex());
+		registerOperation(new addVertices());
+		registerOperation(new arcs());
+		registerOperation(new bfs());
+		registerOperation(new changes());
+		registerOperation(new clusteringCoefficient());
+		registerOperation(new containsArcs());
+		registerOperation(new containsEdges());
+		registerOperation(new containsVertex());
+		registerOperation(new containsVertices());
+		registerOperation(new create());
+		registerOperation(new create2());
+		registerOperation(new edges());
+		registerOperation(new edgesIDsRAW());
+		registerOperation(new get());
+		registerOperation(new getGraphInfo());
+		registerOperation(new graphviz());
+		registerOperation(new history());
+		registerOperation(new imporADJ());
+		registerOperation(new importDot());
+		registerOperation(new importEdges());
+		registerOperation(new listGraphs());
+		registerOperation(new listProblems());
+		registerOperation(new pickRandomEdge());
+		registerOperation(new pickRandomVertex());
+		registerOperation(new setVertexProperty());
+		registerOperation(new showInVis());
+		registerOperation(new size());
+		registerOperation(new toDOT());
+		registerOperation(new vertices());
+		registerOperation(new verticesIDs());
+		registerOperation(new verticesIDsRAW());
 	}
 
 	public Graph getGraph(String gid) {
