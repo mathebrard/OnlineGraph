@@ -13,13 +13,13 @@ let lastChangeIndex;
 $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
     //if graph is known
     if (json['results'].length != 0) {
-        lastChangeIndex = json['results'][0]['nbChanges'];
+        lastChangeIndex = json['results'][0][0]['nbChanges'];
 
         // create vis dataset with json's vertices
-        let nodes = new vis.DataSet(json['results'][0]['vertices']);
+        let nodes = new vis.DataSet(json['results'][0][0]['vertices']);
 
         // set json's arcs to be directed
-        let arc = json['results'][0]['arcs']
+        let arc = json['results'][0][0]['arcs']
         for (let i = 0; i < arc.length; i++) {
             try {
                 arc[i]["properties"]["directed"] = true
@@ -30,7 +30,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         }
 
         // set json's edges from/to vertices
-        let edge = json['results'][0]['edges']
+        let edge = json['results'][0][0]['edges']
         for (let i = 0; i < edge.length; i++) {
             try {
                 edge[i]["from"] = edge[i]["ends"][0];
@@ -46,7 +46,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         let edges = new vis.DataSet($.extend(arc, edge));
 
         // defaults props
-        let props = json['results'][0]['properties'];
+        let props = json['results'][0][0]['properties'];
 
         // create a network
         let container = document.getElementById("mynetwork");
@@ -62,6 +62,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
 
         // options pour l'initialisation de visnetwork
         let options = {
+			autoResize: true,
+			height: '100%',
+  			width: '100%',
             nodes: {
                 color: {},
                 scaling: {
@@ -509,7 +512,7 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
         function changesLoop() {
 
             $.getJSON("/api/og/og.GraphService/changes/" + gid + "/" + lastChangeIndex, function (json1) {
-                processChanges(json1['results'][0], network, visnetwork, props)
+                processChanges(json1['results'][0][0], network, visnetwork, props)
                 setTimeout(changesLoop, refreshRate);
             });
         }
@@ -599,9 +602,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                             let n = network.getEdge(json[change]['id'])
                             //get and process properties
                             if (n != undefined) {
-                                for (let a in jsoncomplet['results'][0]["edges"]) {
-                                    if (jsoncomplet['results'][0]["edges"][a]["id"] == json[change]['id']) {
-                                        n.params = jsoncomplet['results'][0]["edges"][a]["properties"]
+                                for (let a in jsoncomplet['results'][0][0]["edges"]) {
+                                    if (jsoncomplet['results'][0][0]["edges"][a]["id"] == json[change]['id']) {
+                                        n.params = jsoncomplet['results'][0][0]["edges"][a]["properties"]
                                         n.processParams(visnetwork, network)
                                     }
                                 }
@@ -642,9 +645,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                             let n = network.getEdge(json[change]['id'])
                             //get and process properties
                             if (n != undefined) {
-                                for (let a in jsoncomplet['results'][0]["arcs"]) {
-                                    if (jsoncomplet['results'][0]["arcs"][a]["id"] == json[change]['id']) {
-                                        n.params = jsoncomplet['results'][0]["arcs"][a]["properties"]
+                                for (let a in jsoncomplet['results'][0][0]["arcs"]) {
+                                    if (jsoncomplet['results'][0][0]["arcs"][a]["id"] == json[change]['id']) {
+                                        n.params = jsoncomplet['results'][0][0]["arcs"][a]["properties"]
                                         n.processParams(visnetwork, network)
                                     }
                                 }
@@ -659,9 +662,9 @@ $.getJSON("/api/og/og.GraphService/get/" + gid, function (json) {
                             let n = network.getNode(json[change]['id']);
                             //get and process properties
                             if (n != undefined) {
-                                for (let a in jsoncomplet['results'][0]["vertices"]) {
-                                    if (jsoncomplet['results'][0]["vertices"][a]["id"] == json[change]['id']) {
-                                        n.params = jsoncomplet['results'][0]["vertices"][a]["properties"];
+                                for (let a in jsoncomplet['results'][0][0]["vertices"]) {
+                                    if (jsoncomplet['results'][0][0]["vertices"][a]["id"] == json[change]['id']) {
+                                        n.params = jsoncomplet['results'][0][0]["vertices"][a]["properties"];
                                         n.processParams(visnetwork, network);
                                     }
                                 }
