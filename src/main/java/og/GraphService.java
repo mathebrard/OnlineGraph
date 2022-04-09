@@ -474,10 +474,8 @@ public class GraphService extends Service {
 			int date = g.nbChanges();
 
 			while (true) {
-				g.forEachChange(date, c -> {
-					reply(tm, c);
-				});
-
+				g.forEachChange(date, c -> reply(tm, c));
+				date = g.nbChanges();
 				Threads.sleep(1);
 			}
 		}
