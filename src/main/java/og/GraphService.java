@@ -437,9 +437,9 @@ public class GraphService extends Service {
 			var g = getGraph(gid);
 			var gi = new GraphInfo();
 			gi.nbChanges = g.nbChanges();
-			gi.arcs = lookupOperation(arcs.class).f(gid);
-			gi.edges = lookupOperation(edges.class).f(gid);
-			gi.vertices = lookupOperation(vertices.class).f(gid);
+			gi.arcs = lookup(arcs.class).f(gid);
+			gi.edges = lookup(edges.class).f(gid);
+			gi.vertices = lookup(vertices.class).f(gid);
 			gi.properties = g.getProperties();
 			Cout.debugSuperVisible(gi.properties);
 			return gi;
@@ -464,26 +464,25 @@ public class GraphService extends Service {
 			var pml = (OperationParameterList) tm.content;
 			
 			if (pml.isEmpty()) 
-				throw new IllegalArgumentException("missing graph name, available graphs: " + lookupOperation(listGraphs.class).f() );
+				throw new IllegalArgumentException("missing graph name, available graphs: " + lookup(listGraphs.class).f() );
 
 			String gid = (String) pml.get(0);
-			
-			
-			
 			var g = getGraph(gid);
 
 			// send the full graph initially
 			var gi = new GraphInfo();
 			gi.nbChanges = g.nbChanges();
-			gi.arcs = lookupOperation(arcs.class).f(gid);
-			gi.edges = lookupOperation(edges.class).f(gid);
-			gi.vertices = lookupOperation(vertices.class).f(gid);
+			gi.arcs = lookup(arcs.class).f(gid);
+			gi.edges = lookup(edges.class).f(gid);
+			gi.vertices = lookup(vertices.class).f(gid);
 			gi.properties = g.getProperties();
-			Cout.debugSuperVisible(gi.properties);
+//			Cout.debugSuperVisible(gi.properties);
+			System.err.println("sending graph");
 			reply(tm, gi);
 			int date = g.nbChanges();
 
 			while (true) {
+				System.err.println(g.nbChanges() +  "changes");
 				g.forEachChange(date, c -> reply(tm, c));
 				date = g.nbChanges();
 				Threads.sleep(1);
@@ -573,7 +572,7 @@ public class GraphService extends Service {
 
 	public class graphviz extends TypedInnerOperation {
 		public byte[] f(String gid, String command, String outputFormat) {
-			var dot = lookupOperation(toDOT.class).f(gid);
+			var dot = lookup(toDOT.class).f(gid);
 			return GraphViz.toBytes(COMMAND.valueOf(command), dot, OUTPUT_FORMAT.valueOf(outputFormat));
 		}
 
@@ -603,7 +602,7 @@ public class GraphService extends Service {
 
 	public class create extends TypedInnerOperation {
 		public void f(String gid) throws NoSuchMethodException, SecurityException {
-			lookupOperation(create2.class).f(gid, HashGraph.class.getName());
+			lookup(create2.class).f(gid, HashGraph.class.getName());
 		}
 
 		@Override
@@ -701,7 +700,7 @@ public class GraphService extends Service {
 
 	public class history extends TypedInnerOperation {
 		public List<Change> history(String gid) {
-			return lookupOperation(changes.class).f(gid, 0);
+			return lookup(changes.class).f(gid, 0);
 		}
 
 		@Override
