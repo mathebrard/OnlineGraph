@@ -21,6 +21,7 @@ import com.paypal.digraph.parser.GraphParser;
 import idawi.Component;
 import idawi.InnerOperation;
 import idawi.MessageQueue;
+import idawi.OperationParameterList;
 import idawi.Service;
 import idawi.TypedInnerOperation;
 import idawi.service.rest.WebServer;
@@ -113,6 +114,7 @@ public class GraphService extends Service {
 		registerOperation(new edges());
 		registerOperation(new edgesIDsRAW());
 		registerOperation(new get());
+		registerOperation(new get2());
 		registerOperation(new getGraphInfo());
 		registerOperation(new graphviz());
 		registerOperation(new history());
@@ -459,7 +461,15 @@ public class GraphService extends Service {
 		@Override
 		public void impl(MessageQueue in) throws Throwable {
 			var tm = in.poll_sync();
-			String gid = (String) tm.content;
+			var pml = (OperationParameterList) tm.content;
+			
+			if (pml.isEmpty()) 
+				throw new IllegalArgumentException("missing graph name, available graphs: " + lookupOperation(listGraphs.class).f() );
+
+			String gid = (String) pml.get(0);
+			
+			
+			
 			var g = getGraph(gid);
 
 			// send the full graph initially
