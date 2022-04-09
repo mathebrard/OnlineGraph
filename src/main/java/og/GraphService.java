@@ -19,8 +19,11 @@ import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 
 import idawi.Component;
+import idawi.InnerOperation;
+import idawi.MessageQueue;
 import idawi.Service;
 import idawi.TypedInnerOperation;
+import idawi.service.rest.WebServer;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
@@ -41,6 +44,7 @@ import toools.io.Cout;
 import toools.io.JavaResource;
 import toools.io.file.Directory;
 import toools.reflect.Clazz;
+import toools.thread.Threads;
 
 public class GraphService extends Service {
 
@@ -48,6 +52,7 @@ public class GraphService extends Service {
 
 	static {
 		baseDirectory.ensureExists();
+		WebServer.friendyName_service.put("graph", GraphService.class);
 	}
 
 	Map<String, Graph> m = new HashMap<>();
@@ -125,6 +130,7 @@ public class GraphService extends Service {
 		registerOperation(new vertices());
 		registerOperation(new verticesIDs());
 		registerOperation(new verticesIDsRAW());
+		registerOperation(new countGraphs());
 	}
 
 	public Graph getGraph(String gid) {
@@ -157,6 +163,17 @@ public class GraphService extends Service {
 		public String getDescription() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+	}
+
+	public class countGraphs extends TypedInnerOperation {
+		public int f() {
+			return m.size();
+		}
+
+		@Override
+		public String getDescription() {
+			return "tells the number of graphs in the service";
 		}
 	}
 
@@ -227,15 +244,14 @@ public class GraphService extends Service {
 
 	public class addEdge extends TypedInnerOperation {
 		public long f(String graphID, long from, long to) {
-			var e = getGraph(graphID).arcs.add(from, to);
-//		Thread
+			var g = getGraph(graphID);
+			var e = g.arcs.add(from, to);
 			return e;
 		}
 
 		@Override
 		public String getDescription() {
-			// TODO Auto-generated method stub
-			return null;
+			return "add an edge and returns the ID of the new edge";
 		}
 	}
 
@@ -290,8 +306,7 @@ public class GraphService extends Service {
 
 		@Override
 		public String getDescription() {
-			// TODO Auto-generated method stub
-			return null;
+			return "get the list of arcs";
 		}
 	}
 
@@ -420,9 +435,9 @@ public class GraphService extends Service {
 			var g = getGraph(gid);
 			var gi = new GraphInfo();
 			gi.nbChanges = g.nbChanges();
-			gi.arcs = lookup(arcs.class).f(gid);
-			gi.edges = lookup(edges.class).f(gid);
-			gi.vertices = lookup(vertices.class).f(gid);
+			gi.arcs = lookupOperation(arcs.class).f(gid);
+			gi.edges = lookupOperation(edges.class).f(gid);
+			gi.vertices = lookupOperation(vertices.class).f(gid);
 			gi.properties = g.getProperties();
 			Cout.debugSuperVisible(gi.properties);
 			return gi;
@@ -430,8 +445,41 @@ public class GraphService extends Service {
 
 		@Override
 		public String getDescription() {
-			// TODO Auto-generated method stub
-			return null;
+			return "gets the content of the graph";
+		}
+	}
+
+	public class get2 extends InnerOperation {
+
+		@Override
+		public String getDescription() {
+			return "get the content, then all the changes";
+		}
+
+		@Override
+		public void impl(MessageQueue in) throws Throwable {
+			var tm = in.poll_sync();
+			String gid = (String) tm.content;
+			var g = getGraph(gid);
+
+			// send the full graph initially
+			var gi = new GraphInfo();
+			gi.nbChanges = g.nbChanges();
+			gi.arcs = lookupOperation(arcs.class).f(gid);
+			gi.edges = lookupOperation(edges.class).f(gid);
+			gi.vertices = lookupOperation(vertices.class).f(gid);
+			gi.properties = g.getProperties();
+			Cout.debugSuperVisible(gi.properties);
+			reply(tm, gi);
+			int date = g.nbChanges();
+
+			while (true) {
+				g.forEachChange(date, c -> {
+					reply(tm, c);
+				});
+
+				Threads.sleep(1);
+			}
 		}
 	}
 
@@ -517,7 +565,7 @@ public class GraphService extends Service {
 
 	public class graphviz extends TypedInnerOperation {
 		public byte[] f(String gid, String command, String outputFormat) {
-			var dot = lookup(toDOT.class).f(gid);
+			var dot = lookupOperation(toDOT.class).f(gid);
 			return GraphViz.toBytes(COMMAND.valueOf(command), dot, OUTPUT_FORMAT.valueOf(outputFormat));
 		}
 
@@ -547,7 +595,7 @@ public class GraphService extends Service {
 
 	public class create extends TypedInnerOperation {
 		public void f(String gid) throws NoSuchMethodException, SecurityException {
-			lookup(create2.class).f(gid, HashGraph.class.getName());
+			lookupOperation(create2.class).f(gid, HashGraph.class.getName());
 		}
 
 		@Override
@@ -645,7 +693,7 @@ public class GraphService extends Service {
 
 	public class history extends TypedInnerOperation {
 		public List<Change> history(String gid) {
-			return lookup(changes.class).f(gid, 0);
+			return lookupOperation(changes.class).f(gid, 0);
 		}
 
 		@Override

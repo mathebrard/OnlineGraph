@@ -9,7 +9,7 @@ import toools.thread.Threads;
 
 public class RunGraphServer {
 	public static void main(String[] args) throws IOException {
-		var port = args.length == 0 ? 8082 : Integer.parseInt(args[0]);
+		var port = args.length == 0 ? 8081 : Integer.parseInt(args[0]);
 		Component c = new Component();
 		c.name = "og";
 		c.lookup(ServiceManager.class).ensureStarted(GraphService.class);
