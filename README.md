@@ -1,6 +1,14 @@
 # OnlineGraph
-OnlineGraph is a ***cloud graph library***. 
-It consists of a (HTTP) server which exposes a set of (Web) services for the ***storage***, the ***manipulation*** and the ***graphical*** rendering of graphs.
+OnlineGraph is a ***decentralized mixed graph library***. 
+OnlineGraph is designed and developed as a specific application-level service of the Idawi middleware.
+It implements a decentralized application distributed over a multi-hop overlay network of components. In this application dedicated to the storage, edition and graphical rendering of graphs, graphs are partitioned over the set of components. The application imposes no  allocation strategy: it is left to the application. A graph may be entirely allocated on one specific component, or a subset of the components forming the application, or all of them.
+
+Any component in the application can expose graphs to the Web---not just its component-local part, but all the parts it has access to in the overlay networks. Graphs are then accessible to clients through a set of Web servers exposing services. 
+
+A component-local part of a partitioned graph consists of three correlated sets: the ***vertex set***, the ***arc set***, and the ***edge set***. These sets can store the elements they contain in RAM or on disk, thereby enabling persistence. In these sets, graph elements are represented by a 64-bit numerical ID, and they can be associated to any data.
+This graph data structures can be used out of the distributed infrastructure, just any graph library.
+
+
 
 OnlineGraph is developed within the [COATI Research group](https://team.inria.fr/coati/) at [Inria Sophia Antipolis](https://www.inria.fr/en/centre-inria-sophia-antipolis-mediterranee) and [I3S Computer Science Laboratory](https://www.i3s.unice.fr/) of Université Côte d'Azur](https://univ-cotedazur.eu/). Its development team is composed of:
 - [Luc Hogie](https://www.i3s.unice.fr/~hogie/) (project leader)
