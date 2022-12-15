@@ -12,8 +12,10 @@ This graph data structures can be used out of the distributed infrastructure, ju
 
 OnlineGraph is developed within the [COATI Research group](https://team.inria.fr/coati/) at [Inria Sophia Antipolis](https://www.inria.fr/en/centre-inria-sophia-antipolis-mediterranee) and [I3S Computer Science Laboratory](https://www.i3s.unice.fr/) of Université Côte d'Azur](https://univ-cotedazur.eu/). Its development team is composed of:
 - [Luc Hogie](https://www.i3s.unice.fr/~hogie/) (project leader)
-- Fedi Ghalloussi (Bachelor's degree intern)
+- Khadidiatou Dieye (Master's degree intern)
+- Safouane Ouazri (Master's degree intern)
 - Antonin Lacomme (Master's degree intern)
+- Fedi Ghalloussi (Bachelor's degree intern)
 
 ## Installation
 ### As a graph server
