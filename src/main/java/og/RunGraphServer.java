@@ -10,8 +10,7 @@ import toools.thread.Threads;
 public class RunGraphServer {
 	public static void main(String[] args) throws IOException {
 		var port = args.length == 0 ? 8081 : Integer.parseInt(args[0]);
-		Component c = new Component("og");
-		new ServiceManager(c);
+		Component c = new Component("gw");
 		c.lookup(ServiceManager.class).ensureStarted(GraphService.class);
 		var gs = c.lookup(GraphService.class);
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {

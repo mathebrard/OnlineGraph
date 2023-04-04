@@ -58,7 +58,8 @@ public class GraphService extends Service {
 
 	public GraphService(Component component) {
 		super(component);
-
+		webShortCut("og");
+		
 		baseDirectory.listDirectories().forEach(d -> {
 			m.put(d.getName(), new FlatOnDiskDiskGraph(d));
 		});
