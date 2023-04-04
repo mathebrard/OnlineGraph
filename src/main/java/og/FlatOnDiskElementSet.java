@@ -16,7 +16,7 @@ public class FlatOnDiskElementSet extends OnDiskElementSet {
 
 	public FlatOnDiskElementSet(Directory d) {
 		super(d);
-		this.nbEntries = new Cache<Long>(null, "nbEntries", d, () -> 0L);
+		this.nbEntries = new Cache<Long>(null, Integer.MAX_VALUE, "nbEntries", d, () -> 0L);
 	}
 
 	@Override

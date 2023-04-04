@@ -38,9 +38,7 @@ import og.dynamics.GridEvolver;
 import og.dynamics.Grow;
 import og.dynamics.RandomEvolver;
 import og.dynamics.TreeEvolver;
-import toools.gui.GraphViz;
-import toools.gui.GraphViz.COMMAND;
-import toools.gui.GraphViz.OUTPUT_FORMAT;
+import toools.exceptions.NotYetImplementedException;
 import toools.io.Cout;
 import toools.io.JavaResource;
 import toools.io.file.Directory;
@@ -462,9 +460,10 @@ public class GraphService extends Service {
 		public void impl(MessageQueue in) throws Throwable {
 			var tm = in.poll_sync();
 			var pml = (OperationParameterList) tm.content;
-			
-			if (pml.isEmpty()) 
-				throw new IllegalArgumentException("missing graph name, available graphs: " + lookup(listGraphs.class).f() );
+
+			if (pml.isEmpty())
+				throw new IllegalArgumentException(
+						"missing graph name, available graphs: " + lookup(listGraphs.class).f());
 
 			String gid = (String) pml.get(0);
 			var g = getGraph(gid);
@@ -482,7 +481,7 @@ public class GraphService extends Service {
 			int date = g.nbChanges();
 
 			while (true) {
-				System.err.println(g.nbChanges() +  "changes");
+				System.err.println(g.nbChanges() + "changes");
 				g.forEachChange(date, c -> reply(tm, c));
 				date = g.nbChanges();
 				Threads.sleep(1);
@@ -573,7 +572,7 @@ public class GraphService extends Service {
 	public class graphviz extends TypedInnerOperation {
 		public byte[] f(String gid, String command, String outputFormat) {
 			var dot = lookup(toDOT.class).f(gid);
-			return GraphViz.toBytes(COMMAND.valueOf(command), dot, OUTPUT_FORMAT.valueOf(outputFormat));
+			throw new NotYetImplementedException();
 		}
 
 		@Override

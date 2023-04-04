@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.lhogie</groupId>
 	<artifactId>onlinegraph</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>Online Graph</name>
 	<description>A cloud graph library</description>
 	<url>https://github.com/lhogie/onlinegraph</url>
@@ -38,8 +38,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.github.lhogie</groupId>
+			<artifactId>toools</artifactId>
+			<version>0.0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.lhogie</groupId>
 			<artifactId>idawi</artifactId>
-			<version>0.0.6.1</version>
+			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.paypal.digraph</groupId>
@@ -154,7 +159,8 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin><!-- Plugin to publish on Maven Central -->
+					<plugin>
+						<!-- Plugin to publish on Maven Central -->
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
 						<version>1.6.8</version>
