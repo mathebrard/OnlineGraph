@@ -19,12 +19,12 @@ import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
 
 import idawi.Component;
-import idawi.InnerOperation;
-import idawi.MessageQueue;
+import idawi.InnerClassOperation;
 import idawi.OperationParameterList;
 import idawi.Service;
-import idawi.TypedInnerOperation;
-import idawi.service.rest.WebServer;
+import idawi.TypedInnerClassOperation;
+import idawi.messaging.MessageQueue;
+import idawi.service.web.WebService;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
@@ -51,7 +51,7 @@ public class GraphService extends Service {
 
 	static {
 		baseDirectory.ensureExists();
-		WebServer.friendyName_service.put("graph", GraphService.class);
+		WebService.friendyName_service.put("graph", GraphService.class);
 	}
 
 	Map<String, Graph> m = new HashMap<>();
@@ -142,7 +142,7 @@ public class GraphService extends Service {
 		return g;
 	}
 
-	public class gnm extends TypedInnerOperation {
+	public class gnm extends TypedInnerClassOperation {
 		public void f(String graphID, int n, int m) {
 			GNM.gnm(getGraph(graphID), n, m);
 		}
@@ -154,7 +154,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class listGraphs extends TypedInnerOperation {
+	public class listGraphs extends TypedInnerClassOperation {
 		public Set<String> f() {
 			return new TreeSet<>(m.keySet());
 		}
@@ -166,7 +166,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class countGraphs extends TypedInnerOperation {
+	public class countGraphs extends TypedInnerClassOperation {
 		public int f() {
 			return m.size();
 		}
@@ -177,7 +177,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class addRandomVertex extends TypedInnerOperation {
+	public class addRandomVertex extends TypedInnerClassOperation {
 		public long f(String graphID) {
 			return getGraph(graphID).vertices.add();
 		}
@@ -189,7 +189,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class addVertices extends TypedInnerOperation {
+	public class addVertices extends TypedInnerClassOperation {
 		public void f(String graphID, LongSet s) {
 			s.forEach((long u) -> getGraph(graphID).vertices.add(u));
 		}
@@ -201,7 +201,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class containsEdges extends TypedInnerOperation {
+	public class containsEdges extends TypedInnerClassOperation {
 		public String getVertexProperty(String graphID, long u, String name) {
 			return getGraph(graphID).vertices.get(u, "properties", () -> new HashMap<String, String>()).get(name);
 		}
@@ -213,7 +213,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class setVertexProperty extends TypedInnerOperation {
+	public class setVertexProperty extends TypedInnerClassOperation {
 		public void f(String graphID, long u, String name, String value) {
 			getGraph(graphID).vertices.alter(u, "properties", () -> new HashMap<String, String>(),
 					(Map<String, String> p) -> p.put(name, value));
@@ -226,7 +226,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class removeVertex extends TypedInnerOperation {
+	public class removeVertex extends TypedInnerClassOperation {
 		public void f(String graphID, LongList v) {
 			var g = getGraph(graphID);
 
@@ -242,7 +242,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class addEdge extends TypedInnerOperation {
+	public class addEdge extends TypedInnerClassOperation {
 		public long f(String graphID, long from, long to) {
 			var g = getGraph(graphID);
 			var e = g.arcs.add(from, to);
@@ -255,7 +255,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class removeEdge extends TypedInnerOperation {
+	public class removeEdge extends TypedInnerClassOperation {
 		public void f(String graphID, LongList e) {
 			var g = getGraph(graphID);
 
@@ -271,7 +271,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class showInVis extends TypedInnerOperation {
+	public class showInVis extends TypedInnerClassOperation {
 		public byte[] f(String graphID) {
 			var g = getGraph(graphID);
 			var html = new JavaResource(getClass(), "display/graph.html").getByteArray();
@@ -285,7 +285,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class arcs extends TypedInnerOperation {
+	public class arcs extends TypedInnerClassOperation {
 		public List<ArcInfo> f(String gid) {
 			var g = getGraph(gid);
 			List<ArcInfo> edges = new ArrayList<>();
@@ -310,7 +310,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class edges extends TypedInnerOperation {
+	public class edges extends TypedInnerClassOperation {
 		public List<EdgeInfo> f(String gid) {
 			var g = getGraph(gid);
 			List<EdgeInfo> edges = new ArrayList<>();
@@ -359,7 +359,7 @@ public class GraphService extends Service {
 		int nbChanges;
 	}
 
-	public class verticesIDs extends TypedInnerOperation {
+	public class verticesIDs extends TypedInnerClassOperation {
 		public LongList f(String gid) {
 			var g = getGraph(gid);
 			LongList l = new LongArrayList();
@@ -379,7 +379,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class verticesIDsRAW extends TypedInnerOperation {
+	public class verticesIDsRAW extends TypedInnerClassOperation {
 		public byte[] f(String gid) throws IOException {
 			var g = getGraph(gid);
 			return g.vertices.ids();
@@ -392,7 +392,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class edgesIDsRAW extends TypedInnerOperation {
+	public class edgesIDsRAW extends TypedInnerClassOperation {
 		public byte[] f(String gid) throws IOException {
 			var g = getGraph(gid);
 			return g.arcs.ids();
@@ -405,7 +405,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class vertices extends TypedInnerOperation {
+	public class vertices extends TypedInnerClassOperation {
 		public List<VertexInfo> f(String gid) {
 			var g = getGraph(gid);
 			List<VertexInfo> vertices = new ArrayList<>();
@@ -429,7 +429,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class get extends TypedInnerOperation {
+	public class get extends TypedInnerClassOperation {
 
 		public GraphInfo get(String gid) {
 			var g = getGraph(gid);
@@ -449,7 +449,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class get2 extends InnerOperation {
+	public class get2 extends InnerClassOperation {
 
 		@Override
 		public String getDescription() {
@@ -493,7 +493,7 @@ public class GraphService extends Service {
 		long nbVertices, nbArcs;
 	}
 
-	public class size extends TypedInnerOperation {
+	public class size extends TypedInnerClassOperation {
 		public GraphSize f(String gid) {
 			var g = getGraph(gid);
 			var s = new GraphSize();
@@ -509,7 +509,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class listProblems extends TypedInnerOperation {
+	public class listProblems extends TypedInnerClassOperation {
 		public List<String> f(String gid) {
 			return getGraph(gid).listProblems();
 		}
@@ -521,7 +521,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class containsVertex extends TypedInnerOperation {
+	public class containsVertex extends TypedInnerClassOperation {
 		public BooleanList f(String gid, LongList s) {
 			return ElementSet.contains(getGraph(gid).vertices, s);
 		}
@@ -533,7 +533,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class containsVertices extends TypedInnerOperation {
+	public class containsVertices extends TypedInnerClassOperation {
 		public BooleanList f(String gid, LongList s) {
 			return ElementSet.contains(getGraph(gid).vertices, s);
 		}
@@ -545,7 +545,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class containsArcs extends TypedInnerOperation {
+	public class containsArcs extends TypedInnerClassOperation {
 		public BooleanList containsArcs(String gid, LongList s) {
 			return ElementSet.contains(getGraph(gid).arcs, s);
 		}
@@ -557,7 +557,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class toDOT extends TypedInnerOperation {
+	public class toDOT extends TypedInnerClassOperation {
 		public String f(String gid) {
 			return og.algo.io.GraphViz.toDOT(getGraph(gid));
 		}
@@ -569,7 +569,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class graphviz extends TypedInnerOperation {
+	public class graphviz extends TypedInnerClassOperation {
 		public byte[] f(String gid, String command, String outputFormat) {
 			var dot = lookup(toDOT.class).f(gid);
 			throw new NotYetImplementedException();
@@ -582,7 +582,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class getGraphInfo extends TypedInnerOperation {
+	public class getGraphInfo extends TypedInnerClassOperation {
 		public Map getGraphInfo(String gid) {
 			var g = getGraph(gid);
 			var m = new HashMap<>();
@@ -599,7 +599,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class create extends TypedInnerOperation {
+	public class create extends TypedInnerClassOperation {
 		public void f(String gid) throws NoSuchMethodException, SecurityException {
 			lookup(create2.class).f(gid, HashGraph.class.getName());
 		}
@@ -611,7 +611,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class create2 extends TypedInnerOperation {
+	public class create2 extends TypedInnerClassOperation {
 		public void f(String gid, String className) throws NoSuchMethodException, SecurityException {
 			var g = m.get(gid);
 
@@ -645,7 +645,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class pickRandomVertex extends TypedInnerOperation {
+	public class pickRandomVertex extends TypedInnerClassOperation {
 		public LongSet pickRandomVertex(String gid, long n) {
 			LongSet s = new LongOpenHashSet();
 			var g = getGraph(gid);
@@ -664,7 +664,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class pickRandomEdge extends TypedInnerOperation {
+	public class pickRandomEdge extends TypedInnerClassOperation {
 		public LongSet pickRandomEdge(String gid, long n) {
 			LongSet s = new LongOpenHashSet();
 			var g = getGraph(gid);
@@ -683,7 +683,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class changes extends TypedInnerOperation {
+	public class changes extends TypedInnerClassOperation {
 		public List<Change> f(String gid, int since) {
 			List<Change> l = new ArrayList<>();
 			getGraph(gid).forEachChange(since, c -> l.add(c));
@@ -697,7 +697,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class history extends TypedInnerOperation {
+	public class history extends TypedInnerClassOperation {
 		public List<Change> history(String gid) {
 			return lookup(changes.class).f(gid, 0);
 		}
@@ -712,7 +712,7 @@ public class GraphService extends Service {
 	/*
 	 * Uses https://github.com/paypal/digraph-parser
 	 */
-	public class importDot extends TypedInnerOperation {
+	public class importDot extends TypedInnerClassOperation {
 		public String importDot(String gid, byte[] dot) {
 			int n = 0;
 			Cout.debugSuperVisible(n++);
@@ -737,7 +737,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class importEdges extends TypedInnerOperation {
+	public class importEdges extends TypedInnerClassOperation {
 		public String importEdges(String gid, byte[] edges) throws IOException {
 			importLines(gid, edges, (g, newLine) -> {
 				var t = newLine.trim().split("[^0-9]+");
@@ -756,7 +756,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class imporADJ extends TypedInnerOperation {
+	public class imporADJ extends TypedInnerClassOperation {
 		public long imporADJ(String gid, byte[] edges) throws IOException {
 			AtomicLong nbEdges = new AtomicLong();
 
@@ -799,7 +799,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class bfs extends TypedInnerOperation {
+	public class bfs extends TypedInnerClassOperation {
 		public BFS.BFSResult bfs(String graphID, long source, long maxDistance, long maxNbVerticesVisited) {
 			return BFS.bfs(getGraph(graphID), source, maxDistance, maxNbVerticesVisited);
 		}
@@ -811,7 +811,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class randomWalk extends TypedInnerOperation {
+	public class randomWalk extends TypedInnerClassOperation {
 		public LongList randomWalk(String graphID, long source, long maxDistance) {
 			return RandomWalk.randomWalk(getGraph(graphID), source, maxDistance);
 		}
@@ -823,7 +823,7 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class clusteringCoefficient extends TypedInnerOperation {
+	public class clusteringCoefficient extends TypedInnerClassOperation {
 		public double clusteringCoefficient(String graphID, long v) {
 			return CC.clusteringCoefficient(getGraph(graphID), v);
 		}
