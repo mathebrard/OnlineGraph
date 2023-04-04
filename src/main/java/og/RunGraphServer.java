@@ -11,6 +11,7 @@ public class RunGraphServer {
 	public static void main(String[] args) throws IOException {
 		var port = args.length == 0 ? 8081 : Integer.parseInt(args[0]);
 		Component c = new Component("og");
+		new ServiceManager(c);
 		c.lookup(ServiceManager.class).ensureStarted(GraphService.class);
 		var gs = c.lookup(GraphService.class);
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -22,7 +23,7 @@ public class RunGraphServer {
 		var rest = c.lookup(WebService.class);
 		rest.startHTTPServer(port);
 		System.out.println("URL: http://localhost:" + port + "/api/" + c);
-		System.out.println("Website URL: http://localhost:" + port + "/web/og/display/ls.html");
+		System.out.println("Website URL: http://localhost:" + port + "/frontend/og/display/ls.html");
 		Threads.sleepForever();
 	}
 }
