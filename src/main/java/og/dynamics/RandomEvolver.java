@@ -73,7 +73,6 @@ public class RandomEvolver extends GraphDynamics {
 			var p = g.vertices.get(u, "properties", () -> new HashMap<String, String>());
 			double pp = 0.5;
 
-			var l = VertexProperties.location.random();
 			p.put(VertexProperties.location.getName(), VertexProperties.location.random());
 
 			if (Math.random() < pp)
