@@ -70,6 +70,12 @@ public class VertexProperties {
 	};
 
 	public static Property location = new Property() {
+		double x, y, z;
+
+		@Override
+		public String toString() {
+			return x + "," + y + "," + z;
+		}
 
 		@Override
 		public String getName() {
@@ -78,12 +84,12 @@ public class VertexProperties {
 
 		@Override
 		public String getDefaultValue() {
-			return "";
+			return "0,0,0";
 		}
 
 		@Override
 		public boolean accept(String value) {
-			return value.matches("[0-9]+,[0-9]+");
+			return value.matches(".*+,.*+,.*+");
 		}
 
 		@Override
@@ -93,9 +99,8 @@ public class VertexProperties {
 
 		@Override
 		public String random() {
-			return Math.random() + "," + Math.random();
+			return Math.random() + "," + Math.random() + "," + Math.random();
 		}
-
 	};
 
 	public static void forEach(Consumer<Property> p) {
