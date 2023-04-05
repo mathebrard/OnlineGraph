@@ -26,7 +26,7 @@ export function initGraph(data) {
         .d3Force('collide', d3.forceCollide(Graph.nodeRelSize()))
         .d3Force('box', () => {
             const { nodes, links } = Graph.graphData();
-            const CUBE_HALF_SIDE = Graph.nodeRelSize() * 20 * 0.5;
+            const CUBE_HALF_SIDE = Graph.nodeRelSize() * 30 * 0.5;
 
             nodes.forEach(node => {
                 const x = node.x || 0, y = node.y || 0, z = node.z || 0;
