@@ -22,7 +22,7 @@
 	<ul id="graphList">
 	</ul>
 	<script>
-		$.getJSON("/api/og/og.GraphService/listGraphs", function (json) {
+		$.getJSON("/api////og.GraphService/listGraphs?what=content", function (json) {
 			json['results'][0][0].forEach((graph) => {
 				var ul = document.getElementById("graphList");
 				ul.style.paddingLeft = "4em";
