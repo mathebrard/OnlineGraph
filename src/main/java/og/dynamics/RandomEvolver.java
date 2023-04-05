@@ -8,7 +8,6 @@ import og.ElementProperties;
 import og.Graph;
 import og.GraphDynamics;
 import og.VertexProperties;
-import toools.io.Cout;
 import toools.thread.Threads;
 
 public class RandomEvolver extends GraphDynamics {
@@ -74,11 +73,8 @@ public class RandomEvolver extends GraphDynamics {
 			var p = g.vertices.get(u, "properties", () -> new HashMap<String, String>());
 			double pp = 0.5;
 
-			if (Math.random() < 0.1) {
-				var l = VertexProperties.location.random();
-				Cout.debugSuperVisible("setting location " + l + " to vertex " + u);
-				p.put(VertexProperties.location.getName(), VertexProperties.location.random());
-			}
+			var l = VertexProperties.location.random();
+			p.put(VertexProperties.location.getName(), VertexProperties.location.random());
 
 			if (Math.random() < pp)
 				p.put(VertexProperties.scale.getName(), VertexProperties.scale.random());
