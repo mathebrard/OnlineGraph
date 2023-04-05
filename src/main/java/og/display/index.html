@@ -15,7 +15,16 @@
 <body>
 <div id="3d-graph"></div>
 
+<script src="temp/script.js"></script>
+    <script src="temp/listenIdawi.js"></script>
+    <script src="temp/classes.js"></script>
 <script>
+  var observable = new Observable();
+
+  var ttemp = parseData(
+    idawiObservable("http://localhost:8081/api////og.GraphService/get/randomGraph?what=content", observable));
+
+  console.log(ttemp);
     const N = 50;
     const nodes = [...Array(N).keys()].map(() => ({
       // Initial velocity in random direction
