@@ -64,6 +64,13 @@ public class GraphService extends Service {
 		});
 
 		var randomGraph = new HashGraph();
+		
+		randomGraph.vertices.forEach(u -> {
+			var p = randomGraph.vertices.get(u, "properties", () -> new HashMap<>());
+			p.put(VertexProperties.location.getName(), VertexProperties.location.random());
+			return true;
+		});
+		
 		new RandomEvolver(randomGraph);
 		m.put("randomGraph", randomGraph);
 
