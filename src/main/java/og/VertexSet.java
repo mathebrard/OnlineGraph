@@ -20,7 +20,6 @@ public class VertexSet extends GraphElementSet {
 			set(u, "inArcs", new LongOpenHashSet());
 			set(u, "edges", new LongOpenHashSet());
 			set(u, "outVertices", new LongOpenHashSet());
-			set(u, "properties", new LongOpenHashSet());
 			var i = new VertexInfo();
 			i.id = u;
 			graph.commitNewChange(new Change.AddVertex(i));
