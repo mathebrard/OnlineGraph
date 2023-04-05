@@ -58,7 +58,7 @@ public class GraphService extends Service {
 
 	public GraphService(Component component) {
 		super(component);
-		
+
 		baseDirectory.listDirectories().forEach(d -> {
 			m.put(d.getName(), new FlatOnDiskDiskGraph(d));
 		});
@@ -127,10 +127,16 @@ public class GraphService extends Service {
 		registerOperation(new showInVis());
 		registerOperation(new size());
 		registerOperation(new toDOT());
-		registerOperation(new vertices());
+		registerOperation(new allVertices());
+		registerOperation(new someVertices());
 		registerOperation(new verticesIDs());
 		registerOperation(new verticesIDsRAW());
 		registerOperation(new countGraphs());
+	}
+
+	@Override
+	public String webShortcut() {
+		return "og";
 	}
 
 	public Graph getGraph(String gid) {
@@ -405,7 +411,33 @@ public class GraphService extends Service {
 		}
 	}
 
-	public class vertices extends TypedInnerClassOperation {
+	public class someVertices extends TypedInnerClassOperation {
+		public List<VertexInfo> f(String gid, LongList ids) {
+			var g = getGraph(gid);
+			List<VertexInfo> vertices = new ArrayList<>();
+
+			g.vertices.forEach(v -> {
+				if (ids.contains(v)) {
+					var e = new VertexInfo();
+					e.id = v;
+					e.properties = g.vertices.get(v, "properties", () -> null);
+					vertices.add(e);
+				}
+
+				return true;
+			});
+
+			return vertices;
+		}
+
+		@Override
+		public String getDescription() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
+
+	public class allVertices extends TypedInnerClassOperation {
 		public List<VertexInfo> f(String gid) {
 			var g = getGraph(gid);
 			List<VertexInfo> vertices = new ArrayList<>();
@@ -437,7 +469,7 @@ public class GraphService extends Service {
 			gi.nbChanges = g.nbChanges();
 			gi.arcs = lookup(arcs.class).f(gid);
 			gi.edges = lookup(edges.class).f(gid);
-			gi.vertices = lookup(vertices.class).f(gid);
+			gi.vertices = lookup(allVertices.class).f(gid);
 			gi.properties = g.getProperties();
 			Cout.debugSuperVisible(gi.properties);
 			return gi;
@@ -473,7 +505,7 @@ public class GraphService extends Service {
 			gi.nbChanges = g.nbChanges();
 			gi.arcs = lookup(arcs.class).f(gid);
 			gi.edges = lookup(edges.class).f(gid);
-			gi.vertices = lookup(vertices.class).f(gid);
+			gi.vertices = lookup(allVertices.class).f(gid);
 			gi.properties = g.getProperties();
 //			Cout.debugSuperVisible(gi.properties);
 			System.err.println("sending graph");
