@@ -1,0 +1,129 @@
+{
+    "name": "name",
+    "properties": [
+        {
+            "property1": "value1",
+            "property2": "value2"
+        }
+    ],
+    "vertices": [
+        {
+            "id": "0",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "1",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "3",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "4",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "5",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "6",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "7",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "8",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        },
+        {
+            "id": "9",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ]
+        }
+
+
+    ],
+    "arcs": [
+        {
+            "id": "id",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ],
+            "from": "id",
+            "to": "id"
+        }
+    ],
+    "edges": [
+        {
+            "id": "id",
+            "properties": [
+                {
+                    "property1": "value1",
+                    "property2": "value2"
+                }
+            ],
+            "ends":[0, 1]
+        }
+    ],
+    "nbChanges": 0
+}
