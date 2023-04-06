@@ -60,9 +60,7 @@ export function initGraph(data) {
             const link_properties = links_properties[source.id + "-" + target.id];
 
             if (link_properties && link_properties.color) {
-                let color = link_properties.color(opacity);
-                console.log(color);
-                return color;
+                return link_properties.color(opacity);
             }
             return `rgba(255, 255, 255, ${opacity})`;
         })
@@ -87,7 +85,9 @@ export function initGraph(data) {
             if (sprite) {
                 Object.assign(sprite.position, middlePos);
             }
-        });
+        })
+        .linkDirectionalArrowLength(3.5)
+        .linkDirectionalArrowRelPos(1);
 
     Graph.cooldownTime(Infinity)
         .d3AlphaDecay(0)
