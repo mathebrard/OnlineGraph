@@ -1,8 +1,25 @@
+function hexToRgbA(hex) {
+    let c;
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+        c = hex.substring(1).split('');
+        if (c.length == 3) {
+            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c = '0x' + c.join('');
+        return (opacity) => { return `rgba(${(c >> 16) & 255}, ${(c >> 8) & 255}, ${c & 255},${opacity})` };
+    }
+    return null;
+}
+
+let links_properties = {};
+
 export function initGraph(data) {
     let D = 100;
-    let init = [];
+    let init_nodes = [];
+    let init_links = [];
+
     data["vertices"].forEach(vertex => {
-        init.push({
+        init_nodes.push({
             id: vertex["id"],
             vx: Math.random(),
             vy: Math.random(),
@@ -10,9 +27,29 @@ export function initGraph(data) {
         });
     });
 
+    data["arcs"].forEach(arc => {
+        console.log(arc["properties"]["color"], /^#([A-Fa-f0-9]{3}){1,2}$/.test(arc["properties"]["color"]));
+        links_properties[arc["from"] + "-" + arc["to"]] = {
+            arrowShape: arc["properties"]["arrowShape"],
+            arrowSize: arc["properties"]["arrowSize"],
+            color: hexToRgbA(arc["properties"]["color"]),
+            label: arc["properties"]["label"],
+            style: arc["properties"]["style"],
+            width: arc["properties"]["width"]
+        };
+    });
+
+    console.log(init_links);
+
     let Graph = ForceGraph3D()(document.getElementById('3d-graph'))
         .linkColor(() => 'rgba(255, 255, 255, 1)')
-        .linkWidth(1)
+        .linkWidth((link) => {
+            const link_properties = links_properties[link.source.id + "-" + link.target.id];
+            if (link_properties && link_properties.width) {
+                return link_properties.width;
+            }
+            return 1;
+        })
         .linkColor((link) => {
             const { source, target } = link;
             const dx = Math.abs(source.x - target.x);
@@ -20,9 +57,37 @@ export function initGraph(data) {
             const dz = Math.abs(source.z - target.z);
             const dist = dx + dy + dz;
             const opacity = 1 - (dist / D);
+            const link_properties = links_properties[source.id + "-" + target.id];
+
+            if (link_properties && link_properties.color) {
+                let color = link_properties.color(opacity);
+                console.log(color);
+                return color;
+            }
             return `rgba(255, 255, 255, ${opacity})`;
         })
-        .linkOpacity(1.0);
+        .linkOpacity(1.0)
+        .linkThreeObjectExtend(true)
+        .linkThreeObject(link => {
+            let link_properties = links_properties[link.source.id + "-" + link.target.id];
+            if (link_properties && link_properties.label) {
+                // extend link with text sprite
+                const sprite = new SpriteText(links_properties[link.source.id + "-" + link.target.id].label);
+                sprite.color = 'lightgrey';
+                sprite.textHeight = 3;
+                return sprite;
+            }
+        })
+        .linkPositionUpdate((sprite, { start, end }) => {
+            const middlePos = Object.assign(...['x', 'y', 'z'].map(c => ({
+                [c]: start[c] + (end[c] - start[c]) / 2 // calc middle point
+            })));
+
+            // Position sprite
+            if (sprite) {
+                Object.assign(sprite.position, middlePos);
+            }
+        });
 
     Graph.cooldownTime(Infinity)
         .d3AlphaDecay(0)
@@ -50,7 +115,7 @@ export function initGraph(data) {
         })
 
         // Add nodes
-        .graphData({ nodes: init, links: [] });
+        .graphData({ nodes: init_nodes, links: init_links });
 
     Graph.onEngineTick(() => {
         const { nodes, links } = Graph.graphData();

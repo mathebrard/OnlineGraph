@@ -4,4 +4,5 @@ let Graph;
 
 var jqxhr = $.getJSON("./graph.json", function (data) {
     Graph = initGraph(data);
+    console.log(Graph.scene());
 });

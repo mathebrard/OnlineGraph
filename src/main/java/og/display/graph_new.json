@@ -1,0 +1,45 @@
+[
+    {
+        "id": -969254344547381500,
+        "properties": {
+            "#class": "java.util.HashMap",
+            "arrowShape": "diamond",
+            "arrowSize": "normal",
+            "color": "#de177b",
+            "label": "bzvavp",
+            "style": "dashed",
+            "width": 7
+        }
+    },
+    {
+        "id": -793540997853091700,
+        "properties": {
+            "#class": "java.util.HashMap",
+            "color": "#1ad25d",
+            "label": "fqzvqb",
+            "style": "solid",
+            "width": 7
+        }
+    },
+    {
+        "id": -5424065032820545000,
+        "properties": {
+            "#class": "java.util.HashMap",
+            "arrowLocation": "destination",
+            "label": "sjjemk",
+            "style": "dashed",
+            "width": 5
+        }
+    },
+    {
+        "id": 4400109358225872400,
+        "properties": {
+            "#class": "java.util.HashMap",
+            "arrowShape": "normal",
+            "arrowSize": "normal",
+            "color": "#4282a7",
+            "style": "dashed",
+            "width": 6
+        }
+    }
+]
