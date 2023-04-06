@@ -1,32 +1,63 @@
-var observer = new myIdawiObserver();
+class BackEndEventRetriever {
+    constructor(newUrl){
+        this.url = newUrl;
+    }
+}
+
+// fetch(
+//   "http://localhost:8081/api////og.GraphService/get/randomGraph?what=content"
+// ).then((data) => console.log(data.text()));
+
+const source = new EventSource(
+  "http://localhost:8081/api////og.GraphService/get/randomGraph?what=content"
+);
+
+source.addEventListener("message", (event) => {
+  const data = event.data;
+  var lines = data.split(/\r?\n/);
+  var headerraw = lines.shift();
+  var temp = lines.join("");
+  var jsonToProcess = JSON.parse(temp);
+//   const json = data.replace('\t', '')
+
+  parseJaseto(jsonToProcess);
+});
+
+function parseJaseto(jsonObject){
+    // console.log("in function : ", jsonObject)
+    let arrayOfObjectsToReturn = []
+    for (let element of Object.entries(jsonObject)) {
+
+        if(element[0] === 'arcs'){
+            for (let arc of element[1].elements) {
+                //retrieve every properties of every arc that has properties different from null
+              if (arc.properties !== null && arc.properties !== undefined) {
+                console.log("props : ", arc.properties);
+                let temp = {
+                    id: arc.id,
+                    properties: arc.properties
+                };
+                arrayOfObjectsToReturn.push(temp);
+                console.log("array updated : ", arrayOfObjectsToReturn)
+              }
+            }
+
+        }
+    }
+    
+}
 
 
-    // fetch(
-    //   "http://localhost:8081/api////og.GraphService/get/randomGraph?what=content"
-    // ).then((data) => console.log(data.text()));
+// source.addEventListener("error", (event) => {
+//   // handle errors
+// });
 
-    const source = new EventSource("http://localhost:8081/api////og.GraphService/get/randomGraph?what=content");
-
-    source.addEventListener("message", (event) => {
-      const data = event.data;
-      var lines = data.split(/\r?\n/);
-      //console.log(lines)
-      var headerraw = lines.shift();
-      console.log(headerraw);
-      // process the data received from the server
-    });
-
-    source.addEventListener("error", (event) => {
-      // handle errors
-    });
-
-
-const N = 50;
+const N = 2;
 const nodes = [...Array(N).keys()].map(() => ({
   // Initial velocity in random direction
-  vx: Math.random(),
-  vy: Math.random(),
-  vz: Math.random(),
+  vx: 0,
+  vy: 0,
+  vz: 0,
 }));
 
 const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
@@ -38,7 +69,15 @@ Graph.onEngineTick(() => {
   const { nodes, links } = Graph.graphData();
 
   // If the distance between two nodes < D, add a link
-  const D = 100;
+  const D = 2;
+
+  nodes[0].x = 1;
+  nodes[0].y = 1;
+  nodes[0].z = 1;
+
+   nodes[1].x = 20;
+   nodes[1].y = 20;
+   nodes[1].z = 20;
   for (let i = 0; i < N; i++) {
     for (let j = i + 1; j < N; j++) {
       const dx = Math.abs(nodes[i].x - nodes[j].x);
