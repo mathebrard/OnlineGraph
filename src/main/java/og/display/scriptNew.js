@@ -25,7 +25,10 @@ source.addEventListener("message", (event) => {
 });
 
 function parseJaseto(jsonObject){
-    let arrayOfObjectsToReturn = []
+    let entireObject = [];
+    let vertices = [];
+    let arcs = [];
+    let edges = [];
 
     // Iterate over objects of jaseto entity 
     for (let element of Object.entries(jsonObject)) {
@@ -41,35 +44,76 @@ function parseJaseto(jsonObject){
                         to: arc.to,
                         properties: arc.properties
                     };
-                    arrayOfObjectsToReturn.push(temp);
+                    arcs.push(temp);
                 }
             }
         }
 
+//         edges{
+// data: 				"#class": "og.GraphService$EdgeInfo",
+// data: 				"ends": {
+// data: 					"#class": "it.unimi.dsi.fastutil.longs.LongOpenHashSet",
+// data: 					"elements": [
+// data: 						-7304607186208734480,
+// data: 						7873111096608120161
+// data: 					],
+// data: 					"size": 2
+// data: 				},
+// data: 				"id": -7679892859513199228,
+// data: 				"properties": {
+// data: 					"#class": "java.util.HashMap",
+// data: 					"color": "#50777a",
+// data: 					"style": "dashed",
+// data: 					"width": 8
+// data: 				}
+// data: 			},
+
         if (element[0] === "edges") {
-        //   for (let arc of element[1].elements) {
-        //     //retrieve every properties of every arc that has properties different from null
-        //     if (arc.properties !== null && arc.properties !== undefined) {
-        //       let temp = {
-        //         id: arc.id,
-        //         properties: arc.properties,
-        //       };
-        //       arrayOfObjectsToReturn.push(temp);
-        //     }
-        //   }
+          for (let edge of element[1].elements) {
+            //retrieve every properties of every arc that has properties different from null
+            if (edge.properties !== null && edge.properties !== undefined) {
+              let temp = {
+                id: edge.id,
+                ends: edge.ends,
+                properties: edge.properties,
+              };
+              edges.push(temp);
+            }
+          }
         }
 
+//         {
+// data: 				"#class": "og.GraphService$VertexInfo",
+// data: 				"id": 8325795240509049676,
+// data: 				"properties": {
+// data: 					"#class": "java.util.HashMap",
+// data: 					"bar": 61,
+// data: 					"foo": 0.41617622547870226,
+// data: 					"location": "0.18050006126421914,0.4322806124664764,0.01955134938794789",
+// data: 					"shape": "triangle",
+// data: 					"width": 9
+// data: 				}
+// data: 			},
+
         if (element[0] === "vertices") {
-        //   for (let arc of element[1].elements) {
-        //     //retrieve every properties of every arc that has properties different from null
-        //     if (arc.properties !== null && arc.properties !== undefined) {
-        //       let temp = {
-        //         id: arc.id,
-        //         properties: arc.properties,
-        //       };
-        //       arrayOfObjectsToReturn.push(temp);
-        //     }
-        //   }
+          for (let vertex of element[1].elements) {
+            //retrieve every properties of every arc that has properties different from null
+            if (vertex.properties !== null && vertex.properties !== undefined) {
+                let locations = vertex.location.split(",");
+                let x = locations[0];
+                let y = locations[1];
+                let z = locations[2];
+                
+              let temp = {
+                id: vertex.id,
+                x: x,
+                y: y,
+                z: z,
+                properties: vertex.properties,
+              };
+              vertices.push(temp);
+            }
+          }
         }
     }
     return arrayOfObjectsToReturn;
