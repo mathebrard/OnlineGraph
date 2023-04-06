@@ -37,6 +37,8 @@ function parseJaseto(jsonObject){
                 if (arc.properties !== null && arc.properties !== undefined) {
                     let temp = {
                         id: arc.id,
+                        from: arc.from,
+                        to: arc.to,
                         properties: arc.properties
                     };
                     arrayOfObjectsToReturn.push(temp);
