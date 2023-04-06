@@ -20,7 +20,8 @@ source.addEventListener("message", (event) => {
   var jsonToProcess = JSON.parse(temp);
 //   const json = data.replace('\t', '')
 
-  parseJaseto(jsonToProcess);
+  var jsonFormatted = parseJaseto(jsonToProcess);
+  console.log("json formated = ", jsonFormatted);
 });
 
 function parseJaseto(jsonObject){
@@ -32,18 +33,17 @@ function parseJaseto(jsonObject){
             for (let arc of element[1].elements) {
                 //retrieve every properties of every arc that has properties different from null
               if (arc.properties !== null && arc.properties !== undefined) {
-                console.log("props : ", arc.properties);
                 let temp = {
                     id: arc.id,
                     properties: arc.properties
                 };
                 arrayOfObjectsToReturn.push(temp);
-                console.log("array updated : ", arrayOfObjectsToReturn)
               }
             }
 
         }
     }
+    return arrayOfObjectsToReturn;
     
 }
 
