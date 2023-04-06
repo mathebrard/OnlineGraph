@@ -25,20 +25,21 @@ source.addEventListener("message", (event) => {
 });
 
 function parseJaseto(jsonObject){
-    // console.log("in function : ", jsonObject)
     let arrayOfObjectsToReturn = []
-    for (let element of Object.entries(jsonObject)) {
 
+    // Iterate over objects of jaseto entity 
+    for (let element of Object.entries(jsonObject)) {
+        // If one of the objects is of type arc, we retrieve arcs contained in it
         if(element[0] === 'arcs'){
             for (let arc of element[1].elements) {
                 //retrieve every properties of every arc that has properties different from null
-              if (arc.properties !== null && arc.properties !== undefined) {
-                let temp = {
-                    id: arc.id,
-                    properties: arc.properties
-                };
-                arrayOfObjectsToReturn.push(temp);
-              }
+                if (arc.properties !== null && arc.properties !== undefined) {
+                    let temp = {
+                        id: arc.id,
+                        properties: arc.properties
+                    };
+                    arrayOfObjectsToReturn.push(temp);
+                }
             }
 
         }
