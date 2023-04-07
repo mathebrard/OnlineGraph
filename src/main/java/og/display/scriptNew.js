@@ -32,24 +32,26 @@ function initGraph(data) {
         fx: vertex.x*150,
         fy: vertex.y*150,
         fz: vertex.z*150,
-      id: vertex.id,
-      vx: 0,
-      vy: 0,
-      vz: 0,
-      color: vertex.properties.color,
-      description: vertex.properties.label,
-      width: vertex.properties.width
+        id: vertex.id,
+        color: vertex.properties.color,
+        description: vertex.properties.label,
+        width: vertex.properties.width,
+        vx: 0,
+        vy: 0,
+        vz: 0,
     });
   });
 
   data.arcs.forEach((arc) => {
     // Create arcs only if vertices to link exist
     if(listOfVerticesIds.includes(arc.from) && listOfVerticesIds.includes(arc.to)) {
+        console.log("arc : ", arc)
         arcsBis.push({
-          id: arc.id,
-          source: arc.from,
-          target: arc.to,
-          shape: arc.properties.shape
+            color: arc.properties.color,
+            id: arc.id,
+            source: arc.from,
+            target: arc.to,
+            shape: arc.properties.shape
         });
     }
   });
