@@ -11,8 +11,20 @@ function hexToRgbA(hex) {
     return null;
 }
 
+let graph;
 let linksProperties = {};
 let nodesProperties = {};
+
+export function updateGraph(graph, data) {
+    const { nodes, links } = Graph.graphData();
+    let newNodes = [];
+    let newLinks = [];
+
+    initVertices(data, initialNodes);
+    initArcs(data);
+
+    graph.graphData({ nodes: [...nodes, ...newNodes], links: [...links, ...newLinks] });
+}
 
 export function initGraph(data) {
     let D = 100;

@@ -1,0 +1,545 @@
+data: {"encodings":"jaseto"}
+data: {
+data: 	"#class": "og.GraphService$GraphInfo",
+data: 	"arcs": {
+data: 		"#class": "java.util.ArrayList",
+data: 		"elements": [
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 5147836275521863046,
+data: 				"id": 4562455595485683861,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 5147836275521863046,
+data: 				"id": 1972251485096326818,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 4498091956623206231,
+data: 				"id": 6914616579369670001,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 445387441333722583,
+data: 				"id": -2301983000702478519,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 2506366720041049911,
+data: 				"id": 2861635814842109240,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 6281933237761366320,
+data: 				"id": 1989534926381198190,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -1802347695233529270,
+data: 				"id": 7077684016566928587,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"arrowShape": "normal",
+data: 					"arrowSize": "normal",
+data: 					"style": "solid",
+data: 					"width": 1
+data: 				},
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 8330186052880109685,
+data: 				"id": -4208710589835549744,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -2151059160873192255,
+data: 				"id": -6064341622275321645,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 3691810174051680475,
+data: 				"id": -3157668295525249679,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 5394514268978568625,
+data: 				"id": -7787172695173861448,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 2576078442669867260,
+data: 				"id": -3240205860518671359,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"arrowLocation": "source",
+data: 					"arrowShape": "diamond",
+data: 					"arrowSize": "normal"
+data: 				},
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -6412592847722519740,
+data: 				"id": -4949323586168523873,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 8330186052880109685,
+data: 				"id": 4671550836189831132,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 2811226001390817508,
+data: 				"id": -1137780989742606668,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"arrowLocation": "source",
+data: 					"label": "syxgee"
+data: 				},
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -653913469904497741,
+data: 				"id": 119049602641515974,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 1793720198866182494,
+data: 				"id": -3300188459795311441,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"arrowSize": "none",
+data: 					"color": "#358ab2",
+data: 					"style": "solid"
+data: 				},
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -653913469904497741,
+data: 				"id": 178648397033679716,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -28514516883862568,
+data: 				"id": -1942459379601557434,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 5798384368939988289,
+data: 				"id": 8421558685841981584,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 6592852335790214256,
+data: 				"id": 5899077525402917269,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -6412592847722519740,
+data: 				"id": -6605900203997710635,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 7424450638097563272,
+data: 				"id": 3509409783841165748,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -9026119016257357684,
+data: 				"id": -4452144329404450185,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 2576078442669867260,
+data: 				"id": 3190970423090512315,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"arrowLocation": "middle",
+data: 					"arrowShape": "diamond",
+data: 					"arrowSize": "diamond",
+data: 					"label": "vwubpt",
+data: 					"style": "solid"
+data: 				},
+data: 				"to": -7823299862913544577
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 7424450638097563272,
+data: 				"id": -1029759730056869877,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": 7706117778980474228,
+data: 				"id": -2647537726235925374,
+data: 				"properties": null,
+data: 				"to": 2576078442669867260
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$ArcInfo",
+data: 				"from": -5990315009072345669,
+data: 				"id": 5295045055769644177,
+data: 				"properties": null,
+data: 				"to": -2151059160873192255
+data: 			}
+data: 		],
+data: 		"size": 28
+data: 	},
+data: 	"edges": {
+data: 		"#class": "java.util.ArrayList",
+data: 		"elements": [
+data: 			{
+data: 				"#class": "og.GraphService$EdgeInfo",
+data: 				"ends": {
+data: 					"#class": "it.unimi.dsi.fastutil.longs.LongOpenHashSet",
+data: 					"elements": [
+data: 						2576078442669867260
+data: 					],
+data: 					"size": 1
+data: 				},
+data: 				"id": -7676463668292219869,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"style": "solid"
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$EdgeInfo",
+data: 				"ends": {
+data: 					"#class": "it.unimi.dsi.fastutil.longs.LongOpenHashSet",
+data: 					"elements": [
+data: 						-2151059160873192255
+data: 					],
+data: 					"size": 1
+data: 				},
+data: 				"id": -2696219607095054474,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$EdgeInfo",
+data: 				"ends": {
+data: 					"#class": "it.unimi.dsi.fastutil.longs.LongOpenHashSet",
+data: 					"elements": [
+data: 						2576078442669867260,
+data: 						-1802347695233529270
+data: 					],
+data: 					"size": 2
+data: 				},
+data: 				"id": -106754325541738234,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$EdgeInfo",
+data: 				"ends": {
+data: 					"#class": "it.unimi.dsi.fastutil.longs.LongOpenHashSet",
+data: 					"elements": [
+data: 						8330186052880109685,
+data: 						2576078442669867260
+data: 					],
+data: 					"size": 2
+data: 				},
+data: 				"id": 6264374313138179629,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"color": "#094277",
+data: 					"label": "vsjmkl",
+data: 					"style": "dashed",
+data: 					"width": 0
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$EdgeInfo",
+data: 				"ends": {
+data: 					"#class": "it.unimi.dsi.fastutil.longs.LongOpenHashSet",
+data: 					"elements": [
+data: 						2576078442669867260,
+data: 						-1802347695233529270
+data: 					],
+data: 					"size": 2
+data: 				},
+data: 				"id": -5869396435894145602,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"label": "uijxdv",
+data: 					"style": "dashed",
+data: 					"width": 0
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$EdgeInfo",
+data: 				"ends": {
+data: 					"#class": "it.unimi.dsi.fastutil.longs.LongOpenHashSet",
+data: 					"elements": [
+data: 						6281933237761366320,
+data: 						2576078442669867260
+data: 					],
+data: 					"size": 2
+data: 				},
+data: 				"id": -3046285569305218015,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"color": "#977637",
+data: 					"label": "jptxln",
+data: 					"style": "solid",
+data: 					"width": 0
+data: 				}
+data: 			}
+data: 		],
+data: 		"size": 6
+data: 	},
+data: 	"name": null,
+data: 	"nbChanges": 366,
+data: 	"properties": {
+data: 		"#class": "java.util.TreeMap",
+data: 		"background color": "grey",
+data: 		"brake": 0,
+data: 		"default arc arrowLocation": "middle",
+data: 		"default arc arrowShape": "normal",
+data: 		"default arc arrowSize": 20,
+data: 		"default arc color": "black",
+data: 		"default arc label": "",
+data: 		"default arc labelColor": "black",
+data: 		"default arc style": "solid",
+data: 		"default arc width": 1,
+data: 		"default edge color": "black",
+data: 		"default edge label": "",
+data: 		"default edge labelColor": "black",
+data: 		"default edge style": "solid",
+data: 		"default edge width": 1,
+data: 		"default vertex color": "black",
+data: 		"default vertex fillColor": "white",
+data: 		"default vertex label": "",
+data: 		"default vertex labelColor": "black",
+data: 		"default vertex location": "0,0,0",
+data: 		"default vertex scale": 1,
+data: 		"default vertex shape": "circle",
+data: 		"default vertex width": 1
+data: 	},
+data: 	"vertices": {
+data: 		"#class": "java.util.ArrayList",
+data: 		"elements": [
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -2151059160873192255,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 2576078442669867260,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 2506366720041049911,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -7823299862913544577,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -28514516883862568,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -6412592847722519740,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 8330186052880109685,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 5147836275521863046,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 3691810174051680475,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"color": "#d113fe",
+data: 					"foo": 0.22286832383639255,
+data: 					"location": "0.15363111538395668,0.8695373183160277,0.0920103683229212",
+data: 					"scale": 0.1001869187750302,
+data: 					"width": 2
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 1793720198866182494,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 5394514268978568625,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 7424450638097563272,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -1802347695233529270,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"bar": 92,
+data: 					"fillColor": "#f97872",
+data: 					"foo": 0.6503343731021265,
+data: 					"label": "bsmsso",
+data: 					"labelColor": "#cf3a0a",
+data: 					"location": "0.5407539448650284,0.6771537118024733,0.9109305544004865",
+data: 					"scale": 1.9711306230963346,
+data: 					"shape": "rectangle",
+data: 					"width": 5
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -653913469904497741,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -5990315009072345669,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 4498091956623206231,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 7706117778980474228,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"bar": 86,
+data: 					"color": "#456c76",
+data: 					"fillColor": "#b49e56",
+data: 					"foo": 0.02831049888527304,
+data: 					"label": "vypxaf",
+data: 					"location": "0.3415679683152508,0.8739889070733712,0.8134112143367128",
+data: 					"shape": "circle"
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": -9026119016257357684,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 5798384368939988289,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"color": "#b3e4d6",
+data: 					"fillColor": "#2c95fd",
+data: 					"foo": 0.8850901336046574,
+data: 					"label": "vjdexc",
+data: 					"location": "0.24353197913560787,0.9763432259441243,0.03981308340689915",
+data: 					"shape": "point",
+data: 					"width": 9
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 2811226001390817508,
+data: 				"properties": null
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 6281933237761366320,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"foo": 0.9159652681131549,
+data: 					"label": "bvunfz",
+data: 					"labelColor": "#373ea1",
+data: 					"location": "0.6901791650582498,0.05187085722860452,0.6726333186380595",
+data: 					"shape": "rectangle",
+data: 					"width": 0
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 6592852335790214256,
+data: 				"properties": {
+data: 					"#class": "java.util.HashMap",
+data: 					"bar": 93,
+data: 					"color": "#be15fa",
+data: 					"label": "brcugi",
+data: 					"labelColor": "#0e7a7c",
+data: 					"location": "0.9120525941765362,0.7208297691261382,0.0992364849340448",
+data: 					"width": 4
+data: 				}
+data: 			},
+data: 			{
+data: 				"#class": "og.GraphService$VertexInfo",
+data: 				"id": 445387441333722583,
+data: 				"properties": null
+data: 			}
+data: 		],
+data: 		"size": 23
+data: 	}
+data: }
+
+data: {"encodings":"jaseto"}
+data: {
+data: 	"#class": "idawi.messaging.EOT"
+data: }
+
+data: {"encodings":"jaseto"}
+data: EOT
+
