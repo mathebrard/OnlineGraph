@@ -99,7 +99,7 @@ function parseJaseto(jsonObject){
           for (let vertex of element[1].elements) {
             //retrieve every properties of every arc that has properties different from null
             if (vertex.properties !== null && vertex.properties !== undefined) {
-                let locations = vertex.location.split(",");
+                let locations = vertex.properties.location.split(",");
                 let x = locations[0];
                 let y = locations[1];
                 let z = locations[2];
@@ -116,8 +116,12 @@ function parseJaseto(jsonObject){
           }
         }
     }
-    return arrayOfObjectsToReturn;
-    
+    entireObject = {
+        arcs: arcs,
+        edges: edges,
+        vertices: vertices
+    }
+    return entireObject;
 }
 
 
