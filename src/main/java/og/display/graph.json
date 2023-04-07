@@ -9,93 +9,93 @@
     "vertices": [
         {
             "id": "0",
-            "properties": [
+            "properties":
                 {
-                    "property1": "value1",
-                    "property2": "value2"
+                    "color": "#0369be",
+                    "label": "0"
                 }
-            ]
+            
         },
         {
             "id": "1",
-            "properties": [
+            "properties":
                 {
-                    "property1": "value1",
-                    "property2": "value2"
+                    "color": "#0369be",
+                    "label": "1"
                 }
-            ]
+        
         },
         {
             "id": "2",
-            "properties": [
+            "properties":
                 {
-                    "property1": "value1",
-                    "property2": "value2"
+                    "color": "#0369be",
+                    "label": "2"
                 }
-            ]
+    
         },
         {
             "id": "3",
-            "properties": [
+            "properties":
                 {
-                    "property1": "value1",
-                    "property2": "value2"
+                    "color": "#13579b",
+                    "label": "3"
                 }
-            ]
+        
         },
         {
             "id": "4",
-            "properties": [
+            "properties":
                 {
-                    "property1": "value1",
-                    "property2": "value2"
+                    "color": "#abcdef",
+                    "label": "4"
                 }
-            ]
+        
         },
         {
             "id": "5",
-            "properties": [
+            "properties":
                 {
                     "property1": "value1",
                     "property2": "value2"
                 }
-            ]
+        
         },
         {
             "id": "6",
-            "properties": [
+            "properties":
                 {
                     "property1": "value1",
                     "property2": "value2"
                 }
-            ]
+        
         },
         {
             "id": "7",
-            "properties": [
+            "properties":
                 {
                     "property1": "value1",
                     "property2": "value2"
                 }
-            ]
+        
         },
         {
             "id": "8",
-            "properties": [
+            "properties":
                 {
                     "property1": "value1",
                     "property2": "value2"
                 }
-            ]
+        
         },
         {
             "id": "9",
-            "properties": [
+            "properties":
                 {
                     "property1": "value1",
                     "property2": "value2"
                 }
-            ]
+        
         }
 
     ],

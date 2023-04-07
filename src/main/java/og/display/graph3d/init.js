@@ -11,44 +11,48 @@ function hexToRgbA(hex) {
     return null;
 }
 
-let links_properties = {};
+let linksProperties = {};
+let nodesProperties = {};
 
 export function initGraph(data) {
     let D = 100;
-    let init_nodes = [];
-    let init_links = [];
+    let initialNodes = [];
+    let initialLinks = [];
 
-    data["vertices"].forEach(vertex => {
-        init_nodes.push({
-            id: vertex["id"],
-            vx: Math.random(),
-            vy: Math.random(),
-            vz: Math.random()
-        });
-    });
+    initVertices(data, initialNodes);
+    initArcs(data);
+    //initLinks(data, initialLinks);
 
-    data["arcs"].forEach(arc => {
-        console.log(arc["properties"]["color"], /^#([A-Fa-f0-9]{3}){1,2}$/.test(arc["properties"]["color"]));
-        links_properties[arc["from"] + "-" + arc["to"]] = {
-            arrowShape: arc["properties"]["arrowShape"],
-            arrowSize: arc["properties"]["arrowSize"],
-            color: hexToRgbA(arc["properties"]["color"]),
-            label: arc["properties"]["label"],
-            style: arc["properties"]["style"],
-            width: arc["properties"]["width"]
-        };
-    });
-
-    console.log(init_links);
+    console.log(nodesProperties);
 
     let Graph = ForceGraph3D()(document.getElementById('3d-graph'))
         .linkColor(() => 'rgba(255, 255, 255, 1)')
         .linkWidth((link) => {
-            const link_properties = links_properties[link.source.id + "-" + link.target.id];
-            if (link_properties && link_properties.width) {
-                return link_properties.width;
+            const linkProperties = linksProperties[link.source.id + "-" + link.target.id];
+            if (linkProperties && linkProperties.width) {
+                return linkProperties.width;
             }
             return 1;
+        })
+
+        .nodeColor((node) => {
+            const nodeProperties = nodesProperties[node.id];
+            if (nodeProperties && nodeProperties.color) {
+                return nodeProperties.color(1);
+            }
+            return 'rgba(255, 255, 255, 1)';
+        })
+        .nodeThreeObjectExtend(true)
+        .nodeThreeObject(node => {
+
+            const nodeProperties = nodesProperties[node.id];
+            if (nodeProperties && nodeProperties.label) {
+                // extend node with text sprite
+                const sprite = new SpriteText(nodeProperties.label);
+                sprite.color = 'lightgrey';
+                sprite.textHeight = 5;
+                return sprite;
+            }
         })
         .linkColor((link) => {
             const { source, target } = link;
@@ -57,7 +61,7 @@ export function initGraph(data) {
             const dz = Math.abs(source.z - target.z);
             const dist = dx + dy + dz;
             const opacity = 1 - (dist / D);
-            const link_properties = links_properties[source.id + "-" + target.id];
+            const link_properties = linksProperties[source.id + "-" + target.id];
 
             if (link_properties && link_properties.color) {
                 return link_properties.color(opacity);
@@ -67,10 +71,10 @@ export function initGraph(data) {
         .linkOpacity(1.0)
         .linkThreeObjectExtend(true)
         .linkThreeObject(link => {
-            let link_properties = links_properties[link.source.id + "-" + link.target.id];
+            let link_properties = linksProperties[link.source.id + "-" + link.target.id];
             if (link_properties && link_properties.label) {
                 // extend link with text sprite
-                const sprite = new SpriteText(links_properties[link.source.id + "-" + link.target.id].label);
+                const sprite = new SpriteText(linksProperties[link.source.id + "-" + link.target.id].label);
                 sprite.color = 'lightgrey';
                 sprite.textHeight = 3;
                 return sprite;
@@ -115,7 +119,7 @@ export function initGraph(data) {
         })
 
         // Add nodes
-        .graphData({ nodes: init_nodes, links: init_links });
+        .graphData({ nodes: initialNodes, links: initialLinks });
 
     Graph.onEngineTick(() => {
         const { nodes, links } = Graph.graphData();
@@ -155,3 +159,48 @@ export function initGraph(data) {
 
     return Graph;
 }
+
+function initLinks(data, init_links) {
+    data["links"].forEach(link => {
+        init_links.push({
+            source: link["from"],
+            target: link["to"]
+        });
+    });
+}
+
+function initArcs(data) {
+    data["arcs"].forEach(arc => {
+        console.log(arc["properties"]["color"], /^#([A-Fa-f0-9]{3}){1,2}$/.test(arc["properties"]["color"]));
+        linksProperties[arc["from"] + "-" + arc["to"]] = {
+            arrowShape: arc["properties"]["arrowShape"],
+            arrowSize: arc["properties"]["arrowSize"],
+            color: hexToRgbA(arc["properties"]["color"]),
+            label: arc["properties"]["label"],
+            style: arc["properties"]["style"],
+            width: arc["properties"]["width"]
+        };
+    });
+}
+
+function initVertices(data, initialNodes) {
+    data["vertices"].forEach(vertex => {
+        console.log(vertex);
+        nodesProperties[vertex["id"]] = {
+            color: hexToRgbA(vertex["properties"]["color"]),
+            label: vertex["properties"]["label"],
+            size: vertex["properties"]["width"],
+            x: vertex["properties"]["x"],
+            y: vertex["properties"]["y"],
+            z: vertex["properties"]["z"]
+        };
+
+        initialNodes.push({
+            id: vertex["id"],
+            vx: Math.random(),
+            vy: Math.random(),
+            vz: Math.random()
+        });
+    });
+}
+
