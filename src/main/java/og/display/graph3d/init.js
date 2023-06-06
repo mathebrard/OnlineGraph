@@ -16,11 +16,11 @@ let linksProperties = {};
 let nodesProperties = {};
 
 export function updateGraph(graph, data) {
-    const { nodes, links } = Graph.graphData();
+    const { nodes, links } = graph.graphData();
     let newNodes = [];
     let newLinks = [];
 
-    initVertices(data, initialNodes);
+    initVertices(data, nodes);
     initArcs(data);
 
     graph.graphData({ nodes: [...nodes, ...newNodes], links: [...links, ...newLinks] });
