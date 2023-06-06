@@ -29,11 +29,18 @@ export function initGraph(data) {
     let initialNodes = [];
     let initialLinks = [];
 
+    const para = document.createElement("p");
+    var str = JSON.stringify(data, null, 2);
+    const node = document.createTextNode(str);
+    para.appendChild(node);
+    para.setAttribute("style", "background-color: red;");
+
+    const element = document.getElementById("jsonPrinter");
+    element.appendChild(para);
+
     initVertices(data, initialNodes);
     initArcs(data);
     //initLinks(data, initialLinks);
-
-    console.log(nodesProperties);
 
     let Graph = ForceGraph3D()(document.getElementById('3d-graph'))
         .linkColor(() => 'rgba(255, 255, 255, 1)')
@@ -66,9 +73,9 @@ export function initGraph(data) {
         })
         .linkColor((link) => {
             const { source, target } = link;
-            const dx = Math.abs(source.x - target.x);
-            const dy = Math.abs(source.y - target.y);
-            const dz = Math.abs(source.z - target.z);
+            const dx = Math.abs(source.x - target.x) ;
+            const dy = Math.abs(source.y - target.y) ;
+            const dz = Math.abs(source.z - target.z) ;
             const dist = dx + dy + dz;
             const opacity = 1 - (dist / D);
             const link_properties = linksProperties[source.id + "-" + target.id];
@@ -114,58 +121,9 @@ export function initGraph(data) {
 
         // Add collision and bounding box forces
         .d3Force('collide', d3.forceCollide(Graph.nodeRelSize()))
-        .d3Force('box', () => {
-            const { nodes, links } = Graph.graphData();
-            const CUBE_HALF_SIDE = Graph.nodeRelSize() * 30 * 0.5;
-
-            nodes.forEach(node => {
-                const x = node.x || 0, y = node.y || 0, z = node.z || 0;
-
-                // bounce on box walls
-                if (Math.abs(x) > CUBE_HALF_SIDE) { node.vx *= -1; }
-                if (Math.abs(y) > CUBE_HALF_SIDE) { node.vy *= -1; }
-                if (Math.abs(z) > CUBE_HALF_SIDE) { node.vz *= -1; }
-            });
-        })
 
         // Add nodes
         .graphData({ nodes: initialNodes, links: initialLinks });
-
-    Graph.onEngineTick(() => {
-        const { nodes, links } = Graph.graphData();
-
-        // If the distance between two nodes < D, add a link
-        for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-                const dx = Math.abs(nodes[i].x - nodes[j].x);
-                const dy = Math.abs(nodes[i].y - nodes[j].y);
-                const dz = Math.abs(nodes[i].z - nodes[j].z);
-                const dist = dx + dy + dz;
-                const linkIdx = links.findIndex(l => l.source === nodes[i] && l.target === nodes[j]);
-                const link = links[linkIdx];
-
-                if (dist < D && linkIdx === -1) {
-
-                    Graph.graphData({
-                        nodes: [...nodes],
-                        links: [...links, { source: nodes[i], target: nodes[j] }]
-                    });
-
-                } else if (dist > D && linkIdx !== -1) {
-                    // Find current link and remove it
-                    if (linkIdx !== -1) {
-                        links.splice(linkIdx, 1);
-                        Graph.graphData({ nodes, links });
-                    }
-                }
-                else if (linkIdx !== -1) {
-                    // Change link opacity based on distance
-
-                }
-            }
-        }
-
-    });
 
     return Graph;
 }
@@ -183,9 +141,6 @@ function initArcs(data) {
     data["arcs"].forEach(arc => {
         console.log(arc["properties"]["color"], /^#([A-Fa-f0-9]{3}){1,2}$/.test(arc["properties"]["color"]));
 
-
-
-
         linksProperties[arc["from"] + "-" + arc["to"]] = {
             arrowShape: arc["properties"]["arrowShape"],
             arrowSize: arc["properties"]["arrowSize"],
@@ -198,7 +153,6 @@ function initArcs(data) {
 }
 
 function containsNode(nodes, node) {
-
     for (let i = 0; i < nodes.length; i++) {
         const element = nodes[i];
         if (element["id"] === node["id"]) {
@@ -211,23 +165,22 @@ function containsNode(nodes, node) {
 
 function initVertices(data, initialNodes) {
     data["vertices"].forEach(vertex => {
-        console.log(vertex);
+        vertex["properties"]["x"] += 10;
+        vertex["properties"]["y"] += 10;
+        vertex["properties"]["z"] += 10;
         nodesProperties[vertex["id"]] = {
             color: hexToRgbA(vertex["properties"]["color"]),
             label: vertex["properties"]["label"],
             size: vertex["properties"]["width"],
-            x: vertex["properties"]["x"],
-            y: vertex["properties"]["y"],
-            z: vertex["properties"]["z"]
+            x: vertex["properties"]["x"] + 10,
+            y: vertex["properties"]["y"] + 10,
+            z: vertex["properties"]["z"] + 10,
         };
+        console.log(vertex);
 
         if (!containsNode(initialNodes, vertex)) {
-            console.log("pushing");
             initialNodes.push({
                 id: vertex["id"],
-                vx: Math.random(),
-                vy: Math.random(),
-                vz: Math.random()
             });
         }
 
