@@ -17,13 +17,11 @@ let nodesProperties = {};
 
 export function updateGraph(graph, data) {
     const { nodes, links } = graph.graphData();
-    let newNodes = [];
-    let newLinks = [];
 
     initVertices(data, nodes);
     initArcs(data);
 
-    graph.graphData({ nodes: [...nodes, ...newNodes], links: [...links, ...newLinks] });
+    graph.graphData({ nodes: [...nodes], links: [...links] });
 }
 
 export function initGraph(data) {
@@ -184,6 +182,10 @@ function initLinks(data, init_links) {
 function initArcs(data) {
     data["arcs"].forEach(arc => {
         console.log(arc["properties"]["color"], /^#([A-Fa-f0-9]{3}){1,2}$/.test(arc["properties"]["color"]));
+
+
+
+
         linksProperties[arc["from"] + "-" + arc["to"]] = {
             arrowShape: arc["properties"]["arrowShape"],
             arrowSize: arc["properties"]["arrowSize"],
@@ -193,6 +195,18 @@ function initArcs(data) {
             width: arc["properties"]["width"]
         };
     });
+}
+
+function containsNode(nodes, node) {
+
+    for (let i = 0; i < nodes.length; i++) {
+        const element = nodes[i];
+        if (element["id"] === node["id"]) {
+            return true;
+        }
+    }
+    return false;
+
 }
 
 function initVertices(data, initialNodes) {
@@ -207,12 +221,16 @@ function initVertices(data, initialNodes) {
             z: vertex["properties"]["z"]
         };
 
-        initialNodes.push({
-            id: vertex["id"],
-            vx: Math.random(),
-            vy: Math.random(),
-            vz: Math.random()
-        });
+        if (!containsNode(initialNodes, vertex)) {
+            console.log("pushing");
+            initialNodes.push({
+                id: vertex["id"],
+                vx: Math.random(),
+                vy: Math.random(),
+                vz: Math.random()
+            });
+        }
+
     });
 }
 
