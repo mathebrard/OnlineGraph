@@ -10,16 +10,59 @@
     <script src="//unpkg.com/three"></script>
     <script src="//unpkg.com/three-spritetext"></script>
     <!--<script src="../../dist/3d-force-graph.js"></script>-->
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/mode/javascript/javascript.min.js"></script>
     <script src="//unpkg.com/d3-octree"></script>
     <script src="//unpkg.com/d3-force-3d"></script>
 
     <!-- <script src="//unpkg.com/query"></script> -->
 </head>
+<style>
+    #editor {
+        width: 100%;
+        height: 100%;
+    }
+    #editorContainer {
+        position: fixed;
+        bottom: 0;
+        margin-left: 20px;
+        margin-bottom: 50px;
+        width: 35%;
+        height: 40%;
+    }
+    #button {
+        z-index: 2;
+        right: 0;
+        position: absolute;
+    }
+    #body {
+        overflow-x: hidden;
+    }
+</style>
 
-<body>
+
+<body id="body">
     <div id="3d-graph"></div>
+    <div id="editorContainer">
+        <div id="editor"></div>
+        <button id="button" onclick="executeCode()">Run Code</button>
+    </div>
 
+    <script>
+        var editor = CodeMirror(document.getElementById("editor"), {
+            mode: "application/javascript",
+            theme: "default",
+            lineNumbers: true
+        });
+
+        let x = 10;
+
+        function executeCode() {
+            var code = editor.getValue();
+            eval(code);
+        }
+    </script>
     <script type="module" src="graph3d.js">
     </script>
 </body>

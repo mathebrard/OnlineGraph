@@ -6,7 +6,7 @@ window.onload = function () {
     var formobserver = new myFormObserver()
     formidawi = idawiObservable(idawilink, formobserver)
 
-    //evennement liée bouton d'envoi requete vers idawi
+    //evenement liée bouton d'envoi requete vers idawi
     document.getElementById("requestform").onsubmit = function (e) {
         e.preventDefault()
         var input = document.getElementById("requestfield")
