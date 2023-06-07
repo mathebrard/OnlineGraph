@@ -20,23 +20,23 @@ export function updateGraph(graph, data) {
 
     initVertices(data, nodes);
     initArcs(data);
+    console.log("help2", graph.graphData());
 
     graph.graphData({ nodes: [...nodes], links: [...links] });
+
+    graph.onNodeHover()
+}
+
+export function printOnHover(node){
+    node
 }
 
 export function initGraph(data) {
     let D = 100;
     let initialNodes = [];
     let initialLinks = [];
-
-    const para = document.createElement("p");
-    var str = JSON.stringify(data, null, 2);
-    const node = document.createTextNode(str);
-    para.appendChild(node);
-    para.setAttribute("style", "background-color: red;");
-
-    const element = document.getElementById("jsonPrinter");
-    element.appendChild(para);
+    
+    console.log("help1")
 
     initVertices(data, initialNodes);
     initArcs(data);
@@ -51,7 +51,18 @@ export function initGraph(data) {
             }
             return 1;
         })
+        .onNodeClick((node) => {
+            const para = document.createElement("p");
+            var str = JSON.stringify(node, null, 2);
+            console.log("node", str)
+            // const nodeInDom = document.createTextNode(str);
+            // para.appendChild(nodeInDom);
+            // para.setAttribute("style", "background-color: red;");
 
+            const element = document.getElementById("jsonPrinter");
+            element.innerText = str;
+            // element.replaceChild(para);
+        })
         .nodeColor((node) => {
             const nodeProperties = nodesProperties[node.id];
             if (nodeProperties && nodeProperties.color) {
@@ -124,6 +135,8 @@ export function initGraph(data) {
 
         // Add nodes
         .graphData({ nodes: initialNodes, links: initialLinks });
+
+        
 
     return Graph;
 }
