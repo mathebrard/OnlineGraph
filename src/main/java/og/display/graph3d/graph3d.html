@@ -1,4 +1,4 @@
-    <x></x><head>
+<head>
     <style>
         body {
             margin: 0;
@@ -9,12 +9,18 @@
     <script src="//unpkg.com/3d-force-graph"></script>
     <script src="//unpkg.com/three"></script>
     <script src="//unpkg.com/three-spritetext"></script>
+
     <!--<script src="../../dist/3d-force-graph.js"></script>-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/mode/javascript/javascript.min.js"></script>
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.css"/>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.js"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/mode/javascript/javascript.min.js"></script>-->
+
     <script src="//unpkg.com/d3-octree"></script>
     <script src="//unpkg.com/d3-force-3d"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.22.0/src-min-noconflict/ace.min.js"></script>
+
+    <script type="module" src="graph3d.js"></script>
+    <script type="module" src="init.js"></script>
 
     <!-- <script src="//unpkg.com/query"></script> -->
 </head>
@@ -51,13 +57,14 @@
     </div>
 
     <script>
-        var editor = CodeMirror(document.getElementById("editor"), {
-            mode: "application/javascript",
-            theme: "default",
-            lineNumbers: true
-        });
-
-        let x = 10;
+        var editor = ace.edit("editor", {
+                    theme: "ace/theme/textmate",
+                    mode: "ace/mode/javascript",
+                    value: "console.log('str')"
+                });
+                //var css = ace.createEditSession(["some", "css", "code here"]);
+                editor.setTheme("ace/theme/monokai");
+                editor.session.setMode("ace/mode/javascript");
 
         function executeCode() {
             var code = editor.getValue();

@@ -24,11 +24,6 @@ export function updateGraph(graph, data) {
 
     graph.graphData({ nodes: [...nodes], links: [...links] });
 
-    graph.onNodeHover()
-}
-
-export function printOnHover(node){
-    node
 }
 
 export function initGraph(data) {
@@ -41,6 +36,15 @@ export function initGraph(data) {
     initVertices(data, initialNodes);
     initArcs(data);
     //initLinks(data, initialLinks);
+        //            document.getElementById("jsonPrinter").textContent = str;
+                var editor = ace.edit("editor", {
+                    theme: "ace/theme/textmate",
+                    mode: "ace/mode/javascript",
+                    value: "console.log('str')"
+                });
+                //var css = ace.createEditSession(["some", "css", "code here"]);
+                editor.setTheme("ace/theme/monokai");
+                editor.session.setMode("ace/mode/javascript");
 
     let Graph = ForceGraph3D()(document.getElementById('3d-graph'))
         .linkColor(() => 'rgba(255, 255, 255, 1)')
@@ -52,16 +56,19 @@ export function initGraph(data) {
             return 1;
         })
         .onNodeClick((node) => {
-            const para = document.createElement("p");
-            var str = JSON.stringify(node, null, 2);
-            console.log("node", str)
-            // const nodeInDom = document.createTextNode(str);
-            // para.appendChild(nodeInDom);
-            // para.setAttribute("style", "background-color: red;");
-
-            const element = document.getElementById("jsonPrinter");
-            element.innerText = str;
-            // element.replaceChild(para);
+                var str = JSON.stringify(node, null, 2);
+    //            document.getElementById("jsonPrinter").textContent = str;
+            var editor = ace.edit("editor", {
+                theme: "ace/theme/textmate",
+                mode: "ace/mode/javascript",
+            });
+            editor.setOptions({
+                enableBasicAutocompletion: true
+            });
+            editor.setValue(str, 0)
+            //var css = ace.createEditSession(["some", "css", "code here"]);
+            editor.setTheme("ace/theme/monokai");
+            editor.session.setMode("ace/mode/javascript");
         })
         .nodeColor((node) => {
             const nodeProperties = nodesProperties[node.id];
@@ -198,5 +205,10 @@ function initVertices(data, initialNodes) {
         }
 
     });
+}
+
+export function executeCode() {
+    var code = editor.getValue();
+    eval(code);
 }
 
