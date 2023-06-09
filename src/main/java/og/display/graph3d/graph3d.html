@@ -78,28 +78,6 @@
         </div>
     </div>
 
-    <script>
-        var editor = ace.edit("editor", {
-            theme: "ace/theme/textmate",
-            mode: "ace/mode/javascript",
-            value: ""
-        });
-        editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/javascript");
-
-        var editor2 = ace.edit("editor2", {
-            theme: "ace/theme/textmate",
-            mode: "ace/mode/javascript",
-            value: ""
-        });
-        editor2.setTheme("ace/theme/monokai");
-        editor2.session.setMode("ace/mode/javascript");
-
-        function executeCode() {
-            var code = editor2.getValue();
-            eval(code);
-        }
-    </script>
     <script type="module" src="graph3d.js">
     </script>
 </body>
