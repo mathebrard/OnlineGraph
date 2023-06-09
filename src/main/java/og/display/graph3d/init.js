@@ -20,7 +20,6 @@ export function updateGraph(graph, data) {
 
     initVertices(data, nodes);
     initArcs(data);
-    console.log("help2", graph.graphData());
 
     graph.graphData({ nodes: [...nodes], links: [...links] });
 
@@ -31,20 +30,25 @@ export function initGraph(data) {
     let initialNodes = [];
     let initialLinks = [];
     
-    console.log("help1")
-
     initVertices(data, initialNodes);
     initArcs(data);
     //initLinks(data, initialLinks);
-        //            document.getElementById("jsonPrinter").textContent = str;
-                var editor = ace.edit("editor", {
-                    theme: "ace/theme/textmate",
-                    mode: "ace/mode/javascript",
-                    value: "console.log('str')"
-                });
-                //var css = ace.createEditSession(["some", "css", "code here"]);
-                editor.setTheme("ace/theme/monokai");
-                editor.session.setMode("ace/mode/javascript");
+
+    var editor = ace.edit("editor", {
+        theme: "ace/theme/monokai",
+        mode: "ace/mode/javascript",
+        value: "console.log('str3')"
+    });
+    editor.session.setMode("ace/mode/javascript");
+
+
+    var aceEditorDisabled = ace.edit("aceEditorDisabled", {
+        theme: "ace/theme/monokai",
+        mode: "ace/mode/javascript",
+        value: "console.log('str4')"
+    });
+    editor.session.setMode("ace/mode/javascript");
+    editor.setReadOnly(true);
 
     let Graph = ForceGraph3D()(document.getElementById('3d-graph'))
         .linkColor(() => 'rgba(255, 255, 255, 1)')
@@ -56,18 +60,17 @@ export function initGraph(data) {
             return 1;
         })
         .onNodeClick((node) => {
-                var str = JSON.stringify(node, null, 2);
-    //            document.getElementById("jsonPrinter").textContent = str;
+        console.log("test", node, nodesProperties)
+            var str = JSON.stringify(node, null, 2);
             var editor = ace.edit("editor", {
-                theme: "ace/theme/textmate",
+                theme: "ace/theme/monokai",
                 mode: "ace/mode/javascript",
             });
             editor.setOptions({
                 enableBasicAutocompletion: true
             });
+
             editor.setValue(str, 0)
-            //var css = ace.createEditSession(["some", "css", "code here"]);
-            editor.setTheme("ace/theme/monokai");
             editor.session.setMode("ace/mode/javascript");
         })
         .nodeColor((node) => {
@@ -159,8 +162,6 @@ function initLinks(data, init_links) {
 
 function initArcs(data) {
     data["arcs"].forEach(arc => {
-        console.log(arc["properties"]["color"], /^#([A-Fa-f0-9]{3}){1,2}$/.test(arc["properties"]["color"]));
-
         linksProperties[arc["from"] + "-" + arc["to"]] = {
             arrowShape: arc["properties"]["arrowShape"],
             arrowSize: arc["properties"]["arrowSize"],
@@ -185,26 +186,29 @@ function containsNode(nodes, node) {
 
 function initVertices(data, initialNodes) {
     data["vertices"].forEach(vertex => {
-        vertex["properties"]["x"] += 10;
-        vertex["properties"]["y"] += 10;
-        vertex["properties"]["z"] += 10;
         nodesProperties[vertex["id"]] = {
             color: hexToRgbA(vertex["properties"]["color"]),
             label: vertex["properties"]["label"],
             size: vertex["properties"]["width"],
-            x: vertex["properties"]["x"] + 10,
-            y: vertex["properties"]["y"] + 10,
-            z: vertex["properties"]["z"] + 10,
+            x: vertex["properties"]["x"],
+            y: vertex["properties"]["y"],
+            z: vertex["properties"]["z"],
         };
-        console.log(vertex);
 
         if (!containsNode(initialNodes, vertex)) {
             initialNodes.push({
                 id: vertex["id"],
+                color: hexToRgbA(vertex["properties"]["color"]),
+                label: vertex["properties"]["label"],
+                size: vertex["properties"]["width"],
+                x: vertex["properties"]["x"],
+                y: vertex["properties"]["y"],
+                z: vertex["properties"]["z"],
             });
         }
 
     });
+    console.log("ininodes", initialNodes)
 }
 
 export function executeCode() {
