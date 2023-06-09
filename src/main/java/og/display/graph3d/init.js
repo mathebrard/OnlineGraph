@@ -1,214 +1,235 @@
 function hexToRgbA(hex) {
-    let c;
-    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-        c = hex.substring(1).split('');
-        if (c.length == 3) {
-            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-        }
-        c = '0x' + c.join('');
-        return (opacity) => { return `rgba(${(c >> 16) & 255}, ${(c >> 8) & 255}, ${c & 255},${opacity})` };
+  let c;
+  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+    c = hex.substring(1).split("");
+    if (c.length == 3) {
+      c = [c[0], c[0], c[1], c[1], c[2], c[2]];
     }
-    return null;
+    c = "0x" + c.join("");
+    return (opacity) => {
+      return `rgba(${(c >> 16) & 255}, ${(c >> 8) & 255}, ${
+        c & 255
+      },${opacity})`;
+    };
+  }
+  return null;
 }
 
 let graph;
 let linksProperties = {};
 let nodesProperties = {};
 
+let nodesStore = [];
+
 export function updateGraph(graph, data) {
-    const { nodes, links } = graph.graphData();
+  const { nodes, links } = graph.graphData();
 
-    initVertices(data, nodes);
-    initArcs(data);
-    console.log("help2", graph.graphData());
+  initVertices(data, nodes);
+  initArcs(data);
 
-    graph.graphData({ nodes: [...nodes], links: [...links] });
-
+  graph.graphData({ nodes: [...nodes], links: [...links] });
+    console.log("nodesstore : ",nodesStore)
 }
 
 export function initGraph(data) {
-    let D = 100;
-    let initialNodes = [];
-    let initialLinks = [];
-    
-    console.log("help1")
+  let D = 100;
+  let initialNodes = [];
+  let initialLinks = [];
 
-    initVertices(data, initialNodes);
-    initArcs(data);
-    //initLinks(data, initialLinks);
-        //            document.getElementById("jsonPrinter").textContent = str;
-                var editor = ace.edit("editor", {
-                    theme: "ace/theme/textmate",
-                    mode: "ace/mode/javascript",
-                    value: "console.log('str')"
-                });
-                //var css = ace.createEditSession(["some", "css", "code here"]);
-                editor.setTheme("ace/theme/monokai");
-                editor.session.setMode("ace/mode/javascript");
+  initVertices(data, initialNodes);
+  initArcs(data);
+  //initLinks(data, initialLinks);
 
-    let Graph = ForceGraph3D()(document.getElementById('3d-graph'))
-        .linkColor(() => 'rgba(255, 255, 255, 1)')
-        .linkWidth((link) => {
-            const linkProperties = linksProperties[link.source.id + "-" + link.target.id];
-            if (linkProperties && linkProperties.width) {
-                return linkProperties.width;
-            }
-            return 1;
-        })
-        .onNodeClick((node) => {
-                var str = JSON.stringify(node, null, 2);
-    //            document.getElementById("jsonPrinter").textContent = str;
-            var editor = ace.edit("editor", {
-                theme: "ace/theme/textmate",
-                mode: "ace/mode/javascript",
-            });
-            editor.setOptions({
-                enableBasicAutocompletion: true
-            });
-            editor.setValue(str, 0)
-            //var css = ace.createEditSession(["some", "css", "code here"]);
-            editor.setTheme("ace/theme/monokai");
-            editor.session.setMode("ace/mode/javascript");
-        })
-        .nodeColor((node) => {
-            const nodeProperties = nodesProperties[node.id];
-            if (nodeProperties && nodeProperties.color) {
-                return nodeProperties.color(1);
-            }
-            return 'rgba(255, 255, 255, 1)';
-        })
-        .nodeThreeObjectExtend(true)
-        .nodeThreeObject(node => {
+  var editor = ace.edit("editor", {
+    theme: "ace/theme/monokai",
+    mode: "ace/mode/javascript",
+    value: "console.log('str3')",
+  });
+  editor.setReadOnly(true);
 
-            const nodeProperties = nodesProperties[node.id];
-            if (nodeProperties && nodeProperties.label) {
-                // extend node with text sprite
-                const sprite = new SpriteText(nodeProperties.label);
-                sprite.color = 'lightgrey';
-                sprite.textHeight = 5;
-                return sprite;
-            }
-        })
-        .linkColor((link) => {
-            const { source, target } = link;
-            const dx = Math.abs(source.x - target.x) ;
-            const dy = Math.abs(source.y - target.y) ;
-            const dz = Math.abs(source.z - target.z) ;
-            const dist = dx + dy + dz;
-            const opacity = 1 - (dist / D);
-            const link_properties = linksProperties[source.id + "-" + target.id];
+  var aceEditorDisabled = ace.edit("aceEditorDisabled", {
+    theme: "ace/theme/monokai",
+    mode: "ace/mode/javascript",
+    value: "console.log('str4')",
+  });
 
-            if (link_properties && link_properties.color) {
-                return link_properties.color(opacity);
-            }
-            return `rgba(255, 255, 255, ${opacity})`;
-        })
-        .linkOpacity(1.0)
-        .linkThreeObjectExtend(true)
-        .linkThreeObject(link => {
-            let link_properties = linksProperties[link.source.id + "-" + link.target.id];
-            if (link_properties && link_properties.label) {
-                // extend link with text sprite
-                const sprite = new SpriteText(linksProperties[link.source.id + "-" + link.target.id].label);
-                sprite.color = 'lightgrey';
-                sprite.textHeight = 3;
-                return sprite;
-            }
-        })
-        .linkPositionUpdate((sprite, { start, end }) => {
-            const middlePos = Object.assign(...['x', 'y', 'z'].map(c => ({
-                [c]: start[c] + (end[c] - start[c]) / 2 // calc middle point
-            })));
+  let Graph = ForceGraph3D()(document.getElementById("3d-graph"))
+    .linkColor(() => "rgba(255, 255, 255, 1)")
+    .linkWidth((link) => {
+      const linkProperties =
+        linksProperties[link.source.id + "-" + link.target.id];
+      if (linkProperties && linkProperties.width) {
+        return linkProperties.width;
+      }
+      return 1;
+    })
+    .onNodeClick((node) => {
+      var str = JSON.stringify(nodesStore, null, 2);
+      var editor = ace.edit("editor", {
+        theme: "ace/theme/monokai",
+        mode: "ace/mode/javascript",
+      });
+      editor.setOptions({
+        enableBasicAutocompletion: true,
+      });
 
-            // Position sprite
-            if (sprite) {
-                Object.assign(sprite.position, middlePos);
-            }
-        })
-        .linkDirectionalArrowLength(3.5)
-        .linkDirectionalArrowRelPos(1);
+        console.log('node to see : ', node , str)
+      nodesStore.forEach((nodeStore) => {
+        if(nodeStore.id === node.id){
+            editor.setValue(JSON.stringify(nodeStore, null, 2), 0);
+        }
+    })      
+    // editor.setValue(str, 0); // To see all nodes on click
+      editor.session.setMode("ace/mode/javascript");
+    })
+    .nodeColor((node) => {
+      const nodeProperties = nodesProperties[node.id];
+      if (nodeProperties && nodeProperties.color) {
+        return nodeProperties.color(1);
+      }
+      return "rgba(255, 255, 255, 1)";
+    })
+    .nodeThreeObjectExtend(true)
+    .nodeThreeObject((node) => {
+      const nodeProperties = nodesProperties[node.id];
+      if (nodeProperties && nodeProperties.label) {
+        // extend node with text sprite
+        const sprite = new SpriteText(nodeProperties.label);
+        sprite.color = "lightgrey";
+        sprite.textHeight = 5;
+        return sprite;
+      }
+    })
+    .linkColor((link) => {
+      const { source, target } = link;
+      const dx = Math.abs(source.x - target.x);
+      const dy = Math.abs(source.y - target.y);
+      const dz = Math.abs(source.z - target.z);
+      const dist = dx + dy + dz;
+      const opacity = 1 - dist / D;
+      const link_properties = linksProperties[source.id + "-" + target.id];
 
-    Graph.cooldownTime(Infinity)
-        .d3AlphaDecay(0)
-        .d3VelocityDecay(0)
+      if (link_properties && link_properties.color) {
+        return link_properties.color(opacity);
+      }
+      return `rgba(255, 255, 255, ${opacity})`;
+    })
+    .linkOpacity(1.0)
+    .linkThreeObjectExtend(true)
+    .linkThreeObject((link) => {
+      let link_properties =
+        linksProperties[link.source.id + "-" + link.target.id];
+      if (link_properties && link_properties.label) {
+        // extend link with text sprite
+        const sprite = new SpriteText(
+          linksProperties[link.source.id + "-" + link.target.id].label
+        );
+        sprite.color = "lightgrey";
+        sprite.textHeight = 3;
+        return sprite;
+      }
+    })
+    .linkPositionUpdate((sprite, { start, end }) => {
+      const middlePos = Object.assign(
+        ...["x", "y", "z"].map((c) => ({
+          [c]: start[c] + (end[c] - start[c]) / 2, // calc middle point
+        }))
+      );
 
-        // Deactivate existing forces
-        .d3Force('center', null)
-        .d3Force('charge', null)
-        .d3Force('link', null)
+      // Position sprite
+      if (sprite) {
+        Object.assign(sprite.position, middlePos);
+      }
+    })
+    .linkDirectionalArrowLength(3.5)
+    .linkDirectionalArrowRelPos(1);
 
-        // Add collision and bounding box forces
-        .d3Force('collide', d3.forceCollide(Graph.nodeRelSize()))
+  Graph.cooldownTime(Infinity)
+    .d3AlphaDecay(0)
+    .d3VelocityDecay(0)
 
-        // Add nodes
-        .graphData({ nodes: initialNodes, links: initialLinks });
+    // Deactivate existing forces
+    .d3Force("center", null)
+    .d3Force("charge", null)
+    .d3Force("link", null)
 
-        
+    // Add collision and bounding box forces
+    .d3Force("collide", d3.forceCollide(Graph.nodeRelSize()))
 
-    return Graph;
+    // Add nodes
+    .graphData({ nodes: initialNodes, links: initialLinks });
+
+  return Graph;
 }
 
 function initLinks(data, init_links) {
-    data["links"].forEach(link => {
-        init_links.push({
-            source: link["from"],
-            target: link["to"]
-        });
+  data["links"].forEach((link) => {
+    init_links.push({
+      source: link["from"],
+      target: link["to"],
     });
+  });
 }
 
 function initArcs(data) {
-    data["arcs"].forEach(arc => {
-        console.log(arc["properties"]["color"], /^#([A-Fa-f0-9]{3}){1,2}$/.test(arc["properties"]["color"]));
-
-        linksProperties[arc["from"] + "-" + arc["to"]] = {
-            arrowShape: arc["properties"]["arrowShape"],
-            arrowSize: arc["properties"]["arrowSize"],
-            color: hexToRgbA(arc["properties"]["color"]),
-            label: arc["properties"]["label"],
-            style: arc["properties"]["style"],
-            width: arc["properties"]["width"]
-        };
-    });
+  data["arcs"].forEach((arc) => {
+    linksProperties[arc["from"] + "-" + arc["to"]] = {
+      arrowShape: arc["properties"]["arrowShape"],
+      arrowSize: arc["properties"]["arrowSize"],
+      color: hexToRgbA(arc["properties"]["color"]),
+      label: arc["properties"]["label"],
+      style: arc["properties"]["style"],
+      width: arc["properties"]["width"],
+    };
+  });
 }
 
 function containsNode(nodes, node) {
-    for (let i = 0; i < nodes.length; i++) {
-        const element = nodes[i];
-        if (element["id"] === node["id"]) {
-            return true;
-        }
+  for (let i = 0; i < nodes.length; i++) {
+    const element = nodes[i];
+    if (element["id"] === node["id"]) {
+      return true;
     }
-    return false;
-
+  }
+  return false;
 }
 
 function initVertices(data, initialNodes) {
-    data["vertices"].forEach(vertex => {
-        vertex["properties"]["x"] += 10;
-        vertex["properties"]["y"] += 10;
-        vertex["properties"]["z"] += 10;
-        nodesProperties[vertex["id"]] = {
-            color: hexToRgbA(vertex["properties"]["color"]),
-            label: vertex["properties"]["label"],
-            size: vertex["properties"]["width"],
-            x: vertex["properties"]["x"] + 10,
-            y: vertex["properties"]["y"] + 10,
-            z: vertex["properties"]["z"] + 10,
-        };
-        console.log(vertex);
+  data["vertices"].forEach((vertex) => {
+    nodesProperties[vertex["id"]] = {
+      color: hexToRgbA(vertex["properties"]["color"]),
+      label: vertex["properties"]["label"],
+      size: vertex["properties"]["width"],
+      x: vertex["properties"]["x"],
+      y: vertex["properties"]["y"],
+      z: vertex["properties"]["z"],
+    };
 
-        if (!containsNode(initialNodes, vertex)) {
-            initialNodes.push({
-                id: vertex["id"],
-            });
-        }
-
-    });
+    if (!containsNode(initialNodes, vertex)) {
+      initialNodes.push({
+        id: vertex["id"],
+        color: hexToRgbA(vertex["properties"]["color"]),
+        label: vertex["properties"]["label"],
+        size: vertex["properties"]["width"],
+        x: vertex["properties"]["x"],
+        y: vertex["properties"]["y"],
+        z: vertex["properties"]["z"],
+      });
+      nodesStore.push({
+        id: vertex["id"],
+        color: hexToRgbA(vertex["properties"]["color"]),
+        label: vertex["properties"]["label"],
+        size: vertex["properties"]["width"],
+        x: vertex["properties"]["x"],
+        y: vertex["properties"]["y"],
+        z: vertex["properties"]["z"],
+      });
+    }
+  });
+  console.log("ininodes", initialNodes);
 }
 
 export function executeCode() {
-    var code = editor.getValue();
-    eval(code);
+  var code = editor.getValue();
+  eval(code);
 }
-
