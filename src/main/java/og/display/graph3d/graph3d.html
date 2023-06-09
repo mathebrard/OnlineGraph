@@ -74,12 +74,12 @@
 
 
     <div class="editorsContainer">
-        <div id="editorContainer">
+        <div class="editorContainer">
             <div id="editor">
             </div>
             <button id="button" onclick="executeCode()">run</button>
         </div>
-        <div id="editorContainer">
+        <div class="editorContainer">
             <div id="editor2"></div>
         </div>
     </div>
@@ -110,7 +110,7 @@
         editor2.session.setMode("ace/mode/javascript");
 
         function executeCode() {
-            var code = editor.getValue();
+            var code = editor2.getValue();
             eval(code);
         }
     </script>
