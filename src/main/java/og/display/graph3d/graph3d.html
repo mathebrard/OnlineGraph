@@ -11,9 +11,9 @@
     <script src="//unpkg.com/three-spritetext"></script>
 
     <!--<script src="../../dist/3d-force-graph.js"></script>-->
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.css"/>-->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.js"></script>-->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/mode/javascript/javascript.min.js"></script>-->
+    <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.css"/>-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/codemirror.min.js"></script>-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.3/mode/javascript/javascript.min.js"></script>-->
 
     <script src="//unpkg.com/d3-octree"></script>
     <script src="//unpkg.com/d3-force-3d"></script>
@@ -29,19 +29,33 @@
         width: 100%;
         height: 100%;
     }
-    #editorContainer {
-        position: fixed;
-        bottom: 0;
-        margin-left: 20px;
-        margin-bottom: 50px;
-        width: 35%;
-        height: 40%;
+
+    #editor2 {
+        width: 100%;
+        height: 100%;
     }
+
+    .editorsContainer {
+        list-style-type: none;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 20px;
+        width: 25%;
+        height: 25%;
+    }
+
+    .editorContainer {
+        width: 100%;
+        height: 100%;
+    }
+
     #button {
         z-index: 2;
         right: 0;
         position: absolute;
     }
+
     #body {
         overflow-x: hidden;
     }
@@ -51,20 +65,43 @@
 <body id="body">
     <div id="jsonPrinter"></div>
     <div id="3d-graph"></div>
-    <div id="editorContainer">
+
+
+    <div class="editorsContainer">
+        <div id="editorContainer">
+            <div id="editor">
+                <button id="button" onclick="executeCode()">run</button>
+            </div>
+        </div>
+        <div id="editorContainer">
+            <div id="editor2"></div>
+        </div>
+    </div>
+
+
+
+    <!-- <div id="editorContainer">
         <div id="editor"></div>
         <button id="button" onclick="executeCode()">Run Code</button>
-    </div>
+        <div id="editor2"></div>
+    </div> -->
 
     <script>
         var editor = ace.edit("editor", {
-                    theme: "ace/theme/textmate",
-                    mode: "ace/mode/javascript",
-                    value: "console.log('str')"
-                });
-                //var css = ace.createEditSession(["some", "css", "code here"]);
-                editor.setTheme("ace/theme/monokai");
-                editor.session.setMode("ace/mode/javascript");
+            theme: "ace/theme/textmate",
+            mode: "ace/mode/javascript",
+            value: "console.log('str')"
+        });
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/javascript");
+
+        var editor2 = ace.edit("editor2", {
+            theme: "ace/theme/textmate",
+            mode: "ace/mode/javascript",
+            value: "console.log('str')"
+        });
+        editor2.setTheme("ace/theme/monokai");
+        editor2.session.setMode("ace/mode/javascript");
 
         function executeCode() {
             var code = editor.getValue();
