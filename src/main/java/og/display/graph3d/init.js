@@ -15,11 +15,11 @@ function hexToRgbA(hex) {
   return null;
 }
 
-let graph;
+export let graph;
 let linksProperties = {};
-let nodesProperties = {};
+export let nodesProperties = {};
 
-let nodesStore = [];
+export let nodesStore = [];
 
 export function updateGraph(graph, data) {
   const { nodes, links } = graph.graphData();
@@ -28,7 +28,6 @@ export function updateGraph(graph, data) {
   initArcs(data);
 
   graph.graphData({ nodes: [...nodes], links: [...links] });
-    console.log("nodesstore : ",nodesStore)
 }
 
 export function initGraph(data) {
@@ -43,14 +42,12 @@ export function initGraph(data) {
   var editor = ace.edit("editor", {
     theme: "ace/theme/monokai",
     mode: "ace/mode/javascript",
-    value: "console.log('str3')",
   });
   editor.setReadOnly(true);
 
   var aceEditorDisabled = ace.edit("aceEditorDisabled", {
     theme: "ace/theme/monokai",
     mode: "ace/mode/javascript",
-    value: "console.log('str4')",
   });
 
   let Graph = ForceGraph3D()(document.getElementById("3d-graph"))
@@ -73,7 +70,6 @@ export function initGraph(data) {
         enableBasicAutocompletion: true,
       });
 
-        console.log('node to see : ', node , str)
       nodesStore.forEach((nodeStore) => {
         if(nodeStore.id === node.id){
             editor.setValue(JSON.stringify(nodeStore, null, 2), 0);
@@ -226,7 +222,6 @@ function initVertices(data, initialNodes) {
       });
     }
   });
-  console.log("ininodes", initialNodes);
 }
 
 export function executeCode() {
