@@ -19,6 +19,13 @@ let graph;
 let linksProperties = {};
 let nodesProperties = {};
 
+let vertexSpace = 10;
+// todo: recup les valeur a partir des propriétés
+let vertexLabel = "label";
+let vertexSize = "size";
+let rgbColor = "color";
+
+
 let nodesStore = [];
 
 export function updateGraph(graph, data) {
@@ -43,15 +50,20 @@ export function initGraph(data) {
   var editor = ace.edit("editor", {
     theme: "ace/theme/monokai",
     mode: "ace/mode/javascript",
-    value: "console.log('str3')",
+    value: "vertexSpace = 10;",
   });
-  editor.setReadOnly(true);
-
-  var aceEditorDisabled = ace.edit("aceEditorDisabled", {
+  var editor2 = ace.edit("editor2", {
     theme: "ace/theme/monokai",
     mode: "ace/mode/javascript",
     value: "console.log('str4')",
   });
+
+  editor2.setReadOnly(true);
+
+  function executeCode() {
+    var code = editor.getValue();
+    eval(code);
+  }
 
   let Graph = ForceGraph3D()(document.getElementById("3d-graph"))
     .linkColor(() => "rgba(255, 255, 255, 1)")
@@ -78,7 +90,7 @@ export function initGraph(data) {
         if(nodeStore.id === node.id){
             editor.setValue(JSON.stringify(nodeStore, null, 2), 0);
         }
-    })      
+    })
     // editor.setValue(str, 0); // To see all nodes on click
       editor.session.setMode("ace/mode/javascript");
     })
@@ -172,7 +184,7 @@ function initLinks(data, init_links) {
 }
 
 function initArcs(data) {
-  data["arcs"].forEach((arc) => {
+  data["arcs"].forEach(arc => {
     linksProperties[arc["from"] + "-" + arc["to"]] = {
       arrowShape: arc["properties"]["arrowShape"],
       arrowSize: arc["properties"]["arrowSize"],
@@ -195,15 +207,19 @@ function containsNode(nodes, node) {
 }
 
 function initVertices(data, initialNodes) {
-  data["vertices"].forEach((vertex) => {
-    nodesProperties[vertex["id"]] = {
-      color: hexToRgbA(vertex["properties"]["color"]),
-      label: vertex["properties"]["label"],
-      size: vertex["properties"]["width"],
-      x: vertex["properties"]["x"],
-      y: vertex["properties"]["y"],
-      z: vertex["properties"]["z"],
-    };
+    data["vertices"].forEach(vertex => {
+        vertex["properties"]["x"] += vertexSpace;
+        vertex["properties"]["y"] += vertexSpace;
+        vertex["properties"]["z"] += vertexSpace;
+        nodesProperties[vertex["id"]] = {
+            color: hexToRgbA(vertex["properties"]["color"]),
+            label: vertex["properties"]["label"],
+            size: vertex["properties"]["width"],
+            x: vertex["properties"]["x"] + vertexSpace,
+            y: vertex["properties"]["y"] + vertexSpace,
+            z: vertex["properties"]["z"] + vertexSpace,
+        };
+        console.log(vertex);
 
     if (!containsNode(initialNodes, vertex)) {
       initialNodes.push({
@@ -211,25 +227,21 @@ function initVertices(data, initialNodes) {
         color: hexToRgbA(vertex["properties"]["color"]),
         label: vertex["properties"]["label"],
         size: vertex["properties"]["width"],
-        x: vertex["properties"]["x"],
-        y: vertex["properties"]["y"],
-        z: vertex["properties"]["z"],
+        x: vertex["properties"]["x"] + vertexSpace,
+        y: vertex["properties"]["y"] + vertexSpace,
+        z: vertex["properties"]["z"] + vertexSpace,
       });
       nodesStore.push({
         id: vertex["id"],
         color: hexToRgbA(vertex["properties"]["color"]),
         label: vertex["properties"]["label"],
         size: vertex["properties"]["width"],
-        x: vertex["properties"]["x"],
-        y: vertex["properties"]["y"],
-        z: vertex["properties"]["z"],
+        x: vertex["properties"]["x"] + vertexSpace,
+        y: vertex["properties"]["y"] + vertexSpace,
+        z: vertex["properties"]["z"] + vertexSpace,
       });
     }
   });
   console.log("ininodes", initialNodes);
 }
 
-export function executeCode() {
-  var code = editor.getValue();
-  eval(code);
-}
